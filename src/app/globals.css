@@ -1,0 +1,189 @@
+@import "tailwindcss";
+
+@theme {
+  /* ─── Colors ─── */
+  --color-background: #d2d2d2;
+  --color-foreground: #000000;
+  --color-card: #c9c9c9;
+  --color-tag: #d2d2d2;
+  --color-primary: #000000;
+  --color-primary-text: #d2d2d2;
+  --color-glass: rgba(180, 180, 180, 0.65);
+  --color-muted: rgba(0, 0, 0, 0.5);
+  --color-body: rgba(0, 0, 0, 0.8);
+  --color-caption: rgba(0, 0, 0, 0.45);
+  --color-faint: rgba(0, 0, 0, 0.25);
+  --color-divider: rgba(0, 0, 0, 0.1);
+  --color-thumbnail: #c9c9c9;
+
+  /* ─── Border Radius ─── */
+  --radius-card: 33px;
+  --radius-icon: 21px;
+  --radius-pill: 100px;
+
+  /* ─── Shadows ─── */
+  --shadow-icon: 0px 6px 16px 0px rgba(0,0,0,0.08), 0px 16px 32px 0px rgba(0,0,0,0.06), 0px 32px 48px 0px rgba(0,0,0,0.04);
+}
+
+html {
+  background: var(--color-background);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* ─── Dark Mode Overrides ─── */
+html.dark {
+  --color-background: #1a1a1a;
+  --color-foreground: #e8e8e8;
+  --color-card: #262626;
+  --color-tag: #2f2f2f;
+  --color-primary: #ffffff;
+  --color-primary-text: #1a1a1a;
+  --color-glass: rgba(50, 50, 50, 0.65);
+  --color-muted: rgba(255, 255, 255, 0.5);
+  --color-body: rgba(255, 255, 255, 0.8);
+  --color-caption: rgba(255, 255, 255, 0.45);
+  --color-faint: rgba(255, 255, 255, 0.25);
+  --color-divider: rgba(255, 255, 255, 0.1);
+  --color-thumbnail: #d2d2d2;
+  --shadow-icon: 0px 6px 16px 0px rgba(0,0,0,0.3), 0px 16px 32px 0px rgba(0,0,0,0.2), 0px 32px 48px 0px rgba(0,0,0,0.15);
+}
+
+/* Hide Next.js dev tools in development */
+nextjs-portal,
+[data-nextjs-dev-tools-button] { display: none !important; }
+
+/* Hide scrollbars globally */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes float-1 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(6px, -10px) rotate(1deg); }
+  50% { transform: translate(-4px, -6px) rotate(-1deg); }
+  75% { transform: translate(3px, 4px) rotate(0.5deg); }
+}
+
+@keyframes float-2 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(-8px, 5px) rotate(-1.5deg); }
+  50% { transform: translate(5px, 10px) rotate(1deg); }
+  75% { transform: translate(-3px, -7px) rotate(-0.5deg); }
+}
+
+@keyframes float-3 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(4px, 8px) rotate(1deg); }
+  50% { transform: translate(-7px, -3px) rotate(-1.5deg); }
+  75% { transform: translate(6px, -5px) rotate(0.5deg); }
+}
+
+@keyframes float-4 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(-5px, -8px) rotate(-1deg); }
+  50% { transform: translate(8px, 4px) rotate(1.5deg); }
+  75% { transform: translate(-4px, 6px) rotate(-0.5deg); }
+}
+
+.float-icon-1 { animation: float-1 6s ease-in-out infinite; }
+.float-icon-2 { animation: float-2 7s ease-in-out infinite; }
+.float-icon-3 { animation: float-3 8s ease-in-out infinite; }
+.float-icon-4 { animation: float-4 5.5s ease-in-out infinite; }
+
+/* EHVM logo writing animation */
+.ehvm-stroke {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ehvm-write 0.7s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+@keyframes ehvm-write {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Fade-in for elements appearing after logo */
+.ehvm-fade-in {
+  opacity: 0;
+  animation: ehvm-fade 0.4s ease forwards;
+}
+
+@keyframes ehvm-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Gentle slide-up for page content */
+.ehvm-slide-up {
+  animation: ehvm-slide-up 0.4s ease both;
+}
+
+@keyframes ehvm-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Floating icon pop-in */
+.icon-pop-in {
+  opacity: 0;
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Lightweight shimmer preloader */
+.ehvm-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-tag);
+}
+
+.ehvm-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 100%
+  );
+  animation: ehvm-shimmer 1.2s ease-in-out infinite;
+}
+
+html.dark .ehvm-skeleton::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 100%
+  );
+}
+
+@keyframes ehvm-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
