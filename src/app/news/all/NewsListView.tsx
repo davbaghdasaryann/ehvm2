@@ -16,10 +16,13 @@ type NewsListViewProps = {
 export default function NewsListView({ articles }: NewsListViewProps) {
   const [active, setActive] = useState("All");
 
-  const filtered =
+  const filteredBase =
     active === "All"
       ? articles
       : articles.filter((a) => a.category === categoryMap[active]);
+  const filtered = [...filteredBase].sort(
+    (a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)),
+  );
 
   return (
     <main className="ehvm-slide-up mx-auto flex flex-col items-center w-full max-w-[560px] px-[18px] pb-[40px]">
@@ -36,6 +39,7 @@ export default function NewsListView({ articles }: NewsListViewProps) {
                   src={article.thumbnail}
                   alt={article.title}
                   fill
+                  unoptimized
                   className={article.thumbnailFit === "contain" ? "object-contain p-[12px]" : "object-cover"}
                 />
               ) : (
@@ -44,7 +48,14 @@ export default function NewsListView({ articles }: NewsListViewProps) {
                 </div>
               )}
             </div>
-            <p className="text-[20px] leading-[1.1]" style={{ fontFamily: "var(--font-serif)" }}>{article.title}</p>
+            <div className="flex items-start justify-between gap-[8px]">
+              <p className="text-[20px] leading-[1.1]" style={{ fontFamily: "var(--font-serif)" }}>{article.title}</p>
+              {article.featured ? (
+                <span className="bg-primary text-primary-text text-[10px] font-bold uppercase tracking-[0.08em] rounded-pill px-[8px] py-[4px] shrink-0">
+                  Featured
+                </span>
+              ) : null}
+            </div>
             {article.subtitle ? (
               <p className="text-[14px] leading-[1.4] mt-[8px] text-body">{article.subtitle}</p>
             ) : null}

@@ -168,6 +168,7 @@ export interface AdminDatabase {
 }
 
 export type PanelName =
+  | 'guide'
   | 'apps'
   | 'news'
   | 'meta'

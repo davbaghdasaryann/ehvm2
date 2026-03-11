@@ -29,7 +29,7 @@ export default async function ArticleDetail({ params }: { params: Promise<{ slug
 
         <div className="relative w-full aspect-[16/9] rounded-icon overflow-hidden mb-[16px] bg-thumbnail">
           {article.thumbnail ? (
-            <Image src={article.thumbnail} alt={article.title} fill className="object-cover" />
+            <Image src={article.thumbnail} alt={article.title} fill unoptimized className="object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-[14px] text-muted">
               No image uploaded

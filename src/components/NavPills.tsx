@@ -5,9 +5,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 const navItems = [
-  { label: "🏠 Home", href: "/" },
-  { label: "🗞️ News", href: "/news" },
-  { label: "✉️ Contact", href: "/contact" },
+  { label: "Home", href: "/" },
+  { label: "News", href: "/news" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export default function NavPills() {

@@ -36,13 +36,19 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-      <div className="card" style={{ width: "100%", maxWidth: 420 }}>
-        <div className="card-header">
-          <div className="card-title">EHVM Admin Login</div>
-        </div>
+    <div className="admin-login-shell">
+      <div className="admin-login-orb admin-login-orb-a" />
+      <div className="admin-login-orb admin-login-orb-b" />
+
+      <div className="admin-login-card card">
         <div className="card-body">
-          <form onSubmit={onSubmit} className="form-grid">
+          <div className="admin-login-head">
+            <p className="admin-login-kicker">EHVM Internal</p>
+            <h1 className="admin-login-title">Admin Access</h1>
+            <p className="admin-login-subtitle">Sign in to manage apps, listings, and newsroom content.</p>
+          </div>
+
+          <form onSubmit={onSubmit} className="form-grid admin-login-form">
             <div className="field">
               <label className="field-label">Username</label>
               <input
@@ -63,13 +69,15 @@ export default function AdminLoginPage() {
                 required
               />
             </div>
-            {error ? (
-              <p style={{ color: "var(--red)", fontSize: 12 }}>{error}</p>
-            ) : null}
-            <button className="btn btn-primary" type="submit" disabled={loading}>
+            <p className={`admin-login-error${error ? " show" : ""}`} role="alert">
+              {error || " "}
+            </p>
+            <button className="btn btn-primary admin-login-submit" type="submit" disabled={loading}>
               {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
+
+          <p className="admin-login-footnote">Protected EHVM workspace</p>
         </div>
       </div>
     </div>

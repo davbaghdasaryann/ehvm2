@@ -10,7 +10,10 @@ export const revalidate = 60;
 
 export default async function Newsroom() {
   const articles = await getArticles();
-  const top = articles.filter((article) => Boolean(article.thumbnail)).slice(0, depths.length);
+  const featuredFirst = [...articles].sort(
+    (a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)),
+  );
+  const top = featuredFirst.slice(0, depths.length);
 
   const items = top.map((article, idx) => {
     const src = article.thumbnail ?? "";
@@ -25,17 +28,39 @@ export default async function Newsroom() {
           className="relative block size-[80px] md:size-[100px] rounded-icon shadow-icon transition-transform hover:scale-110 [backface-visibility:hidden]"
         >
           <div className={`relative size-full rounded-icon overflow-hidden [backface-visibility:hidden] ${fit === "contain" ? "bg-thumbnail" : ""}`}>
-            <Image
-              src={src}
-              alt=""
-              fill
-              className={fit === "contain" ? "object-contain p-[4px]" : "object-cover scale-110"}
-            />
+            {src ? (
+              <Image
+                src={src}
+                alt={article.title}
+                fill
+                unoptimized
+                className={fit === "contain" ? "object-contain p-[4px]" : "object-cover scale-110"}
+              />
+            ) : (
+              <div className="size-full bg-tag flex items-center justify-center text-[22px]">🗞️</div>
+            )}
           </div>
         </Link>
       ),
     };
   });
+
+  if (items.length === 0) {
+    depths.slice(0, 3).forEach((depth, idx) => {
+      items.push({
+        id: `news-placeholder-${idx}`,
+        depth,
+        children: (
+          <Link
+            href="/news/all"
+            className="relative block size-[80px] md:size-[100px] rounded-icon shadow-icon bg-tag flex items-center justify-center text-[34px] no-underline"
+          >
+            🗞️
+          </Link>
+        ),
+      });
+    });
+  }
 
   return (
     <main className="relative w-full flex-1 flex flex-col items-center h-[calc(100dvh-97px)]">

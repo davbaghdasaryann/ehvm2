@@ -74,6 +74,8 @@ const getCachedNewsPayload = unstable_cache(
     const articles = records
       .map(mapAdminNewsToArticle)
       .sort((a, b) => {
+        const featuredDelta = Number(Boolean(b.featured)) - Number(Boolean(a.featured));
+        if (featuredDelta !== 0) return featuredDelta;
         const aTime = a.date ? Date.parse(a.date) : 0;
         const bTime = b.date ? Date.parse(b.date) : 0;
         return bTime - aTime;

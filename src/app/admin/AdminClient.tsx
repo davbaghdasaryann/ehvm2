@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useAdminStore } from '@/admin/store/adminStore'
 import { PanelName } from '@/admin/types'
 import AppsPanel from '@/admin/components/panels/AppsPanel'
+import GuidePanel from '@/admin/components/panels/GuidePanel'
 import NewsPanel from '@/admin/components/panels/NewsPanel'
 import MetaPanel from '@/admin/components/panels/MetaPanel'
 import KpisPanel from '@/admin/components/panels/KpisPanel'
@@ -15,6 +16,7 @@ import {
 } from '@/admin/components/panels/MiscPanels'
 
 const NAV_ITEMS: { panel: PanelName; icon: string; label: string; editOnly?: boolean }[] = [
+  { panel: 'guide', icon: '🧭', label: 'Guide', editOnly: false },
   { panel: 'news', icon: '📰', label: 'News', editOnly: false },
   { panel: 'meta', icon: '🏷', label: 'Meta & Identity', editOnly: true },
   { panel: 'kpis', icon: '📊', label: 'KPI Cards', editOnly: true },
@@ -61,6 +63,7 @@ export default function AdminClient() {
   }, [])
 
   const panelComponent: Record<PanelName, React.ReactNode> = {
+    guide: <GuidePanel />,
     apps: <AppsPanel />,
     news: <NewsPanel />,
     meta: <MetaPanel />,
