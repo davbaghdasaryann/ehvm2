@@ -8,6 +8,8 @@ const APPS_COLLECTION = "apps";
 const NEWS_COLLECTION = "news";
 const LEGACY_STATE_COLLECTION = "admin_state";
 const LEGACY_APPS_DOC_ID = "apps";
+const hasMongoConfigured = Boolean(process.env.MONGODB_URI?.trim());
+let lastKnownDb: AdminDatabase | null = null;
 
 function normalizeDatabase(parsed: unknown): AdminDatabase {
   if (!parsed || typeof parsed !== "object") {
@@ -21,6 +23,32 @@ function normalizeDatabase(parsed: unknown): AdminDatabase {
     apps: Array.isArray(maybeApps) ? (maybeApps as AppRecord[]) : [],
     news: Array.isArray(maybeNews) ? (maybeNews as AdminNewsRecord[]) : [],
   };
+}
+
+function cloneDatabase(db: AdminDatabase): AdminDatabase {
+  return {
+    apps: [...db.apps],
+    news: [...db.news],
+  };
+}
+
+function rememberDatabase(db: AdminDatabase): void {
+  if (db.apps.length === 0 && db.news.length === 0) return;
+  lastKnownDb = cloneDatabase(db);
+}
+
+async function readAdminDbFromFile(): Promise<AdminDatabase> {
+  try {
+    const raw = await readFile(DB_PATH, "utf8");
+    return normalizeDatabase(JSON.parse(raw));
+  } catch {
+    return { apps: [], news: [] };
+  }
+}
+
+async function writeAdminDbToFile(db: AdminDatabase): Promise<void> {
+  await mkdir(path.dirname(DB_PATH), { recursive: true });
+  await writeFile(DB_PATH, `${JSON.stringify(db, null, 2)}\n`, "utf8");
 }
 
 export async function readAdminDb(): Promise<AdminDatabase> {
@@ -86,7 +114,9 @@ export async function readAdminDb(): Promise<AdminDatabase> {
           (item): item is AdminNewsRecord => Boolean(item.id && item.slug && item.title),
         );
 
-        return { apps: validApps, news: validNews };
+        const nextDb = { apps: validApps, news: validNews };
+        rememberDatabase(nextDb);
+        return nextDb;
       }
 
       // Legacy fallback: migrate from single-document admin_state -> apps collection.
@@ -110,18 +140,25 @@ export async function readAdminDb(): Promise<AdminDatabase> {
         );
       }
 
-      return { apps: legacyApps, news: [] };
+      const nextDb = { apps: legacyApps, news: [] };
+      rememberDatabase(nextDb);
+      return nextDb;
     } catch (error) {
-      console.error("Failed to read admin data from MongoDB. Falling back to file.", error);
+      console.error("Failed to read admin data from MongoDB.", error);
     }
   }
 
-  try {
-    const raw = await readFile(DB_PATH, "utf8");
-    return normalizeDatabase(JSON.parse(raw));
-  } catch {
-    return { apps: [], news: [] };
+  if (hasMongoConfigured && lastKnownDb) {
+    console.warn("Using last known in-memory admin DB snapshot after MongoDB read failure.");
+    return cloneDatabase(lastKnownDb);
   }
+
+  const fileDb = await readAdminDbFromFile();
+  if (hasMongoConfigured && (fileDb.apps.length > 0 || fileDb.news.length > 0)) {
+    console.warn("Using local file backup because MongoDB is currently unavailable.");
+  }
+  rememberDatabase(fileDb);
+  return fileDb;
 }
 
 export async function writeAdminDb(db: AdminDatabase): Promise<void> {
@@ -174,12 +211,22 @@ export async function writeAdminDb(db: AdminDatabase): Promise<void> {
         await newsCollection.deleteMany({});
       }
 
+      rememberDatabase({ apps, news });
+      // Best-effort local mirror; useful as a fallback snapshot in local/dev.
+      try {
+        await writeAdminDbToFile({ apps, news });
+      } catch (fileError) {
+        console.warn("Failed to mirror admin DB to local file after MongoDB write.", fileError);
+      }
       return;
     } catch (error) {
-      console.error("Failed to write admin data to MongoDB. Falling back to file.", error);
+      console.error("Failed to write admin data to MongoDB.", error);
+      if (hasMongoConfigured) {
+        throw error;
+      }
     }
   }
 
-  await mkdir(path.dirname(DB_PATH), { recursive: true });
-  await writeFile(DB_PATH, `${JSON.stringify(db, null, 2)}\n`, "utf8");
+  await writeAdminDbToFile(db);
+  rememberDatabase(db);
 }

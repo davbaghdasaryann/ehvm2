@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
+import { isAdminRequestAuthorized } from "@/lib/adminAuth";
 
 export const runtime = "nodejs";
 
@@ -30,6 +31,10 @@ function detectExtension(fileName: string, mimeType: string): string {
 }
 
 export async function POST(request: Request) {
+  if (!isAdminRequestAuthorized(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const formData = await request.formData();
     const file = formData.get("file");

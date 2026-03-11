@@ -21,6 +21,9 @@ function slugify(value: string): string {
 
 async function fetchServerData(): Promise<{ apps: AppRecord[]; news: AdminNewsRecord[] }> {
   const response = await fetch(ADMIN_APPS_API, { method: 'GET', cache: 'no-store' })
+  if (response.status === 401) {
+    throw new Error('unauthorized')
+  }
   if (!response.ok) return { apps: [], news: [] }
   const payload = (await response.json()) as { apps?: AppRecord[]; news?: AdminNewsRecord[] }
   return {
@@ -35,6 +38,12 @@ async function pushServerData(apps: AppRecord[], news: AdminNewsRecord[]): Promi
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ apps, news }),
   })
+  if (response.status === 401) {
+    if (typeof window !== 'undefined') {
+      window.location.href = '/admin/login'
+    }
+    return false
+  }
   return response.ok
 }
 
@@ -225,7 +234,11 @@ export const useAdminStore = create<AdminStore>()(
             news: serverNews,
             currentAppId: serverApps.some((item) => item.id === get().currentAppId) ? get().currentAppId : null,
           })
-        } catch {
+        } catch (error) {
+          if (error instanceof Error && error.message === 'unauthorized' && typeof window !== 'undefined') {
+            window.location.href = '/admin/login'
+            return
+          }
           get().showToast('Failed to load server data', '⚠️')
         }
       },
