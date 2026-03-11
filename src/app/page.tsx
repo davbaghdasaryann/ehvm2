@@ -21,9 +21,15 @@ export default async function Home() {
         href={`/apps/${app.slug}`}
         className="relative block size-[80px] md:size-[100px] rounded-icon shadow-icon transition-transform hover:scale-110 [backface-visibility:hidden]"
       >
-        <div className="relative size-full rounded-icon overflow-hidden [backface-visibility:hidden]">
-          <Image src={app.icon} alt={app.name} fill className="object-cover scale-110" />
-        </div>
+        {app.icon ? (
+          <div className="relative size-full rounded-icon overflow-hidden [backface-visibility:hidden]">
+            <Image src={app.icon} alt={app.name} fill unoptimized className="object-cover scale-110" />
+          </div>
+        ) : (
+          <div className="size-full rounded-icon bg-tag flex items-center justify-center text-[28px] [backface-visibility:hidden]">
+            📱
+          </div>
+        )}
       </Link>
     ),
   }));

@@ -15,6 +15,7 @@ export default function NavPills() {
   const router = useRouter();
 
   useEffect(() => {
+    if (pathname.startsWith("/admin")) return;
     const id = window.setTimeout(() => {
       router.prefetch("/");
       router.prefetch("/apps");
@@ -25,7 +26,9 @@ export default function NavPills() {
     return () => {
       window.clearTimeout(id);
     };
-  }, [router]);
+  }, [pathname, router]);
+
+  if (pathname.startsWith("/admin")) return null;
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/" || pathname.startsWith("/apps");
@@ -34,7 +37,7 @@ export default function NavPills() {
   }
 
   return (
-    <nav className="relative z-20 flex gap-[10px] items-center pt-[38px] pb-[18px]">
+    <nav className="relative z-20 mx-auto flex gap-[10px] items-center pt-[38px] pb-[18px]">
       {navItems.map((item) => (
         <Link
           key={item.href}

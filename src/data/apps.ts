@@ -73,8 +73,82 @@ export type App = {
     image: string;
     email: string;
     phone: string;
+    title?: string;
+    calendarUrl?: string;
+    ndaUrl?: string;
+    processSteps?: {
+      title: string;
+      note: string;
+      description: string;
+    }[];
   };
   featured?: boolean;
+  kpis?: {
+    label: string;
+    value: string;
+    trend: string;
+    sub: string;
+    icon: string;
+  }[];
+  financials?: {
+    mrr: string;
+    arr: string;
+    ltvCac: string;
+    netMargin: string;
+    yoyGrowth: string;
+    askingMultiple: string;
+    plRows: {
+      label: string;
+      amount: string;
+      trend: string;
+      notes: string;
+      highlight: boolean;
+    }[];
+  };
+  charts?: {
+    type: string;
+    title: string;
+    subtitle: string;
+    labels: string[];
+    datasets: {
+      label: string;
+      data: number[];
+      color: string;
+    }[];
+  }[];
+  funnel?: {
+    label: string;
+    value: string;
+    pct: string;
+  }[];
+  product?: {
+    vision: string;
+    roadmap: {
+      status: "done" | "progress" | "planned";
+      title: string;
+      description: string;
+    }[];
+  };
+  market?: {
+    tam: string;
+    sam: string;
+    som: string;
+    tamLabel: string;
+    samLabel: string;
+    year: string;
+    competitors: {
+      icon: string;
+      name: string;
+      description: string;
+      rating: string;
+      isThisApp: boolean;
+    }[];
+    keywords: {
+      keyword: string;
+      volume: string;
+      rank: string;
+    }[];
+  };
   notionDbFields?: {
     label: string;
     value: string;

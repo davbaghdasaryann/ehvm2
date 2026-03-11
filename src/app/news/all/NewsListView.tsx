@@ -21,40 +21,47 @@ export default function NewsListView({ articles }: NewsListViewProps) {
       ? articles
       : articles.filter((a) => a.category === categoryMap[active]);
 
-  // The featured card shows the first (newest) article in the current filter
-  const featured = filtered[0];
-
   return (
-    <main className="ehvm-slide-up flex flex-col items-center w-full max-w-[402px] px-[18px] pb-[40px]">
+    <main className="ehvm-slide-up mx-auto flex flex-col items-center w-full max-w-[560px] px-[18px] pb-[40px]">
       <div className="w-full mb-[18px]">
         <FilterTabs tabs={filterTabs} active={active} onSelect={setActive} center />
       </div>
 
-      {/* Featured Card */}
-      {featured && (
-        <Link href={`/news/${featured.slug}`} className="w-full mb-[15px] block no-underline text-foreground">
-          <div className="bg-thumbnail w-full aspect-[334/202] relative rounded-icon overflow-hidden">
-            <Image src={featured.thumbnail} alt={featured.title} fill className={featured.thumbnailFit === "contain" ? "object-contain p-[12px]" : "object-cover"} />
-          </div>
-          <div className="p-[15px]">
-            <p className="text-[20px] leading-none" style={{ fontFamily: "var(--font-serif)" }}>{featured.title}</p>
-            <p className="text-[12px] mt-[5px]">{featured.category}</p>
-          </div>
-        </Link>
-      )}
-
-      {/* Article List */}
-      <div className="flex flex-col gap-[13px] w-full">
-        {filtered.filter((a) => a.slug !== featured?.slug).map((article) => (
-          <Link key={article.slug} href={`/news/${article.slug}`} className="flex gap-[18px] items-center w-full no-underline text-foreground">
-            <div className="relative shrink-0 size-[75px] bg-thumbnail rounded-icon overflow-hidden">
-              <Image src={article.thumbnail} alt={article.title} fill className={article.thumbnailFit === "contain" ? "object-contain p-[8px]" : "object-cover"} />
+      <div className="flex flex-col gap-[14px] w-full">
+        {filtered.map((article) => (
+          <article key={article.slug} className="bg-card rounded-card p-[15px]">
+            <div className="bg-thumbnail w-full aspect-[16/9] relative rounded-icon overflow-hidden mb-[14px]">
+              {article.thumbnail ? (
+                <Image
+                  src={article.thumbnail}
+                  alt={article.title}
+                  fill
+                  className={article.thumbnailFit === "contain" ? "object-contain p-[12px]" : "object-cover"}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-[14px] text-muted">
+                  No image uploaded
+                </div>
+              )}
             </div>
-            <div className="flex flex-col gap-[5px] leading-[1.2]">
-              <p className="text-[20px] leading-none" style={{ fontFamily: "var(--font-serif)" }}>{article.title}</p>
-              <p className="text-[12px]">{article.category}</p>
+            <p className="text-[20px] leading-[1.1]" style={{ fontFamily: "var(--font-serif)" }}>{article.title}</p>
+            {article.subtitle ? (
+              <p className="text-[14px] leading-[1.4] mt-[8px] text-body">{article.subtitle}</p>
+            ) : null}
+            {article.quote ? (
+              <blockquote className="mt-[10px] bg-tag rounded-[12px] p-[10px] text-[14px] leading-[1.4] text-body">
+                “{article.quote}”
+              </blockquote>
+            ) : null}
+            <div className="mt-[12px]">
+              <Link
+                href={`/news/${article.slug}`}
+                className="bg-primary inline-flex h-[36px] items-center justify-center px-[15px] rounded-pill text-[14px] text-primary-text no-underline leading-normal"
+              >
+                {article.buttonLabel || "Read more"}
+              </Link>
             </div>
-          </Link>
+          </article>
         ))}
       </div>
     </main>

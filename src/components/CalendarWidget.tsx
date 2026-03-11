@@ -18,16 +18,18 @@ export default function CalendarWidget({
   hostName,
   hostImage,
   title = "M&A Questions",
-  duration = "15m",
-  platform = "Google Meet",
-  timezone = "Europe/Berlin",
+  duration,
+  platform,
+  timezone,
+  bookingUrl,
 }: {
   hostName: string;
-  hostImage: string;
+  hostImage?: string;
   title?: string;
   duration?: string;
   platform?: string;
   timezone?: string;
+  bookingUrl?: string;
 }) {
   const now = new Date();
   const [currentMonth, setCurrentMonth] = useState(now.getMonth());
@@ -64,30 +66,43 @@ export default function CalendarWidget({
     <div className="bg-tag rounded-icon p-[20px] flex flex-col gap-[16px] w-full">
       {/* Host info */}
       <div className="flex items-center gap-[10px]">
-        <div className="relative size-[32px] rounded-full overflow-hidden shrink-0">
-          <Image src={hostImage} alt={hostName} fill className="object-cover" />
-        </div>
+        {hostImage ? (
+          <div className="relative size-[32px] rounded-full overflow-hidden shrink-0">
+            <Image src={hostImage} alt={hostName} fill className="object-cover" />
+          </div>
+        ) : (
+          <div className="size-[32px] rounded-full bg-card flex items-center justify-center text-[14px] shrink-0">
+            👤
+          </div>
+        )}
         <span className="text-[14px] text-muted">{hostName}</span>
       </div>
 
       {/* Title */}
       <p className="font-bold text-[20px] leading-[1.2]">{title}</p>
 
-      {/* Details */}
-      <div className="flex flex-col gap-[6px] text-[14px] text-body">
-        <div className="flex items-center gap-[6px]">
-          <span>🕐</span>
-          <span>{duration}</span>
+      {(duration || platform || timezone) && (
+        <div className="flex flex-col gap-[6px] text-[14px] text-body">
+          {duration ? (
+            <div className="flex items-center gap-[6px]">
+              <span>🕐</span>
+              <span>{duration}</span>
+            </div>
+          ) : null}
+          {platform ? (
+            <div className="flex items-center gap-[6px]">
+              <span>📹</span>
+              <span>{platform}</span>
+            </div>
+          ) : null}
+          {timezone ? (
+            <div className="flex items-center gap-[6px]">
+              <span>🌐</span>
+              <span>{timezone} ▾</span>
+            </div>
+          ) : null}
         </div>
-        <div className="flex items-center gap-[6px]">
-          <span>📹</span>
-          <span>{platform}</span>
-        </div>
-        <div className="flex items-center gap-[6px]">
-          <span>🌐</span>
-          <span>{timezone} ▾</span>
-        </div>
-      </div>
+      )}
 
       {/* Calendar grid */}
       <div className="flex flex-col gap-[8px]">
@@ -148,6 +163,11 @@ export default function CalendarWidget({
             {TIMES.map((time) => (
               <button
                 key={time}
+                onClick={() => {
+                  if (bookingUrl) {
+                    window.open(bookingUrl, "_blank", "noopener,noreferrer");
+                  }
+                }}
                 className="border border-divider rounded-[10px] py-[10px] text-[14px] hover:bg-primary hover:text-primary-text transition-colors cursor-pointer"
               >
                 {time}
@@ -156,6 +176,16 @@ export default function CalendarWidget({
           </div>
         </div>
       )}
+      {bookingUrl ? (
+        <a
+          href={bookingUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-primary text-primary-text flex items-center justify-center px-[15px] py-[10px] rounded-pill text-[14px] no-underline leading-normal"
+        >
+          Open calendar ↗
+        </a>
+      ) : null}
     </div>
   );
 }

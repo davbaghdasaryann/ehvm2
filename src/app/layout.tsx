@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
-import { Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import NavPills from "@/components/NavPills";
 import ThemeProvider from "@/components/ThemeProvider";
-
-const sourceSerif = Source_Serif_4({
-  subsets: ["latin"],
-  variable: "--font-serif",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "EHVM Apps Capital",
@@ -27,9 +20,9 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className={`antialiased ${sourceSerif.variable}`}>
+      <body className="antialiased">
         <ThemeProvider>
-          <div className="min-h-[100dvh] flex flex-col items-center overflow-hidden">
+          <div className="min-h-[100dvh] w-full flex flex-col overflow-x-hidden">
             <NavPills />
             {children}
           </div>

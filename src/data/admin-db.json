@@ -1,0 +1,469 @@
+{
+  "apps": [
+    {
+      "id": "app_1773220014283",
+      "updatedAt": "2026-03-11T09:07:13.045Z",
+      "status": "draft",
+      "featured": false,
+      "ndaRequired": true,
+      "meta": {
+        "name": "Coachify",
+        "tagline": "AI Workouts",
+        "description": "A profitable, top-rated AI fitness coaching app with $70K MRR, 14 months of proven paid UA, and a loyal subscriber base — ready for a strategic acquirer to unlock its next phase of scale.",
+        "category": "Health & Fitness",
+        "platforms": "iOS + Android",
+        "model": "AI / Subscription",
+        "badge": "Acquisition Opportunity · Health & Fitness",
+        "askingPrice": "Asking ~3.5× ARR",
+        "tags": [
+          "iOS + Android",
+          "AI / Subscription",
+          "Profitable",
+          "Health & Fitness",
+          "Asking ~3.5× ARR"
+        ],
+        "appStoreUrl": "https://apps.apple.com",
+        "playStoreUrl": "https://play.google.com/store",
+        "websiteUrl": "https://ehvm.com",
+        "developerCountry": "United States",
+        "developerFlag": "🇺🇸"
+      },
+      "kpis": [
+        {
+          "label": "Monthly Recurring Revenue",
+          "value": "$70K",
+          "trend": "↑ 22% YoY",
+          "sub": "$840K ARR",
+          "icon": "📈"
+        },
+        {
+          "label": "iOS App Rating",
+          "value": "4.7 ⭐",
+          "trend": "Top 5% category",
+          "sub": "1,249 ranked keywords",
+          "icon": "⭐"
+        },
+        {
+          "label": "Social Following",
+          "value": "110K",
+          "trend": "99.7K TikTok",
+          "sub": "Combined channels",
+          "icon": "📱"
+        }
+      ],
+      "financials": {
+        "mrr": "$70,000",
+        "arr": "$840K",
+        "ltvCac": "4.2×",
+        "netMargin": "~43%",
+        "yoyGrowth": "22%",
+        "askingMultiple": "3.5× ARR",
+        "plRows": [
+          {
+            "label": "Gross Revenue",
+            "amount": "$756,000",
+            "trend": "↑ 22%",
+            "notes": "App Store + Play Store gross",
+            "highlight": true
+          },
+          {
+            "label": "Store Fees (30%)",
+            "amount": "−$226,800",
+            "trend": "—",
+            "notes": "Apple + Google platform fees",
+            "highlight": false
+          },
+          {
+            "label": "Paid UA Spend",
+            "amount": "−$168,000",
+            "trend": "—",
+            "notes": "Meta ads (profitable)",
+            "highlight": false
+          },
+          {
+            "label": "Infrastructure & Tools",
+            "amount": "−$36,000",
+            "trend": "—",
+            "notes": "OpenAI API, Firebase, hosting",
+            "highlight": false
+          },
+          {
+            "label": "Net Revenue / Profit",
+            "amount": "$325,200",
+            "trend": "↑ 18%",
+            "notes": "~43% net margin",
+            "highlight": true
+          }
+        ]
+      },
+      "charts": [
+        {
+          "type": "line",
+          "title": "Monthly Revenue Growth",
+          "subtitle": "MRR since launch · Feb 2024 – Mar 2025",
+          "labels": [
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+            "Jan",
+            "Feb",
+            "Mar"
+          ],
+          "datasets": [
+            {
+              "label": "MRR ($)",
+              "data": [
+                12000,
+                16500,
+                21000,
+                26000,
+                32000,
+                38000,
+                44000,
+                50000,
+                55000,
+                59000,
+                63000,
+                66000,
+                68000,
+                70000
+              ],
+              "color": "#1a1a1a"
+            }
+          ]
+        },
+        {
+          "type": "bar",
+          "title": "Revenue by Platform",
+          "subtitle": "iOS vs Android split",
+          "labels": [
+            "iOS",
+            "Android"
+          ],
+          "datasets": [
+            {
+              "label": "Share %",
+              "data": [
+                71,
+                29
+              ],
+              "color": "#2d7a4f"
+            }
+          ]
+        },
+        {
+          "type": "doughnut",
+          "title": "Revenue by Geography",
+          "subtitle": "Top markets by revenue share",
+          "labels": [
+            "United States",
+            "United Kingdom",
+            "Canada",
+            "Australia",
+            "Germany",
+            "Other"
+          ],
+          "datasets": [
+            {
+              "label": "% Revenue",
+              "data": [
+                52,
+                14,
+                10,
+                8,
+                6,
+                10
+              ],
+              "color": "#1a1a1a"
+            }
+          ]
+        }
+      ],
+      "funnel": [
+        {
+          "label": "Impressions",
+          "value": "2.4M / mo",
+          "pct": "100%"
+        },
+        {
+          "label": "App Page Views",
+          "value": "912K",
+          "pct": "38%"
+        },
+        {
+          "label": "Installs",
+          "value": "528K",
+          "pct": "22%"
+        },
+        {
+          "label": "Trial Started",
+          "value": "336K",
+          "pct": "14%"
+        },
+        {
+          "label": "Paid Subscriber",
+          "value": "84K",
+          "pct": "6%"
+        }
+      ],
+      "product": {
+        "vision": "Coachify is building the AI personal trainer for the 80% of gym-goers who train without a coach — delivering professional-grade programming, nutrition guidance, and real-time feedback at a fraction of the cost of a human trainer.",
+        "roadmap": [
+          {
+            "status": "done",
+            "title": "AI Personalized Workout Plans",
+            "description": "Dynamic plan generation based on goals, fitness level, and available equipment."
+          },
+          {
+            "status": "done",
+            "title": "Calorie & Macro Tracking",
+            "description": "Integrated diet monitoring with food database and AI-generated meal suggestions."
+          },
+          {
+            "status": "progress",
+            "title": "Paywall A/B Testing Framework",
+            "description": "Systematic testing of pricing, trial lengths, and offer structures."
+          },
+          {
+            "status": "planned",
+            "title": "Apple Watch & Wearables Integration",
+            "description": "Real-time heart rate, HRV, and recovery data feeding into adaptive programming engine."
+          }
+        ]
+      },
+      "market": {
+        "tam": "$15.3B",
+        "sam": "$2.1B",
+        "som": "$210M",
+        "tamLabel": "Global fitness apps",
+        "samLabel": "AI fitness apps",
+        "year": "2025",
+        "competitors": [
+          {
+            "icon": "🏋️",
+            "name": "Coachify",
+            "description": "AI-personalized workouts + nutrition · Profitable · $70K MRR",
+            "rating": "4.7 ⭐",
+            "isThisApp": true
+          },
+          {
+            "icon": "💪",
+            "name": "Fitbod",
+            "description": "Adaptive strength training · $30M+ ARR · VC-backed",
+            "rating": "4.8 ⭐",
+            "isThisApp": false
+          },
+          {
+            "icon": "📊",
+            "name": "MyFitnessPal",
+            "description": "Nutrition tracking · 200M+ users · Acquired by Francisco Partners",
+            "rating": "4.7 ⭐",
+            "isThisApp": false
+          }
+        ],
+        "keywords": [
+          {
+            "keyword": "ai workout planner",
+            "volume": "52K",
+            "rank": "#2"
+          },
+          {
+            "keyword": "gym workout plan",
+            "volume": "48K",
+            "rank": "#4"
+          },
+          {
+            "keyword": "ai personal trainer",
+            "volume": "41K",
+            "rank": "#3"
+          },
+          {
+            "keyword": "workout tracker app",
+            "volume": "38K",
+            "rank": "#9"
+          }
+        ]
+      },
+      "opportunities": [
+        {
+          "icon": "💳",
+          "title": "Paywall A/B Testing",
+          "description": "Systematic testing of pricing tiers, trial lengths, and offer structures. Conservative 15–20% improvement in trial-to-paid conversion is achievable within 90 days."
+        },
+        {
+          "icon": "🔥",
+          "title": "TikTok Organic + Paid UA",
+          "description": "With 99.7K TikTok followers and zero paid spend on the platform, there is a clear path to a new high-volume acquisition channel."
+        },
+        {
+          "icon": "🍎",
+          "title": "Apple Search Ads",
+          "description": "The app ranks for 1,249 keywords but runs zero Apple Search Ads. Launching campaigns could deliver the lowest-CAC installs available."
+        },
+        {
+          "icon": "🌍",
+          "title": "International Expansion",
+          "description": "App is predominantly English-language. Localization into Spanish, Portuguese, and German markets represents a near-zero COGS growth lever."
+        }
+      ],
+      "contact": {
+        "name": "Evelin Herrera",
+        "title": "M&A Advisor · EHVM Mobile",
+        "email": "hi@evelinherrera.com",
+        "phone": "+1 415 798 1766",
+        "calendarUrl": "https://cal.com/evelin-herrera-pvrkn4/15min",
+        "ndaUrl": "https://docuseal.com/d/J7NtDuzmxCfh7E",
+        "image": "/images/evelin.png",
+        "processSteps": [
+          {
+            "title": "Sign Mutual NDA",
+            "note": "~2 minutes",
+            "description": "A mutual non-disclosure agreement unlocks access to advertising metrics, full cohort data, tech stack documentation, and detailed financials."
+          },
+          {
+            "title": "Data Room Access & Discovery",
+            "note": "30 days",
+            "description": "Includes Meta Ads Manager screenshots, RevenueCat dashboards, cohort exports, P&L, tech stack, and seller Q&A."
+          },
+          {
+            "title": "Submit Offer",
+            "note": "Rolling basis",
+            "description": "Best and final offers accepted on a rolling basis. We recommend acting within 14 days — active buyer interest is high."
+          },
+          {
+            "title": "Negotiation & Closing",
+            "note": "14–21 days",
+            "description": "Closing via escrow. Asset transfer includes App Store & Play Store accounts, source code, brand assets, social handles, and 30-day seller support."
+          }
+        ]
+      },
+      "media": {
+        "icon": "",
+        "cover": "",
+        "screenshots": []
+      }
+    }
+  ],
+  "news": [
+    {
+      "id": "news_ehvm-europe-tour",
+      "slug": "ehvm-europe-tour",
+      "title": "EHVM Europe Tour with 8 stops",
+      "subtitle": "Event",
+      "quote": "",
+      "image": "/images/eu-stars.png",
+      "buttonLabel": "Read article",
+      "buttonUrl": "/news/all",
+      "category": "Event",
+      "featured": true,
+      "published": true,
+      "updatedAt": "2026-02-09T20:00:00.000Z"
+    },
+    {
+      "id": "news_ehvm-dubai-meetup",
+      "slug": "ehvm-dubai-meetup",
+      "title": "EHVM Dubai meetup",
+      "subtitle": "Event",
+      "quote": "",
+      "image": "/images/dubai.png",
+      "buttonLabel": "Read article",
+      "buttonUrl": "/news/all",
+      "category": "Event",
+      "featured": false,
+      "published": true,
+      "updatedAt": "2026-01-27T20:00:00.000Z"
+    },
+    {
+      "id": "news_jane-doe-selling-notey",
+      "slug": "jane-doe-selling-notey",
+      "title": "How Jane Doe built and sold Notey for $2.4M",
+      "subtitle": "Jane Doe never planned to sell Notey. The note-taking app started as a weekend project in her Berlin apartment, a simple tool she built because nothing on the market worked the way she wanted it to.",
+      "quote": "I thought selling an app meant posting it on a marketplace and hoping for the best. EHVM showed me there's a proper way to do this — with the right buyers, the right terms, and the right support.",
+      "image": "/images/jane-doe.png",
+      "buttonLabel": "Read article",
+      "buttonUrl": "/news/all",
+      "category": "Story",
+      "featured": false,
+      "published": true,
+      "updatedAt": "2026-01-14T20:00:00.000Z"
+    },
+    {
+      "id": "news_ray-liu-fitlog-acquisition",
+      "slug": "ray-liu-fitlog-acquisition",
+      "title": "From side project to $800k exit — Ray Liu on selling FitLog",
+      "subtitle": "Story",
+      "quote": "",
+      "image": "/images/rayul-_M6gy9oHgII-unsplash.jpg",
+      "buttonLabel": "Read article",
+      "buttonUrl": "/news/all",
+      "category": "Story",
+      "featured": false,
+      "published": true,
+      "updatedAt": "2026-02-04T20:00:00.000Z"
+    },
+    {
+      "id": "news_ehvm-founders-workshop",
+      "slug": "ehvm-founders-workshop",
+      "title": "EHVM Founders Workshop — Build, Scale, Exit",
+      "subtitle": "Event",
+      "quote": "",
+      "image": "/images/woman.png",
+      "buttonLabel": "Read article",
+      "buttonUrl": "/news/all",
+      "category": "Event",
+      "featured": false,
+      "published": true,
+      "updatedAt": "2026-02-19T20:00:00.000Z"
+    },
+    {
+      "id": "news_ehvm-weekly-digest",
+      "slug": "ehvm-weekly-digest",
+      "title": "EHVM Weekly Digest — App M&A News",
+      "subtitle": "Event",
+      "quote": "",
+      "image": "/images/paper.png",
+      "buttonLabel": "Read article",
+      "buttonUrl": "/news/all",
+      "category": "Event",
+      "featured": false,
+      "published": true,
+      "updatedAt": "2026-02-17T20:00:00.000Z"
+    },
+    {
+      "id": "news_la-tech-week-recap",
+      "slug": "la-tech-week-recap",
+      "title": "LA Tech Week recap",
+      "subtitle": "Event",
+      "quote": "",
+      "image": "/images/la-tech-week.png",
+      "buttonLabel": "Read article",
+      "buttonUrl": "/news/all",
+      "category": "Event",
+      "featured": false,
+      "published": true,
+      "updatedAt": "2025-12-07T20:00:00.000Z"
+    },
+    {
+      "id": "news_max-man-selling-one",
+      "slug": "max-man-selling-one",
+      "title": "EHVM acquires One — a $130k MRR meditation app",
+      "subtitle": "One started as a side project by Max Man, a Copenhagen-based developer who wanted a meditation app that didn't feel like a Silicon Valley product. No gamification, no streaks, no push notifications begging you to come back. Just guided sessions and silence.",
+      "quote": "What made EHVM different is they didn't just find any buyer — they found the right buyer. Someone who saw the same value in the product that I did.",
+      "image": "/images/max-man.png",
+      "buttonLabel": "Read article",
+      "buttonUrl": "/news/all",
+      "category": "Story",
+      "featured": false,
+      "published": true,
+      "updatedAt": "2025-11-19T20:00:00.000Z"
+    }
+  ]
+}

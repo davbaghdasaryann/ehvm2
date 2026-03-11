@@ -1,12 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAppBySlug, getAppSlugs } from "@/lib/data";
+import AppChartsClient from "@/components/AppChartsClient";
 import CalendarWidget from "@/components/CalendarWidget";
 import FaqAccordion from "@/components/FaqAccordion";
-import HighlightsClient from "@/components/HighlightsClient";
-import NotionDetailsClient from "@/components/NotionDetailsClient";
-import StoreButtonsClient from "@/components/StoreButtonsClient";
+import HistoryBackLink from "@/components/HistoryBackLink";
 
 function followersEmoji(label: string): string {
   const lower = label.toLowerCase();
@@ -20,11 +18,18 @@ function followersEmoji(label: string): string {
   return "📱";
 }
 
-function getFieldValue(
-  fields: { label: string; value: string }[] | undefined,
-  matcher: RegExp,
-): string {
-  return fields?.find((field) => matcher.test(field.label))?.value || "";
+function parsePercent(value: string, fallback: number): number {
+  const parsed = Number.parseFloat((value || "").replace(/[^0-9.]/g, ""));
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.max(0, Math.min(100, parsed));
+}
+
+function rankColor(rank: string): string {
+  const parsed = Number.parseFloat((rank || "").replace(/[^0-9.]/g, ""));
+  if (!Number.isFinite(parsed)) return "var(--color-body)";
+  if (parsed <= 5) return "#2d7a4f";
+  if (parsed <= 20) return "#b45309";
+  return "var(--color-body)";
 }
 
 export const revalidate = 300;
@@ -39,24 +44,24 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
   const app = await getAppBySlug(slug);
   if (!app) notFound();
   const ratingValue = app.rating > 0 ? String(app.rating) : "";
-  const topRating = app.rating > 0 ? String(app.rating) : (app.highlights.rating !== "—" ? app.highlights.rating : "");
+  const topRating = app.rating > 0 ? String(app.rating) : app.highlights.rating !== "—" ? app.highlights.rating : "";
   const topFollowers = app.followers || (app.highlights.followers !== "—" ? app.highlights.followers : "");
-  const monetization = app.monetizationType || getFieldValue(app.notionDbFields, /monetization/i);
-  const offerStatus = app.hearingOffersStatus || getFieldValue(app.notionDbFields, /hearing\s*offers?/i);
+  const monetization = app.monetizationType || "";
+  const offerStatus = app.hearingOffersStatus || "";
   const fallbackPill = monetization || offerStatus || "";
   const fallbackEmoji = monetization ? "🎟️" : "📬";
-  const fallbackHighlights: Array<{ key: string; emoji: string; value: string; label: string }> = [];
+  const highlightItems: Array<{ key: string; emoji: string; value: string; label: string }> = [];
 
   if (app.highlights.mrr && app.highlights.mrr !== "—") {
-    fallbackHighlights.push({
-      key: "fallback-mrr",
+    highlightItems.push({
+      key: "mrr",
       emoji: "💰",
       value: app.highlights.mrr,
       label: "MRR",
     });
   } else if (app.mrr && app.mrr !== "—") {
-    fallbackHighlights.push({
-      key: "fallback-mrr-card",
+    highlightItems.push({
+      key: "mrr-alt",
       emoji: "💰",
       value: app.mrr,
       label: "MRR",
@@ -64,8 +69,8 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
   }
 
   if (topRating) {
-    fallbackHighlights.push({
-      key: "fallback-rating",
+    highlightItems.push({
+      key: "rating",
       emoji: "⭐",
       value: topRating,
       label: app.highlights.ratingLabel || "Rating",
@@ -73,8 +78,8 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
   }
 
   if (topFollowers) {
-    fallbackHighlights.push({
-      key: "fallback-users",
+    highlightItems.push({
+      key: "followers",
       emoji: followersEmoji(app.highlights.followersLabel),
       value: topFollowers,
       label: app.highlights.followersLabel || "Users",
@@ -82,37 +87,75 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
   }
 
   if (app.platform) {
-    fallbackHighlights.push({
-      key: "fallback-os",
+    highlightItems.push({
+      key: "platform",
       emoji: app.platformEmoji || "📱",
       value: app.platform,
       label: "OS",
     });
   }
+  const kpis = (app.kpis || []).filter((item) => item.label || item.value);
+  const financialSummary = [
+    { key: "mrr", label: "MRR", value: app.financials?.mrr || "" },
+    { key: "arr", label: "ARR", value: app.financials?.arr || "" },
+    { key: "ltvcac", label: "LTV : CAC", value: app.financials?.ltvCac || "" },
+    { key: "margin", label: "Net Margin", value: app.financials?.netMargin || "" },
+    { key: "yoy", label: "YoY Growth", value: app.financials?.yoyGrowth || "" },
+    { key: "multiple", label: "Asking Multiple", value: app.financials?.askingMultiple || "" },
+  ].filter((item) => item.value);
+  const plRows = (app.financials?.plRows || []).filter((row) => row.label || row.amount || row.notes);
+  const charts = (app.charts || []).filter((chart) => chart.labels.length > 0 && chart.datasets.length > 0);
+  const funnel = (app.funnel || []).filter((step) => step.label || step.value || step.pct);
+  const roadmap = (app.product?.roadmap || []).filter((item) => item.title || item.description);
+  const hasProductSection = Boolean(app.product?.vision || roadmap.length > 0);
+  const marketStats = [
+    { key: "tam", label: "TAM", value: app.market?.tam || "", sub: app.market?.tamLabel || "" },
+    { key: "sam", label: "SAM", value: app.market?.sam || "", sub: app.market?.samLabel || "" },
+    { key: "som", label: "SOM", value: app.market?.som || "", sub: app.market?.year ? `Year ${app.market.year}` : "" },
+  ].filter((item) => item.value);
+  const competitors = (app.market?.competitors || []).filter((item) => item.name || item.description || item.rating);
+  const keywords = (app.market?.keywords || []).filter((item) => item.keyword || item.volume || item.rank);
+  const hasMarketSection = marketStats.length > 0 || competitors.length > 0 || keywords.length > 0;
+  const processSteps = (app.contact.processSteps || []).filter((step) => step.title || step.note || step.description);
+  const processTitles = new Set(
+    processSteps.map((step) => step.title.trim().toLowerCase()).filter(Boolean),
+  );
+  const visibleFaqs = (app.faqs || []).filter((faq) => {
+    const question = faq.question.trim().toLowerCase();
+    if (!question) return false;
+    return !processTitles.has(question);
+  });
 
   return (
     <main className="flex justify-center w-full px-[10px] pb-[40px]">
       <div className="ehvm-slide-up bg-card flex flex-col gap-[20px] items-start p-[15px] rounded-card w-full max-w-[500px]">
         {/* Top Header */}
         <div className="flex gap-[10px] items-center w-full">
-          <div className="relative shrink-0 size-[100px] rounded-icon shadow-icon overflow-hidden">
-            <Image
-              src={app.icon}
-              alt={app.name}
-              fill
-              className="object-cover"
-              sizes="100px"
-            />
-          </div>
+          {app.icon ? (
+            <div className="relative shrink-0 size-[100px] rounded-icon shadow-icon overflow-hidden">
+              <Image
+                src={app.icon}
+                alt={app.name}
+                fill
+                unoptimized
+                className="object-cover"
+                sizes="100px"
+              />
+            </div>
+          ) : (
+            <div className="shrink-0 size-[100px] rounded-icon bg-tag flex items-center justify-center text-[28px]">
+              📱
+            </div>
+          )}
           <div className="flex flex-[1_0_0] flex-col h-full items-start justify-between min-h-[100px] min-w-0">
             <div className="flex items-start justify-between w-full">
               <div className="flex flex-[1_0_0] flex-col gap-[4px] items-start leading-[1.2] min-w-0">
                 <p className="font-bold text-[20px] w-full truncate">{app.name}</p>
                 <p className="text-[12px] w-full truncate">{app.subtitle}</p>
               </div>
-              <Link href="/apps" className="bg-primary flex h-[27px] items-center justify-center p-[10px] rounded-pill shrink-0 no-underline">
+              <HistoryBackLink href="/apps" className="bg-primary flex h-[27px] items-center justify-center p-[10px] rounded-pill shrink-0 no-underline">
                 <span className="text-[12px] leading-[1.2] text-primary-text">Close</span>
-              </Link>
+              </HistoryBackLink>
             </div>
             <div className="flex gap-[5px] items-center w-full flex-wrap min-w-0">
               <div className="bg-tag flex h-[27px] items-center justify-center p-[10px] rounded-pill shrink-0 max-w-[132px]">
@@ -141,37 +184,227 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
         </div>
 
         {/* Links */}
-        <StoreButtonsClient
-          slug={app.slug}
-          pageId={app.notionPageId}
-          fallbackAppStoreLink={app.appStoreLink}
-          fallbackPlayStoreLink={app.playStoreLink}
-        />
+        {(app.appStoreLink || app.playStoreLink) && (
+          <div className="flex flex-wrap gap-[10px] items-start">
+            {app.appStoreLink && (
+              <a href={app.appStoreLink} className="bg-primary flex gap-[10px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[17px] text-primary-text no-underline leading-normal transition-opacity duration-200 hover:opacity-90">
+                App Store ↗
+              </a>
+            )}
+            {app.playStoreLink && (
+              <a href={app.playStoreLink} className="bg-primary flex gap-[10px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[17px] text-primary-text no-underline leading-normal transition-opacity duration-200 hover:opacity-90">
+                Play Store ↗
+              </a>
+            )}
+          </div>
+        )}
 
-        <HighlightsClient
-          slug={app.slug}
-          pageId={app.notionPageId}
-          fallbackHighlights={fallbackHighlights.slice(0, 3)}
-        />
+        {highlightItems.length > 0 && (
+          <div className="flex flex-col gap-[12px] w-full leading-[1.2]">
+            <p className="font-bold text-[20px]">Highlights</p>
+            <div className="flex items-start justify-between w-full text-center gap-[8px]">
+              {highlightItems.slice(0, 3).map((item) => (
+                <div key={item.key} className="flex flex-[1_0_0] flex-col gap-[6px] items-center text-center min-w-0">
+                  <div className="font-bold text-[20px] leading-[1.2] min-w-0">
+                    {item.emoji ? <p>{item.emoji}</p> : null}
+                    <p className="break-words">{item.value}</p>
+                  </div>
+                  <p className="text-[12px] text-muted leading-[1.2] break-words">{item.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* App Screenshots */}
         <div className="relative w-full aspect-[1592/820] rounded-icon overflow-hidden">
-          <Image
-            src={app.screenshotsImage}
-            alt="App screenshots"
-            fill
-            className="object-cover"
-            sizes="(max-width: 640px) 100vw, 500px"
-            priority
-          />
+          {app.screenshotsImage ? (
+            <Image
+              src={app.screenshotsImage}
+              alt="App screenshots"
+              fill
+              unoptimized
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, 500px"
+              priority
+            />
+          ) : (
+            <div className="w-full h-full bg-tag flex items-center justify-center text-[17px] text-muted">
+              No screenshots uploaded
+            </div>
+          )}
         </div>
 
-        {/* Full Notion Content */}
-        <NotionDetailsClient
-          key={app.slug}
-          slug={app.slug}
-          pageId={app.notionPageId}
-        />
+        {kpis.length > 0 && (
+          <div className="flex flex-col gap-[12px] w-full">
+            <p className="font-bold text-[20px] leading-[1.2]">KPI Cards</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-[10px] w-full">
+              {kpis.map((item, index) => (
+                <div key={`${item.label}-${index}`} className="bg-tag rounded-[16px] p-[12px]">
+                  <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
+                  <p className="font-bold text-[22px] leading-[1.1] mt-[4px]">{item.value || "—"}</p>
+                  {item.trend ? (
+                    <p className="text-[12px] mt-[6px] text-body">{item.trend}</p>
+                  ) : null}
+                  {item.sub ? (
+                    <p className="text-[12px] text-caption mt-[2px]">{item.sub}</p>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {(financialSummary.length > 0 || plRows.length > 0) && (
+          <div className="flex flex-col gap-[12px] w-full">
+            <p className="font-bold text-[20px] leading-[1.2]">Financial Snapshot</p>
+            {financialSummary.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-[10px] w-full">
+                {financialSummary.map((item) => (
+                  <div key={item.key} className="bg-tag rounded-[16px] p-[12px]">
+                    <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
+                    <p className="font-bold text-[20px] leading-[1.1] mt-[4px] break-words">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+            {plRows.length > 0 && (
+              <div className="bg-tag rounded-[16px] p-[12px] overflow-x-auto w-full">
+                <table className="w-full min-w-[430px] border-collapse">
+                  <thead>
+                    <tr className="text-left text-[10px] uppercase tracking-[0.08em] text-caption">
+                      <th className="pb-[8px] pr-[10px]">Metric</th>
+                      <th className="pb-[8px] pr-[10px]">Amount</th>
+                      <th className="pb-[8px] pr-[10px]">Trend</th>
+                      <th className="pb-[8px]">Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {plRows.map((row, index) => (
+                      <tr key={`${row.label}-${index}`} className="border-t border-divider">
+                        <td className="py-[8px] pr-[10px] text-[13px]">{row.highlight ? <strong>{row.label}</strong> : row.label}</td>
+                        <td className="py-[8px] pr-[10px] text-[13px] font-bold">{row.amount || "—"}</td>
+                        <td className="py-[8px] pr-[10px] text-[12px] text-body">{row.trend || "—"}</td>
+                        <td className="py-[8px] text-[12px] text-caption">{row.notes || "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {charts.length > 0 && <AppChartsClient charts={charts} />}
+
+        {funnel.length > 0 && (
+          <div className="flex flex-col gap-[12px] w-full">
+            <p className="font-bold text-[20px] leading-[1.2]">Conversion Funnel</p>
+            <div className="bg-tag rounded-[16px] p-[12px] flex flex-col gap-[8px]">
+              {funnel.map((step, index) => {
+                const percent = parsePercent(step.pct, Math.max(20, 100 - index * 14));
+                return (
+                  <div key={`${step.label}-${index}`} className="flex items-center gap-[8px]">
+                    <p className="w-[102px] text-[11px] text-body text-right truncate">{step.label}</p>
+                    <div className="flex-1 h-[24px] rounded-[10px] bg-card overflow-hidden">
+                      <div
+                        className="h-full rounded-[10px] bg-primary text-primary-text text-[11px] px-[8px] flex items-center"
+                        style={{ width: `${percent}%`, minWidth: "38px" }}
+                      >
+                        {step.value || "—"}
+                      </div>
+                    </div>
+                    <p className="w-[42px] text-[11px] font-bold text-right">{step.pct || "—"}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {hasProductSection && (
+          <div className="flex flex-col gap-[12px] w-full">
+            <p className="font-bold text-[20px] leading-[1.2]">Product Roadmap</p>
+            {app.product?.vision ? (
+              <div className="bg-tag rounded-[16px] p-[12px] text-[14px] leading-[1.5] text-body">
+                {app.product.vision}
+              </div>
+            ) : null}
+            {roadmap.length > 0 && (
+              <div className="bg-tag rounded-[16px] p-[12px] flex flex-col">
+                {roadmap.map((item, index) => (
+                  <div
+                    key={`${item.title}-${index}`}
+                    className={`py-[10px] ${index > 0 ? "border-t border-divider" : ""}`}
+                  >
+                    <p className="text-[10px] uppercase tracking-[0.08em] text-caption">
+                      {item.status === "done" ? "Shipped" : item.status === "progress" ? "In Progress" : "Planned"}
+                    </p>
+                    <p className="font-bold text-[14px] mt-[4px]">{item.title || "Untitled"}</p>
+                    {item.description ? (
+                      <p className="text-[12px] text-body mt-[3px]">{item.description}</p>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {hasMarketSection && (
+          <div className="flex flex-col gap-[12px] w-full">
+            <p className="font-bold text-[20px] leading-[1.2]">Market Overview</p>
+            {marketStats.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] w-full">
+                {marketStats.map((item) => (
+                  <div key={item.key} className="bg-tag rounded-[16px] p-[12px]">
+                    <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
+                    <p className="font-bold text-[18px] mt-[4px]">{item.value}</p>
+                    {item.sub ? <p className="text-[11px] text-caption mt-[2px]">{item.sub}</p> : null}
+                  </div>
+                ))}
+              </div>
+            )}
+            {competitors.length > 0 && (
+              <div className="bg-tag rounded-[16px] p-[12px] flex flex-col">
+                <p className="font-bold text-[14px]">Competitive Landscape</p>
+                {competitors.map((item, index) => (
+                  <div key={`${item.name}-${index}`} className={`py-[10px] ${index > 0 ? "border-t border-divider" : ""} flex items-center gap-[10px]`}>
+                    <div className="size-[32px] rounded-[10px] bg-card flex items-center justify-center text-[16px] shrink-0">
+                      {item.icon || "📱"}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13px] font-bold truncate">
+                        {item.name || "Unnamed"}
+                        {item.isThisApp ? (
+                          <span className="ml-[6px] text-[10px] text-[#2d7a4f] bg-[#e8f5ee] px-[6px] py-[2px] rounded-pill">This app</span>
+                        ) : null}
+                      </p>
+                      {item.description ? <p className="text-[11px] text-caption">{item.description}</p> : null}
+                    </div>
+                    {item.rating ? (
+                      <span className="bg-card px-[8px] py-[3px] rounded-pill text-[11px]">{item.rating}</span>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            )}
+            {keywords.length > 0 && (
+              <div className="bg-tag rounded-[16px] p-[12px] flex flex-col">
+                <p className="font-bold text-[14px]">Keyword Rankings</p>
+                {keywords.map((item, index) => (
+                  <div key={`${item.keyword}-${index}`} className={`py-[8px] ${index > 0 ? "border-t border-divider" : ""} flex items-center gap-[8px]`}>
+                    <p className="text-[12px] flex-1 truncate">{item.keyword || "—"}</p>
+                    <p className="text-[11px] text-caption w-[48px] text-right">{item.volume || "—"}</p>
+                    <p className="text-[11px] w-[40px] text-right font-bold" style={{ color: rankColor(item.rank) }}>
+                      {item.rank || "—"}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* User Acquisition */}
         {(app.userAcquisition.paid.length > 0 || app.userAcquisition.organic.length > 0) && (
@@ -185,11 +418,11 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                   <div key={ch.name} className="flex gap-[18px] h-[75px] items-center w-full">
                     {ch.link ? (
                       <a href={ch.link} target="_blank" rel="noopener noreferrer" className="relative shrink-0 size-[75px] bg-tag rounded-icon overflow-hidden flex items-center justify-center">
-                        <Image src={ch.icon} alt={ch.name} width={36} height={36} className="object-contain" />
+                        <Image src={ch.icon} alt={ch.name} width={36} height={36} unoptimized className="object-contain" />
                       </a>
                     ) : (
                       <div className="relative shrink-0 size-[75px] bg-tag rounded-icon overflow-hidden flex items-center justify-center">
-                        <Image src={ch.icon} alt={ch.name} width={36} height={36} className="object-contain" />
+                        <Image src={ch.icon} alt={ch.name} width={36} height={36} unoptimized className="object-contain" />
                       </div>
                     )}
                     <div className="flex flex-[1_0_0] items-center justify-between">
@@ -219,11 +452,11 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                   <div key={ch.name} className="flex gap-[18px] h-[75px] items-center w-full">
                     {ch.link ? (
                       <a href={ch.link} target="_blank" rel="noopener noreferrer" className="relative shrink-0 size-[75px] bg-tag rounded-icon overflow-hidden flex items-center justify-center">
-                        <Image src={ch.icon} alt={ch.name} width={36} height={36} className="object-contain" />
+                        <Image src={ch.icon} alt={ch.name} width={36} height={36} unoptimized className="object-contain" />
                       </a>
                     ) : (
                       <div className="relative shrink-0 size-[75px] bg-tag rounded-icon overflow-hidden flex items-center justify-center">
-                        <Image src={ch.icon} alt={ch.name} width={36} height={36} className="object-contain" />
+                        <Image src={ch.icon} alt={ch.name} width={36} height={36} unoptimized className="object-contain" />
                       </div>
                     )}
                     <div className="flex flex-[1_0_0] items-center justify-between">
@@ -260,6 +493,36 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           </div>
         )}
 
+        {/* Acquisition Process */}
+        {processSteps.length > 0 && (
+          <div className="flex flex-col gap-[10px] w-full">
+            <p className="font-bold text-[20px] leading-[1.2]">Acquisition Process</p>
+            <div className="bg-tag rounded-icon px-[14px] py-[8px] flex flex-col">
+              {processSteps.map((step, index) => (
+                <div
+                  key={`${step.title}-${index}`}
+                  className={`py-[10px] ${index > 0 ? "border-t border-divider" : ""} flex items-start gap-[10px]`}
+                >
+                  <div className="size-[24px] rounded-full bg-primary text-primary-text text-[12px] font-bold flex items-center justify-center shrink-0 mt-[1px]">
+                    {index + 1}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[16px] font-bold leading-[1.25]">
+                      {step.title || "Step"}
+                      {step.note ? (
+                        <span className="ml-[6px] text-[11px] font-normal text-caption">{step.note}</span>
+                      ) : null}
+                    </p>
+                    {step.description ? (
+                      <p className="text-[13px] text-body mt-[3px] leading-[1.35]">{step.description}</p>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Developer Country */}
         <div className="flex flex-col gap-[10px] w-full leading-[1.2]">
           <p className="font-bold text-[20px]">Developers country</p>
@@ -267,8 +530,8 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
         </div>
 
         {/* FAQs */}
-        {app.faqs.length > 0 && (
-          <FaqAccordion faqs={app.faqs} />
+        {visibleFaqs.length > 0 && (
+          <FaqAccordion faqs={visibleFaqs} />
         )}
 
         {/* Contact */}
@@ -278,35 +541,55 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             <p className="text-[17px]">If you have more questions, reach out or book a call with your POC</p>
           </div>
           <div className="flex gap-[10px] items-center w-full">
-            <div className="relative size-[97px] rounded-icon shadow-icon overflow-hidden shrink-0">
-              <Image
-                src={app.contact.image}
-                alt={app.contact.name}
-                fill
-                className="object-cover"
-                sizes="97px"
-              />
-            </div>
+            {app.contact.image ? (
+              <div className="relative size-[97px] rounded-icon shadow-icon overflow-hidden shrink-0">
+                <Image
+                  src={app.contact.image}
+                  alt={app.contact.name}
+                  fill
+                  unoptimized
+                  className="object-cover"
+                  sizes="97px"
+                />
+              </div>
+            ) : (
+              <div className="size-[97px] rounded-icon bg-tag flex items-center justify-center text-[24px] shrink-0">
+                👤
+              </div>
+            )}
             <div className="flex flex-col gap-[10px] flex-[1_0_0]">
+              {app.contact.title ? (
+                <p className="text-[14px] text-body leading-[1.3]">{app.contact.title}</p>
+              ) : null}
               <a href={`mailto:${app.contact.email}`} className="bg-primary flex gap-[10px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[14px] text-primary-text no-underline leading-normal">
                 📫 {app.contact.email}
               </a>
               <a href={`tel:${app.contact.phone}`} className="bg-primary flex gap-[10px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[14px] text-primary-text no-underline leading-normal">
                 ☎️ {app.contact.phone}
               </a>
+              {app.contact.calendarUrl ? (
+                <a href={app.contact.calendarUrl} target="_blank" rel="noopener noreferrer" className="bg-tag flex gap-[10px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[14px] text-foreground no-underline leading-normal">
+                  📅 Book a call
+                </a>
+              ) : null}
+              {app.contact.ndaUrl ? (
+                <a href={app.contact.ndaUrl} target="_blank" rel="noopener noreferrer" className="bg-tag flex gap-[10px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[14px] text-foreground no-underline leading-normal">
+                  ✍️ Sign NDA
+                </a>
+              ) : null}
             </div>
           </div>
         </div>
 
         {/* Calendar */}
-        <CalendarWidget
-          hostName={app.contact.name}
-          hostImage={app.contact.image}
-          title="M&A Questions"
-          duration="15m"
-          platform="Google Meet"
-          timezone="Europe/Berlin"
-        />
+        {app.contact.calendarUrl ? (
+          <CalendarWidget
+            hostName={app.contact.name}
+            hostImage={app.contact.image}
+            title={app.contact.title || "M&A Questions"}
+            bookingUrl={app.contact.calendarUrl}
+          />
+        ) : null}
       </div>
     </main>
   );

@@ -6,6 +6,10 @@ export type ContentBlock =
 export type Article = {
   slug: string;
   title: string;
+  subtitle?: string;
+  quote?: string;
+  buttonLabel?: string;
+  buttonUrl?: string;
   category: "Event" | "Story";
   thumbnail: string;
   thumbnailFit?: "contain";

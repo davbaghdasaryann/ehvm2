@@ -1,6 +1,6 @@
 export default function NewsAllLoading() {
   return (
-    <main className="flex flex-col items-center w-full max-w-[402px] px-[18px] pb-[40px]">
+    <main className="mx-auto flex flex-col items-center w-full max-w-[560px] px-[18px] pb-[40px]">
       <div className="w-full mb-[18px] flex gap-[10px] justify-center">
         <div className="ehvm-skeleton h-[41px] w-[90px] rounded-pill" />
         <div className="ehvm-skeleton h-[41px] w-[100px] rounded-pill" />
