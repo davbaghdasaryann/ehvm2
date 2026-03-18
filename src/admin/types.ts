@@ -162,15 +162,60 @@ export interface AdminNewsRecord {
   updatedAt: string
 }
 
+export type StoryBlockType = 'text' | 'youtube' | 'tweet' | 'quote'
+
+export interface StoryBlock {
+  id: string
+  type: StoryBlockType
+  content?: string      // text
+  videoId?: string      // youtube
+  videoTitle?: string   // youtube
+  tweetUrl?: string     // tweet
+  quoteText?: string    // quote
+  quoteCite?: string    // quote
+}
+
+export interface PersonStory {
+  id: string
+  slug: string
+  name: string
+  published: boolean
+  headline: string
+  heroImage: string
+  blocks: StoryBlock[]
+  social: {
+    instagram: string
+    twitter: string
+    linkedin: string
+    tiktok: string
+  }
+  updatedAt: string
+}
+
+/** @deprecated use PersonStory */
+export type StoryRecord = PersonStory
+
+export interface SiteLinks {
+  seeAllAppsUrl: string
+  seeAllAppsLabel: string
+  wantToBuyUrl: string
+  wantToSellUrl: string
+  updatedAt: string
+}
+
 export interface AdminDatabase {
   apps: AppRecord[]
   news: AdminNewsRecord[]
+  stories?: PersonStory[]
+  siteLinks?: SiteLinks
 }
 
 export type PanelName =
   | 'guide'
   | 'apps'
   | 'news'
+  | 'story'
+  | 'sitelinks'
   | 'meta'
   | 'kpis'
   | 'financials'

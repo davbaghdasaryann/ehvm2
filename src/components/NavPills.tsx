@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 const navItems = [
   { label: "Home", href: "/" },
+  { label: "Apps", href: "/apps" },
   { label: "News", href: "/news" },
   { label: "Contact", href: "/contact" },
 ];
@@ -31,7 +32,7 @@ export default function NavPills() {
   if (pathname.startsWith("/admin")) return null;
 
   function isActive(href: string) {
-    if (href === "/") return pathname === "/" || pathname.startsWith("/apps");
+    if (href === "/") return pathname === "/";
     if (href === "/contact") return pathname.startsWith("/contact") || pathname.startsWith("/story");
     return pathname.startsWith(href);
   }

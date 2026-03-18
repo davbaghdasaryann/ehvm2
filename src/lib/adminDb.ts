@@ -1,11 +1,14 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { AdminDatabase, AdminNewsRecord, AppRecord } from "@/admin/types";
+import type { AdminDatabase, AdminNewsRecord, AppRecord, PersonStory, SiteLinks } from "@/admin/types";
 import { getMongoDb } from "@/lib/mongodb";
 
 const DB_PATH = path.join(process.cwd(), "src/data/admin-db.json");
 const APPS_COLLECTION = "apps";
 const NEWS_COLLECTION = "news";
+const STORIES_COLLECTION = "stories";
+const SITE_LINKS_COLLECTION = "site_links";
+const SITE_LINKS_DOC_ID = "site_links";
 const LEGACY_STATE_COLLECTION = "admin_state";
 const LEGACY_APPS_DOC_ID = "apps";
 const hasMongoConfigured = Boolean(process.env.MONGODB_URI?.trim());
@@ -159,6 +162,134 @@ export async function readAdminDb(): Promise<AdminDatabase> {
   }
   rememberDatabase(fileDb);
   return fileDb;
+}
+
+export async function readStories(): Promise<PersonStory[]> {
+  const mongoDb = await getMongoDb();
+  if (mongoDb) {
+    try {
+      const docs = await mongoDb
+        .collection<PersonStory & { _id: string }>(STORIES_COLLECTION)
+        .find({})
+        .toArray();
+      if (docs.length > 0) {
+        return docs.map(({ _id: _ignored, ...s }) => s as PersonStory);
+      }
+    } catch (error) {
+      console.error("Failed to read stories from MongoDB.", error);
+    }
+  }
+  try {
+    const raw = await readFile(DB_PATH, "utf8");
+    const parsed = JSON.parse(raw) as { stories?: PersonStory[] };
+    return Array.isArray(parsed.stories) ? parsed.stories : [];
+  } catch {
+    return [];
+  }
+}
+
+export async function writeStories(stories: PersonStory[]): Promise<void> {
+  const mongoDb = await getMongoDb();
+  if (mongoDb) {
+    try {
+      const collection = mongoDb.collection<PersonStory & { _id: string }>(STORIES_COLLECTION);
+      const ids = stories.map((s) => s.id);
+      if (stories.length > 0) {
+        await collection.bulkWrite(
+          stories.map((s) => ({
+            replaceOne: {
+              filter: { _id: s.id },
+              replacement: { ...s, _id: s.id },
+              upsert: true,
+            },
+          })),
+          { ordered: false },
+        );
+      }
+      if (ids.length > 0) {
+        await collection.deleteMany({ _id: { $nin: ids } });
+      } else {
+        await collection.deleteMany({});
+      }
+      // Mirror to file
+      try {
+        const raw = await readFile(DB_PATH, "utf8").catch(() => "{}");
+        const parsed = JSON.parse(raw) as Record<string, unknown>;
+        parsed.stories = stories;
+        await writeFile(DB_PATH, `${JSON.stringify(parsed, null, 2)}\n`, "utf8");
+      } catch {
+        // best-effort
+      }
+      return;
+    } catch (error) {
+      console.error("Failed to write stories to MongoDB.", error);
+      if (hasMongoConfigured) throw error;
+    }
+  }
+  try {
+    const raw = await readFile(DB_PATH, "utf8").catch(() => "{}");
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    parsed.stories = stories;
+    await mkdir(path.dirname(DB_PATH), { recursive: true });
+    await writeFile(DB_PATH, `${JSON.stringify(parsed, null, 2)}\n`, "utf8");
+  } catch (error) {
+    console.error("Failed to write stories to file.", error);
+    throw error;
+  }
+}
+
+export async function readSiteLinks(): Promise<SiteLinks | null> {
+  const mongoDb = await getMongoDb();
+  if (mongoDb) {
+    try {
+      const doc = await mongoDb
+        .collection<SiteLinks & { _id: string }>(SITE_LINKS_COLLECTION)
+        .findOne({ _id: SITE_LINKS_DOC_ID });
+      if (doc) {
+        const { _id: _ignored, ...links } = doc;
+        return links as SiteLinks;
+      }
+    } catch (error) {
+      console.error("Failed to read site links from MongoDB.", error);
+    }
+  }
+  try {
+    const raw = await readFile(DB_PATH, "utf8");
+    const parsed = JSON.parse(raw) as { siteLinks?: SiteLinks };
+    return parsed.siteLinks ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function writeSiteLinks(links: SiteLinks): Promise<void> {
+  const mongoDb = await getMongoDb();
+  if (mongoDb) {
+    try {
+      await mongoDb
+        .collection<SiteLinks & { _id: string }>(SITE_LINKS_COLLECTION)
+        .replaceOne(
+          { _id: SITE_LINKS_DOC_ID },
+          { ...links, _id: SITE_LINKS_DOC_ID },
+          { upsert: true },
+        );
+      try {
+        const raw = await readFile(DB_PATH, "utf8").catch(() => "{}");
+        const parsed = JSON.parse(raw) as Record<string, unknown>;
+        parsed.siteLinks = links;
+        await writeFile(DB_PATH, `${JSON.stringify(parsed, null, 2)}\n`, "utf8");
+      } catch { /* best-effort */ }
+      return;
+    } catch (error) {
+      console.error("Failed to write site links to MongoDB.", error);
+      if (hasMongoConfigured) throw error;
+    }
+  }
+  const raw = await readFile(DB_PATH, "utf8").catch(() => "{}");
+  const parsed = JSON.parse(raw) as Record<string, unknown>;
+  parsed.siteLinks = links;
+  await mkdir(path.dirname(DB_PATH), { recursive: true });
+  await writeFile(DB_PATH, `${JSON.stringify(parsed, null, 2)}\n`, "utf8");
 }
 
 export async function writeAdminDb(db: AdminDatabase): Promise<void> {

@@ -2,15 +2,39 @@ import Image from "next/image";
 import Link from "next/link";
 import FloatingIcons from "@/components/FloatingIcons";
 import EhvmLogo from "@/components/EhvmLogo";
+import { getPublishedStories, getSiteLinks } from "@/lib/data";
 
-const floatingPeople: { src: string; name: string; href: string; depth: number }[] = [
-  { src: "/images/evelin.png", name: "Evelin", href: "/story", depth: 0.7 },
-  { src: "/images/sam.png", name: "Sam", href: "#contact", depth: 0.4 },
+const PEOPLE_META: Record<string, { src: string; depth: number }> = {
+  evelin: { src: "/images/evelin.png", depth: 0.7 },
+  sam:    { src: "/images/sam.png",    depth: 0.4 },
+};
+
+const FALLBACK_PEOPLE = [
+  { id: "evelin", src: "/images/evelin.png", name: "Evelin", href: "/story/evelin", depth: 0.7 },
+  { id: "sam",    src: "/images/sam.png",    name: "Sam",    href: "#contact",       depth: 0.4 },
 ];
 
-export default function Contact() {
+export const revalidate = 60;
+
+export default async function Contact() {
+  const [stories, siteLinks] = await Promise.all([getPublishedStories(), getSiteLinks()]);
+
+  // Build floating people from published stories; fall back to hardcoded list
+  const floatingPeople = stories.length > 0
+    ? stories.map((s, i) => {
+        const meta = PEOPLE_META[s.slug] ?? { src: `/images/${s.slug}.png`, depth: 0.5 - i * 0.1 };
+        return {
+          id: s.id,
+          src: s.heroImage || meta.src,
+          name: s.name,
+          href: `/story/${s.slug}`,
+          depth: meta.depth,
+        };
+      })
+    : FALLBACK_PEOPLE;
+
   const items = floatingPeople.map((person) => ({
-    id: person.name,
+    id: person.id,
     depth: person.depth,
     children: (
       <Link
@@ -42,13 +66,13 @@ export default function Contact() {
 
       <div className="relative z-20 flex gap-[15px] items-center mt-[30px]">
         <a
-          href="mailto:evelin@ehvm.com?subject=Interested%20in%20buying%20an%20app"
+          href={siteLinks.wantToBuyUrl}
           className="bg-primary flex h-[41px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[17px] text-primary-text no-underline leading-normal"
         >
           Want to Buy?
         </a>
         <a
-          href="mailto:evelin@ehvm.com?subject=Interested%20in%20selling%20my%20app"
+          href={siteLinks.wantToSellUrl}
           className="bg-primary flex h-[41px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[17px] text-primary-text no-underline leading-normal"
         >
           Want to Sell?

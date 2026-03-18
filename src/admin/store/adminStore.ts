@@ -1,13 +1,15 @@
 'use client'
 import { create, persist } from '@/admin/store/storeCore'
 import type {
-  AdminNewsRecord, AppRecord, PanelName,
+  AdminNewsRecord, AppRecord, PanelName, PersonStory, StoryBlock, SiteLinks,
   KpiItem, FinRow, ChartItem, FunnelStep,
   RoadmapItem, Competitor, Keyword, Opportunity, ProcessStep, Screenshot
 } from '@/admin/types'
 
 const uid = () => Date.now() + Math.random()
 const ADMIN_APPS_API = '/api/admin/apps'
+const ADMIN_STORY_API = '/api/admin/story'
+const ADMIN_SITE_LINKS_API = '/api/admin/site-links'
 const SAMPLE_APP_ID = 'sample_coachify'
 const NEWS_ID_PREFIX = 'news_'
 
@@ -98,6 +100,8 @@ interface AdminStore extends FormState {
   // db
   apps: AppRecord[]
   news: AdminNewsRecord[]
+  personStories: PersonStory[]
+  siteLinks: SiteLinks | null
   currentAppId: string | null
   activePanel: PanelName
   isDirty: boolean
@@ -122,6 +126,22 @@ interface AdminStore extends FormState {
   addNews: () => void
   updateNews: (id: string, key: keyof AdminNewsRecord, value: string | boolean) => void
   deleteNews: (id: string) => void
+
+  // site links actions
+  fetchSiteLinks: () => Promise<void>
+  saveSiteLinks: () => Promise<void>
+  updateSiteLink: <K extends keyof SiteLinks>(key: K, val: SiteLinks[K]) => void
+
+  // person story actions
+  fetchPersonStories: () => Promise<void>
+  savePersonStories: () => Promise<void>
+  addPersonStory: () => void
+  deletePersonStory: (id: string) => void
+  updatePersonStoryField: (id: string, key: keyof PersonStory, val: string | boolean) => void
+  addPersonStoryBlock: (storyId: string, type: StoryBlock['type']) => void
+  removePersonStoryBlock: (storyId: string, blockId: string) => void
+  updatePersonStoryBlock: (storyId: string, blockId: string, key: keyof StoryBlock, val: string) => void
+  movePersonStoryBlock: (storyId: string, blockId: string, direction: 'up' | 'down') => void
 
   // array actions
   addKpi: (data?: Partial<KpiItem>) => void
@@ -197,6 +217,8 @@ export const useAdminStore = create<AdminStore>()(
       ...emptyForm,
       apps: [],
       news: [],
+      personStories: [],
+      siteLinks: null,
       currentAppId: null,
       activePanel: 'apps',
       isDirty: false,
@@ -226,14 +248,16 @@ export const useAdminStore = create<AdminStore>()(
             if (!synced) {
               get().showToast('Could not sync local apps to server', '⚠️')
             }
-            return
+          } else {
+            set({
+              apps: serverApps,
+              news: serverNews,
+              currentAppId: serverApps.some((item) => item.id === get().currentAppId) ? get().currentAppId : null,
+            })
           }
 
-          set({
-            apps: serverApps,
-            news: serverNews,
-            currentAppId: serverApps.some((item) => item.id === get().currentAppId) ? get().currentAppId : null,
-          })
+          // Also fetch person stories and site links
+          await Promise.all([get().fetchPersonStories(), get().fetchSiteLinks()])
         } catch (error) {
           if (error instanceof Error && error.message === 'unauthorized' && typeof window !== 'undefined') {
             window.location.href = '/admin/login'
@@ -433,6 +457,142 @@ export const useAdminStore = create<AdminStore>()(
       openValidation: (failures) => set({ validationModal: { open: true, failures } }),
       closeValidation: () => set({ validationModal: { open: false, failures: [] } }),
 
+      fetchSiteLinks: async () => {
+        try {
+          const res = await fetch(ADMIN_SITE_LINKS_API, { method: 'GET', cache: 'no-store' })
+          if (res.status === 401) { window.location.href = '/admin/login'; return }
+          if (!res.ok) return
+          const payload = await res.json() as { siteLinks?: SiteLinks }
+          if (payload.siteLinks) set({ siteLinks: payload.siteLinks })
+        } catch { /* silent */ }
+      },
+      saveSiteLinks: async () => {
+        const siteLinks = get().siteLinks
+        if (!siteLinks) return
+        try {
+          const res = await fetch(ADMIN_SITE_LINKS_API, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ siteLinks }),
+          })
+          if (res.status === 401) { window.location.href = '/admin/login'; return }
+          if (res.ok) {
+            get().showToast('Site links saved!', '🔗')
+            set({ isDirty: false })
+          } else {
+            get().showToast('Failed to save site links', '⚠️')
+          }
+        } catch {
+          get().showToast('Failed to save site links', '⚠️')
+        }
+      },
+      updateSiteLink: (key, val) => {
+        const links = get().siteLinks
+        set({ siteLinks: { ...(links ?? {} as SiteLinks), [key]: val }, isDirty: true })
+      },
+
+      fetchPersonStories: async () => {
+        try {
+          const res = await fetch(ADMIN_STORY_API, { method: 'GET', cache: 'no-store' })
+          if (res.status === 401) { window.location.href = '/admin/login'; return }
+          if (!res.ok) return
+          const payload = await res.json() as { stories?: PersonStory[] }
+          if (Array.isArray(payload.stories)) set({ personStories: payload.stories })
+        } catch {
+          // silent
+        }
+      },
+      savePersonStories: async () => {
+        const personStories = get().personStories
+        try {
+          const res = await fetch(ADMIN_STORY_API, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ stories: personStories }),
+          })
+          if (res.status === 401) { window.location.href = '/admin/login'; return }
+          if (res.ok) {
+            get().showToast('Stories saved!', '📖')
+            set({ isDirty: false })
+          } else {
+            get().showToast('Failed to save stories', '⚠️')
+          }
+        } catch {
+          get().showToast('Failed to save stories', '⚠️')
+        }
+      },
+      addPersonStory: () => {
+        const id = `person_${Date.now()}`
+        const next: PersonStory = {
+          id,
+          slug: id,
+          name: 'New Person',
+          published: false,
+          headline: '',
+          heroImage: '',
+          blocks: [],
+          social: { instagram: '', twitter: '', linkedin: '', tiktok: '' },
+          updatedAt: new Date().toISOString(),
+        }
+        set(s => ({ personStories: [...s.personStories, next], isDirty: true }))
+      },
+      deletePersonStory: (id) => {
+        set(s => ({ personStories: s.personStories.filter(p => p.id !== id), isDirty: true }))
+      },
+      updatePersonStoryField: (id, key, val) => {
+        set(s => ({
+          personStories: s.personStories.map(p => {
+            if (p.id !== id) return p
+            const next = { ...p, [key]: val, updatedAt: new Date().toISOString() } as PersonStory
+            if (key === 'name' && typeof val === 'string') {
+              next.slug = val.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || next.slug
+            }
+            return next
+          }),
+          isDirty: true,
+        }))
+      },
+      addPersonStoryBlock: (storyId, type) => {
+        const blockId = `sb_${Date.now()}`
+        set(s => ({
+          personStories: s.personStories.map(p =>
+            p.id !== storyId ? p : { ...p, blocks: [...p.blocks, { id: blockId, type }] }
+          ),
+          isDirty: true,
+        }))
+      },
+      removePersonStoryBlock: (storyId, blockId) => {
+        set(s => ({
+          personStories: s.personStories.map(p =>
+            p.id !== storyId ? p : { ...p, blocks: p.blocks.filter(b => b.id !== blockId) }
+          ),
+          isDirty: true,
+        }))
+      },
+      updatePersonStoryBlock: (storyId, blockId, key, val) => {
+        set(s => ({
+          personStories: s.personStories.map(p =>
+            p.id !== storyId ? p : { ...p, blocks: p.blocks.map(b => b.id === blockId ? { ...b, [key]: val } : b) }
+          ),
+          isDirty: true,
+        }))
+      },
+      movePersonStoryBlock: (storyId, blockId, direction) => {
+        set(s => ({
+          personStories: s.personStories.map(p => {
+            if (p.id !== storyId) return p
+            const blocks = [...p.blocks]
+            const idx = blocks.findIndex(b => b.id === blockId)
+            if (idx < 0) return p
+            const newIdx = direction === 'up' ? idx - 1 : idx + 1
+            if (newIdx < 0 || newIdx >= blocks.length) return p
+            ;[blocks[idx], blocks[newIdx]] = [blocks[newIdx], blocks[idx]]
+            return { ...p, blocks }
+          }),
+          isDirty: true,
+        }))
+      },
+
       // KPIs
       addKpi: (d = {}) => set(s => ({ kpiItems: [...s.kpiItems, { id: uid(), label: '', value: '', trend: '', sub: '', icon: '', ...d }], isDirty: true })),
       removeKpi: (id) => set(s => ({ kpiItems: s.kpiItems.filter(k => k.id !== id), isDirty: true })),
@@ -591,7 +751,7 @@ export const useAdminStore = create<AdminStore>()(
     }),
     {
       name: 'ehvm_admin',
-      partialize: (state) => ({ apps: state.apps, news: state.news }),
+      partialize: (state) => ({ apps: state.apps, news: state.news, personStories: state.personStories, siteLinks: state.siteLinks }),
     }
   )
 )

@@ -3,14 +3,15 @@
 import { useState } from "react";
 import FilterTabs from "@/components/FilterTabs";
 import AppCard from "@/components/AppCard";
-import type { App } from "@/lib/data";
+import type { App, SiteLinks } from "@/lib/data";
 
 type AppsGalleryProps = {
   apps: App[];
   categories: string[];
+  siteLinks: SiteLinks;
 };
 
-export default function AppsGallery({ apps, categories }: AppsGalleryProps) {
+export default function AppsGallery({ apps, categories, siteLinks }: AppsGalleryProps) {
   const [active, setActive] = useState("All");
 
   const filtered = active === "All" ? apps : apps.filter((a) => a.category === active);
@@ -29,10 +30,10 @@ export default function AppsGallery({ apps, categories }: AppsGalleryProps) {
         {/* CTA */}
         <div className="w-full flex justify-center mt-[10px]">
           <a
-            href="mailto:evelin@ehvm.com?subject=NDA%20%26%20Full%20Portfolio%20Access"
+            href={siteLinks.seeAllAppsUrl}
             className="bg-primary text-primary-text flex h-[41px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[17px] no-underline leading-normal"
           >
-            🔒 See all Apps & Numbers
+            {siteLinks.seeAllAppsLabel}
           </a>
         </div>
       </div>

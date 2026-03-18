@@ -4,11 +4,12 @@ import {
   type Article,
   type ContentBlock,
 } from "@/data/articles";
-import { readAdminDb } from "@/lib/adminDb";
-import type { AdminNewsRecord } from "@/admin/types";
+import { readAdminDb, readStories, readSiteLinks } from "@/lib/adminDb";
+import type { AdminNewsRecord, PersonStory, SiteLinks } from "@/admin/types";
+import { DEFAULT_EVELIN_STORY } from "@/lib/defaultStory";
 import { mapAdminRecordToApp, type ParsedAppContent } from "@/lib/adminMapping";
 
-export type { App, Article, ContentBlock, ParsedAppContent };
+export type { App, Article, ContentBlock, ParsedAppContent, SiteLinks };
 
 type AppsPayload = {
   apps: App[];
@@ -140,9 +141,33 @@ export async function getFeaturedApps(): Promise<App[]> {
 }
 
 export async function getAppCategories(): Promise<string[]> {
-  const allApps = await getApps();
-  const categories = [...new Set(allApps.map((app) => app.category).filter(Boolean))];
-  return ["All", ...categories];
+  return [
+    "All",
+    "Utilities",
+    "Health & Fitness",
+    "Photo & Video",
+    "Education",
+    "Graphics & Design",
+    "Lifestyle",
+    "Reference",
+    "Productivity",
+    "Social Networking",
+    "Entertainment",
+    "Finance",
+    "Food & Drink",
+    "Portfolio",
+    "Personalization",
+    "Business",
+    "Music",
+    "Navigation",
+    "Shopping",
+    "Sports",
+    "Tools",
+    "Weather",
+    "Books",
+    "Kids",
+    "Gaming",
+  ];
 }
 
 export async function getArticles(): Promise<Article[]> {
@@ -152,6 +177,32 @@ export async function getArticles(): Promise<Article[]> {
 export async function getArticleBySlug(slug: string): Promise<Article | undefined> {
   const allArticles = await getArticles();
   return allArticles.find((article) => article.slug === slug);
+}
+
+export { DEFAULT_EVELIN_STORY } from "@/lib/defaultStory";
+
+export async function getStories(): Promise<PersonStory[]> {
+  const stories = await readStories();
+  if (stories.length === 0) return [DEFAULT_EVELIN_STORY];
+  return stories;
+}
+
+export async function getPublishedStories(): Promise<PersonStory[]> {
+  const stories = await getStories();
+  return stories.filter((s) => s.published);
+}
+
+export async function getStoryBySlug(slug: string): Promise<PersonStory | undefined> {
+  const stories = await getStories();
+  return stories.find((s) => s.slug === slug);
+}
+
+export { DEFAULT_SITE_LINKS } from "@/lib/defaultSiteLinks";
+import { DEFAULT_SITE_LINKS } from "@/lib/defaultSiteLinks";
+
+export async function getSiteLinks(): Promise<SiteLinks> {
+  const links = await readSiteLinks();
+  return links ?? DEFAULT_SITE_LINKS;
 }
 
 export async function getArticleSlugs(): Promise<string[]> {

@@ -5,6 +5,8 @@ import { PanelName } from '@/admin/types'
 import AppsPanel from '@/admin/components/panels/AppsPanel'
 import GuidePanel from '@/admin/components/panels/GuidePanel'
 import NewsPanel from '@/admin/components/panels/NewsPanel'
+import StoryPanel from '@/admin/components/panels/StoryPanel'
+import SiteLinksPanel from '@/admin/components/panels/SiteLinksPanel'
 import MetaPanel from '@/admin/components/panels/MetaPanel'
 import KpisPanel from '@/admin/components/panels/KpisPanel'
 import FinancialsPanel from '@/admin/components/panels/FinancialsPanel'
@@ -18,6 +20,8 @@ import {
 const NAV_ITEMS: { panel: PanelName; icon: string; label: string; editOnly?: boolean }[] = [
   { panel: 'guide', icon: '🧭', label: 'Guide', editOnly: false },
   { panel: 'news', icon: '📰', label: 'News', editOnly: false },
+  { panel: 'story', icon: '📖', label: 'Our Story', editOnly: false },
+  { panel: 'sitelinks', icon: '🔗', label: 'Site Links', editOnly: false },
   { panel: 'meta', icon: '🏷', label: 'Meta & Identity', editOnly: true },
   { panel: 'kpis', icon: '📊', label: 'KPI Cards', editOnly: true },
   { panel: 'financials', icon: '💰', label: 'Financials', editOnly: true },
@@ -66,6 +70,8 @@ export default function AdminClient() {
     guide: <GuidePanel />,
     apps: <AppsPanel />,
     news: <NewsPanel />,
+    story: <StoryPanel />,
+    sitelinks: <SiteLinksPanel />,
     meta: <MetaPanel />,
     kpis: <KpisPanel />,
     financials: <FinancialsPanel />,

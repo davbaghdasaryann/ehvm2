@@ -55,7 +55,7 @@ export default function MetaPanel() {
             <div className="field">
               <label className="field-label">Category</label>
               <select value={s.metaCategory} onChange={e => s.setField('metaCategory', e.target.value)}>
-                {['Health & Fitness','Finance','Productivity','Education','Entertainment','Social','Travel','Food & Drink','Other'].map(c => <option key={c}>{c}</option>)}
+                {['Utilities','Health & Fitness','Photo & Video','Education','Graphics & Design','Lifestyle','Reference','Productivity','Social Networking','Entertainment','Finance','Food & Drink','Portfolio','Personalization','Business','Music','Navigation','Shopping','Sports','Tools','Weather','Books','Kids','Gaming'].map(c => <option key={c}>{c}</option>)}
               </select>
             </div>
             <div className="field">
@@ -67,7 +67,7 @@ export default function MetaPanel() {
             <div className="field">
               <label className="field-label">Business Model</label>
               <select value={s.metaModel} onChange={e => s.setField('metaModel', e.target.value)}>
-                {['AI / Subscription','Subscription','Freemium','One-Time Purchase','Ad-Supported','B2B SaaS'].map(c => <option key={c}>{c}</option>)}
+                {['AI / Subscription','Subscription','Freemium','One-Time Purchase','Ad-Supported','B2B SaaS','IAP','IAP + AdMon','AdMon'].map(c => <option key={c}>{c}</option>)}
               </select>
             </div>
           </div>
