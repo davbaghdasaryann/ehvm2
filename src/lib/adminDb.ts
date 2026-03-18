@@ -242,9 +242,9 @@ export async function readSiteLinks(): Promise<SiteLinks | null> {
   const mongoDb = await getMongoDb();
   if (mongoDb) {
     try {
-      const doc = await mongoDb
-        .collection<SiteLinks & { _id: string }>(SITE_LINKS_COLLECTION)
-        .findOne({ _id: SITE_LINKS_DOC_ID });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const doc = await (mongoDb.collection(SITE_LINKS_COLLECTION) as any)
+        .findOne({ _id: SITE_LINKS_DOC_ID }) as (SiteLinks & { _id: string }) | null;
       if (doc) {
         const { _id: _ignored, ...links } = doc;
         return links as SiteLinks;
@@ -266,8 +266,8 @@ export async function writeSiteLinks(links: SiteLinks): Promise<void> {
   const mongoDb = await getMongoDb();
   if (mongoDb) {
     try {
-      await mongoDb
-        .collection<SiteLinks & { _id: string }>(SITE_LINKS_COLLECTION)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (mongoDb.collection(SITE_LINKS_COLLECTION) as any)
         .replaceOne(
           { _id: SITE_LINKS_DOC_ID },
           { ...links, _id: SITE_LINKS_DOC_ID },

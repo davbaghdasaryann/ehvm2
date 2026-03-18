@@ -137,7 +137,7 @@ interface AdminStore extends FormState {
   savePersonStories: () => Promise<void>
   addPersonStory: () => void
   deletePersonStory: (id: string) => void
-  updatePersonStoryField: (id: string, key: keyof PersonStory, val: string | boolean) => void
+  updatePersonStoryField: (id: string, key: keyof PersonStory, val: PersonStory[keyof PersonStory]) => void
   addPersonStoryBlock: (storyId: string, type: StoryBlock['type']) => void
   removePersonStoryBlock: (storyId: string, blockId: string) => void
   updatePersonStoryBlock: (storyId: string, blockId: string, key: keyof StoryBlock, val: string) => void

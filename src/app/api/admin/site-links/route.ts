@@ -25,7 +25,7 @@ export async function PUT(request: Request) {
     }
     const links = { ...(payload.siteLinks as SiteLinks), updatedAt: new Date().toISOString() };
     await writeSiteLinks(links);
-    revalidateTag("site-links-data");
+    revalidateTag("site-links-data", "max");
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("Failed to save site links.", error);

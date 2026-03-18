@@ -25,7 +25,7 @@ export async function PUT(request: Request) {
     }
     const stories = payload.stories as PersonStory[];
     await writeStories(stories);
-    revalidateTag("story-data");
+    revalidateTag("story-data", "max");
     return NextResponse.json({ ok: true, count: stories.length });
   } catch (error) {
     console.error("Failed to save stories.", error);
