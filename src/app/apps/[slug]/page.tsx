@@ -153,8 +153,10 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                 <p className="font-bold text-[20px] w-full truncate">{app.name}</p>
                 <p className="text-[12px] w-full truncate">{app.subtitle}</p>
               </div>
-              <HistoryBackLink href="/apps" className="bg-primary flex h-[27px] items-center justify-center p-[10px] rounded-pill shrink-0 no-underline">
-                <span className="text-[12px] leading-[1.2] text-primary-text">Close</span>
+              <HistoryBackLink href="/apps" className="flex size-[16px] items-center justify-center rounded-full shrink-0 no-underline" style={{ background: '#6e6e73' }}>
+                <svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 1L6 6M6 1L1 6" stroke="white" strokeWidth="1.6" strokeLinecap="round"/>
+                </svg>
               </HistoryBackLink>
             </div>
             <div className="flex gap-[5px] items-center w-full flex-wrap min-w-0">
@@ -187,13 +189,19 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
         {(app.appStoreLink || app.playStoreLink) && (
           <div className="flex flex-wrap gap-[10px] items-start">
             {app.appStoreLink && (
-              <a href={app.appStoreLink} className="bg-primary flex gap-[10px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[17px] text-primary-text no-underline leading-normal transition-opacity duration-200 hover:opacity-90">
-                App Store ↗
+              <a href={app.appStoreLink} className="flex gap-[7px] items-center justify-center px-[14px] py-[8px] rounded-pill text-[15px] no-underline leading-normal transition-opacity duration-200 hover:opacity-70" style={{ background: 'var(--color-button)', color: 'var(--color-button-text)' }}>
+                App Store
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                  <path d="M2 9L9 2M9 2H4.5M9 2V6.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </a>
             )}
             {app.playStoreLink && (
-              <a href={app.playStoreLink} className="bg-primary flex gap-[10px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[17px] text-primary-text no-underline leading-normal transition-opacity duration-200 hover:opacity-90">
-                Play Store ↗
+              <a href={app.playStoreLink} className="flex gap-[7px] items-center justify-center px-[14px] py-[8px] rounded-pill text-[15px] no-underline leading-normal transition-opacity duration-200 hover:opacity-70" style={{ background: 'var(--color-button)', color: 'var(--color-button-text)' }}>
+                Play Store
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                  <path d="M2 9L9 2M9 2H4.5M9 2V6.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </a>
             )}
           </div>
@@ -244,7 +252,14 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                   <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
                   <p className="font-bold text-[22px] leading-[1.1] mt-[4px]">{item.value || "—"}</p>
                   {item.trend ? (
-                    <p className="text-[12px] mt-[6px] text-body">{item.trend}</p>
+                    <p className="flex items-center gap-[4px] text-[12px] mt-[6px] text-body">
+                      {/^↑/.test(item.trend) && (
+                        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                          <path d="M2 9L9 2M9 2H4.5M9 2V6.5" stroke="#34a853" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                      {item.trend.replace(/^↑\s*/, '')}
+                    </p>
                   ) : null}
                   {item.sub ? (
                     <p className="text-[12px] text-caption mt-[2px]">{item.sub}</p>
@@ -483,11 +498,19 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
         {/* Opportunities */}
         {app.opportunities.length > 0 && (
-          <div className="flex flex-col gap-[10px] w-full leading-[1.2]">
-            <p className="font-bold text-[20px]">Opportunities</p>
-            <div className="text-[17px] flex flex-col gap-[16px]">
+          <div className="flex flex-col gap-[10px] w-full">
+            <p className="font-bold text-[20px] leading-[1.2]">Opportunities</p>
+            <div className="bg-tag rounded-[16px] p-[12px] flex flex-col">
               {app.opportunities.map((opp, i) => (
-                <p key={i}>{opp}</p>
+                <div key={i} className={`py-[10px] ${i > 0 ? "border-t border-divider" : ""} flex items-center gap-[10px]`}>
+                  <div className="size-[32px] rounded-[10px] bg-card flex items-center justify-center text-[16px] shrink-0">
+                    {opp.icon || "🚀"}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[13px] font-bold">{opp.title}</p>
+                    {opp.description ? <p className="text-[11px] text-caption">{opp.description}</p> : null}
+                  </div>
+                </div>
               ))}
             </div>
           </div>

@@ -6,6 +6,8 @@
   --color-foreground: #000000;
   --color-card: #c9c9c9;
   --color-tag: #d2d2d2;
+  --color-button: #1a1a1a;
+  --color-button-text: #e8e8e8;
   --color-primary: #000000;
   --color-primary-text: #d2d2d2;
   --color-glass: rgba(180, 180, 180, 0.65);
@@ -42,6 +44,8 @@ html.dark {
   --color-foreground: #e8e8e8;
   --color-card: #262626;
   --color-tag: #2f2f2f;
+  --color-button: #2f2f2f;
+  --color-button-text: #e8e8e8;
   --color-primary: #ffffff;
   --color-primary-text: #1a1a1a;
   --color-glass: rgba(50, 50, 50, 0.65);

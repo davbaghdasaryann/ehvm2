@@ -64,7 +64,7 @@ export type App = {
       link?: string;
     }[];
   };
-  opportunities: string[];
+  opportunities: { icon: string; title: string; description: string }[];
   developerCountry: string;
   developerFlag: string;
   faqs: { question: string; answer?: string }[];

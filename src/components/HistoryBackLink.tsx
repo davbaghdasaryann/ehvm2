@@ -1,16 +1,17 @@
 "use client";
 
-import type { MouseEvent, ReactNode } from "react";
+import type { CSSProperties, MouseEvent, ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type HistoryBackLinkProps = {
   href: string;
   className?: string;
+  style?: CSSProperties;
   children: ReactNode;
 };
 
-export default function HistoryBackLink({ href, className, children }: HistoryBackLinkProps) {
+export default function HistoryBackLink({ href, className, style, children }: HistoryBackLinkProps) {
   const router = useRouter();
 
   const onClick = (event: MouseEvent<HTMLAnchorElement>) => {
@@ -30,7 +31,7 @@ export default function HistoryBackLink({ href, className, children }: HistoryBa
   };
 
   return (
-    <Link href={href} onClick={onClick} className={className}>
+    <Link href={href} onClick={onClick} className={className} style={style}>
       {children}
     </Link>
   );

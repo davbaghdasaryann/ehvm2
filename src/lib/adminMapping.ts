@@ -216,8 +216,8 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
     clean(record.media.cover) ||
     clean(record.media.screenshots[0]?.url);
   const opportunities = record.opportunities
-    .map((item) => [clean(item.icon), clean(item.title), clean(item.description)].filter(Boolean).join(" ").trim())
-    .filter(Boolean);
+    .filter((item) => clean(item.title))
+    .map((item) => ({ icon: clean(item.icon) || "🚀", title: clean(item.title)!, description: clean(item.description) || "" }));
 
   const pageBlocks = buildPageBlocks(record);
   const detailBlocks = toNotionDetailBlocks(pageBlocks);
