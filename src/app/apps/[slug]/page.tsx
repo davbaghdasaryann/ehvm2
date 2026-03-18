@@ -224,6 +224,14 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           </div>
         )}
 
+        {/* Developer Country */}
+        {app.developerCountry && app.developerCountry !== "Unknown" && (
+          <div className="flex items-center gap-[6px] leading-[1.2]">
+            <span className="text-[17px]">{app.developerFlag}</span>
+            <span className="text-[14px] text-muted">Developer · {app.developerCountry}</span>
+          </div>
+        )}
+
         {/* App Screenshots */}
         <div className="relative w-full aspect-[1592/820] rounded-icon overflow-hidden">
           {app.screenshotsImage ? (
@@ -524,13 +532,11 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
               {processSteps.map((step, index) => (
                 <div
                   key={`${step.title}-${index}`}
-                  className={`py-[10px] ${index > 0 ? "border-t border-divider" : ""} flex items-start gap-[10px]`}
+                  className={`py-[10px] ${index > 0 ? "border-t border-divider" : ""}`}
                 >
-                  <div className="size-[24px] rounded-full bg-primary text-primary-text text-[12px] font-bold flex items-center justify-center shrink-0 mt-[1px]">
-                    {index + 1}
-                  </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[16px] font-bold leading-[1.25]">
+                      <span className="text-caption font-normal mr-[6px]">{index + 1}.</span>
                       {step.title || "Step"}
                       {step.note ? (
                         <span className="ml-[6px] text-[11px] font-normal text-caption">{step.note}</span>
@@ -546,11 +552,6 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           </div>
         )}
 
-        {/* Developer Country */}
-        <div className="flex flex-col gap-[10px] w-full leading-[1.2]">
-          <p className="font-bold text-[20px]">Developers country</p>
-          <p className="text-[17px]">{app.developerFlag} {app.developerCountry}</p>
-        </div>
 
         {/* FAQs */}
         {visibleFaqs.length > 0 && (
