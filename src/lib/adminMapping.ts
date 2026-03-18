@@ -6,7 +6,7 @@ export type ParsedAppContent = {
   appStoreLink?: string;
   playStoreLink?: string;
   screenshotsImage?: string;
-  opportunities?: string[];
+  opportunities?: App["opportunities"];
   faqs?: App["faqs"];
   userAcquisition?: App["userAcquisition"];
   notionDetailBlocks?: NonNullable<App["notionDetailBlocks"]>;
