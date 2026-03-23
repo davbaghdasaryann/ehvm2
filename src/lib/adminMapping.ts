@@ -152,7 +152,7 @@ function buildPageBlocks(record: AppRecord): NotionPageBlock[] {
     blocks.push({ type: "heading_2", value: "Market context" });
 
     record.market.competitors.forEach((item) => {
-      const text = [item.icon, item.name, item.description, item.rating].filter(Boolean).join(" ").trim();
+      const text = [item.icon, item.name, item.description, item.appStoreRating && `🍎${item.appStoreRating}`, item.googleStoreRating && `▶${item.googleStoreRating}`].filter(Boolean).join(" ").trim();
       if (text) blocks.push({ type: "bulleted_list_item", value: text });
     });
 
