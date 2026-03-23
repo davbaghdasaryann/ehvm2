@@ -113,7 +113,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
     { key: "sam", label: "SAM", value: app.market?.sam || "", sub: app.market?.samLabel || "" },
     { key: "som", label: "SOM", value: app.market?.som || "", sub: app.market?.year ? `Year ${app.market.year}` : "" },
   ].filter((item) => item.value);
-  const competitors = (app.market?.competitors || []).filter((item) => item.name || item.description || item.rating);
+  const competitors = (app.market?.competitors || []).filter((item) => item.name || item.description || item.appStoreRating || item.googleStoreRating);
   const keywords = (app.market?.keywords || []).filter((item) => item.keyword || item.store || item.rank);
   const hasMarketSection = marketStats.length > 0 || competitors.length > 0 || keywords.length > 0;
   const processSteps = (app.contact.processSteps || []).filter((step) => step.title || step.note || step.description);
@@ -402,16 +402,23 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-[13px] font-bold truncate">
-                        {item.name || "Unnamed"}
+                        {item.link ? (
+                          <a href={item.link} target="_blank" rel="noopener noreferrer" className="no-underline hover:underline">{item.name || "Unnamed"}</a>
+                        ) : (item.name || "Unnamed")}
                         {item.isThisApp ? (
                           <span className="ml-[6px] text-[10px] text-[#2d7a4f] bg-[#e8f5ee] px-[6px] py-[2px] rounded-pill">This app</span>
                         ) : null}
                       </p>
                       {item.description ? <p className="text-[11px] text-caption">{item.description}</p> : null}
                     </div>
-                    {item.rating ? (
-                      <span className="bg-card px-[8px] py-[3px] rounded-pill text-[11px]">{item.rating}</span>
-                    ) : null}
+                    <div className="flex flex-col items-end gap-[3px] shrink-0">
+                      {item.appStoreRating ? (
+                        <span className="bg-card px-[8px] py-[2px] rounded-pill text-[11px]">🍎 {item.appStoreRating}</span>
+                      ) : null}
+                      {item.googleStoreRating ? (
+                        <span className="bg-card px-[8px] py-[2px] rounded-pill text-[11px]">▶ {item.googleStoreRating}</span>
+                      ) : null}
+                    </div>
                   </div>
                 ))}
               </div>

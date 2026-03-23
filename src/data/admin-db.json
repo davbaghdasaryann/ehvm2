@@ -1,10 +1,10 @@
 {
   "apps": [
     {
-      "id": "app_1773220014283",
-      "updatedAt": "2026-03-11T09:07:13.045Z",
-      "status": "draft",
-      "featured": false,
+      "id": "sample_coachify",
+      "updatedAt": "2026-03-23T12:18:42.049Z",
+      "status": "published",
+      "featured": true,
       "ndaRequired": true,
       "meta": {
         "name": "Coachify",
@@ -13,18 +13,16 @@
         "category": "Health & Fitness",
         "platforms": "iOS + Android",
         "model": "AI / Subscription",
-        "badge": "Acquisition Opportunity · Health & Fitness",
-        "askingPrice": "Asking ~3.5× ARR",
+        "badge": "where is this",
+        "askingPrice": "where is this",
         "tags": [
           "iOS + Android",
-          "AI / Subscription",
           "Profitable",
-          "Health & Fitness",
-          "Asking ~3.5× ARR"
+          "AI",
+          "Photo & Video",
+          "🔥 Trendy"
         ],
-        "appStoreUrl": "https://apps.apple.com",
-        "playStoreUrl": "https://play.google.com/store",
-        "websiteUrl": "https://ehvm.com",
+        "appStoreUrl": "https://apps.apple.com/us/app/ai-dance-generator-art-maker/id6475566752",
         "developerCountry": "United States",
         "developerFlag": "🇺🇸"
       },
@@ -42,13 +40,6 @@
           "trend": "Top 5% category",
           "sub": "1,249 ranked keywords",
           "icon": "⭐"
-        },
-        {
-          "label": "Social Following",
-          "value": "110K",
-          "trend": "99.7K TikTok",
-          "sub": "Combined channels",
-          "icon": "📱"
         }
       ],
       "financials": {
@@ -160,7 +151,7 @@
           ]
         },
         {
-          "type": "doughnut",
+          "type": "pie",
           "title": "Revenue by Geography",
           "subtitle": "Top markets by revenue share",
           "labels": [
@@ -182,7 +173,7 @@
                 6,
                 10
               ],
-              "color": "#1a1a1a"
+              "color": "#3aa68b"
             }
           ]
         }
@@ -259,7 +250,8 @@
             "name": "Fitbod",
             "description": "Adaptive strength training · $30M+ ARR · VC-backed",
             "rating": "4.8 ⭐",
-            "isThisApp": false
+            "isThisApp": false,
+            "link": "https://www.apple.com/app-store/"
           },
           {
             "icon": "📊",
@@ -346,6 +338,625 @@
         ]
       },
       "media": {
+        "icon": "data:image/png;base64,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",
+        "cover": "",
+        "screenshots": [
+          {
+            "url": "data:image/png;base64,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",
+            "caption": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "app_1773249518759",
+      "updatedAt": "2026-03-11T17:18:52.574Z",
+      "status": "published",
+      "featured": false,
+      "ndaRequired": true,
+      "meta": {
+        "name": "test",
+        "tagline": "test",
+        "description": "test",
+        "category": "Health & Fitness",
+        "platforms": "iOS + Android",
+        "model": "AI / Subscription",
+        "badge": "test",
+        "askingPrice": "",
+        "tags": []
+      },
+      "kpis": [
+        {
+          "label": "test",
+          "value": "123",
+          "trend": "",
+          "sub": "",
+          "icon": ""
+        },
+        {
+          "label": "test",
+          "value": "123",
+          "trend": "",
+          "sub": "",
+          "icon": ""
+        }
+      ],
+      "financials": {
+        "mrr": "123",
+        "arr": "123",
+        "ltvCac": "",
+        "netMargin": "",
+        "yoyGrowth": "",
+        "askingMultiple": "",
+        "plRows": [
+          {
+            "label": "test",
+            "amount": "123",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          }
+        ]
+      },
+      "charts": [
+        {
+          "type": "line",
+          "title": "test",
+          "subtitle": "",
+          "labels": [],
+          "datasets": [
+            {
+              "label": "",
+              "data": [
+                1,
+                2,
+                3
+              ],
+              "color": "#1a1a1a"
+            }
+          ]
+        }
+      ],
+      "funnel": [],
+      "product": {
+        "vision": "",
+        "roadmap": []
+      },
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [],
+        "keywords": []
+      },
+      "opportunities": [],
+      "contact": {
+        "name": "Davit Baghdasaryan",
+        "title": "",
+        "email": "a@a.a",
+        "phone": "",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "processSteps": []
+      },
+      "media": {
+        "icon": "data:image/png;base64,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",
+        "cover": "",
+        "screenshots": []
+      }
+    },
+    {
+      "id": "app_1773876084863",
+      "updatedAt": "2026-03-18T23:21:24.863Z",
+      "status": "draft",
+      "featured": false,
+      "ndaRequired": true,
+      "meta": {
+        "name": "Photo & Video Portfolio",
+        "tagline": "",
+        "description": "A multi-faceted portfolio in the Photo & Video vertical with multiple niche-leading apps. The portfolio manages to cover a wide spectrum of its Vertical with its app complementing each other excellently. ",
+        "category": "Photo & Video",
+        "platforms": "iOS + Android",
+        "model": "IAP + AdMon",
+        "badge": "Acquisition Opportunity • Photo & Video",
+        "askingPrice": "1.2x ARR",
+        "tags": [
+          "Photo &  Video",
+          ">$10m ARR"
+        ]
+      },
+      "kpis": [],
+      "financials": {
+        "mrr": "$1,300,000",
+        "arr": "$15,180,000",
+        "ltvCac": "",
+        "netMargin": "~32%",
+        "yoyGrowth": "",
+        "askingMultiple": "1.2x ARR",
+        "plRows": [
+          {
+            "label": "Gross Revenue",
+            "amount": "$15,179,000",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          },
+          {
+            "label": "Net Revenue",
+            "amount": "$10,413,000",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          },
+          {
+            "label": "User Acquisition Costs",
+            "amount": "$6,950,286",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          },
+          {
+            "label": "EBITDA",
+            "amount": "$3,286,771",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          }
+        ]
+      },
+      "charts": [
+        {
+          "type": "pie",
+          "title": "% of Installs by Channel",
+          "subtitle": "",
+          "labels": [
+            "Organic",
+            "Facebook",
+            "Google Ads",
+            "Apple",
+            "Other"
+          ],
+          "datasets": [
+            {
+              "label": "",
+              "data": [
+                74.35,
+                15.16,
+                4.4,
+                3.53,
+                2.57
+              ],
+              "color": "#9d441b"
+            }
+          ]
+        }
+      ],
+      "funnel": [],
+      "product": {
+        "vision": "",
+        "roadmap": []
+      },
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [],
+        "keywords": []
+      },
+      "opportunities": [],
+      "contact": {
+        "name": "",
+        "title": "",
+        "email": "",
+        "phone": "",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "processSteps": []
+      },
+      "media": {
+        "icon": "",
+        "cover": "",
+        "screenshots": []
+      }
+    },
+    {
+      "id": "app_1773877057953",
+      "updatedAt": "2026-03-23T12:06:01.398Z",
+      "status": "draft",
+      "featured": true,
+      "ndaRequired": true,
+      "meta": {
+        "name": "Muslim: Ramadan 2026, Azan",
+        "tagline": "Prayer Times, Qibla",
+        "description": "The trusted Islamic companion with more than 3 million Monthly Active Users. \n",
+        "category": "Reference",
+        "platforms": "iOS + Android",
+        "model": "IAP + AdMon",
+        "badge": "Acquisition Opportunity • Muslim Lifestyle ",
+        "askingPrice": "2x ARR",
+        "tags": [
+          "Muslim"
+        ],
+        "appStoreUrl": "https://apps.apple.com/us/app/muslim-ramadan-2026-azan/id1137963102",
+        "playStoreUrl": "https://play.google.com/store/apps/details?gl=US&hl=en-US&id=com.hundred.qibla",
+        "websiteUrl": "https://muslimapp.com/",
+        "developerCountry": "Turkey",
+        "developerFlag": "🇹🇷"
+      },
+      "kpis": [
+        {
+          "label": "ARR",
+          "value": "1,965,745",
+          "trend": "",
+          "sub": "",
+          "icon": ""
+        }
+      ],
+      "financials": {
+        "mrr": "$170,000",
+        "arr": "$1,965,000",
+        "ltvCac": "",
+        "netMargin": "",
+        "yoyGrowth": "",
+        "askingMultiple": "~2x",
+        "plRows": [
+          {
+            "label": "Gross Revenue",
+            "amount": "$2,304,000",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          },
+          {
+            "label": "Net Revenue",
+            "amount": "$1,940,000",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          },
+          {
+            "label": "Marketing Spend",
+            "amount": "$1,099,000",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          },
+          {
+            "label": "EBITDA",
+            "amount": "$833,000",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          }
+        ]
+      },
+      "charts": [
+        {
+          "type": "pie",
+          "title": "Downloads by Channel",
+          "subtitle": "",
+          "labels": [
+            "Organic",
+            "Apple Search Ads",
+            "Google Ads",
+            "tiktokglobal_int",
+            "Other"
+          ],
+          "datasets": [
+            {
+              "label": "Downloads",
+              "data": [
+                3950255,
+                1630569,
+                1491602,
+                692816,
+                19712
+              ],
+              "color": "#37a963"
+            }
+          ]
+        },
+        {
+          "type": "pie",
+          "title": "Test",
+          "subtitle": "MRR",
+          "labels": [
+            "Organic",
+            "Apple Search Ads"
+          ],
+          "datasets": [
+            {
+              "label": "",
+              "data": [
+                12000
+              ],
+              "color": "#8f3d3d"
+            },
+            {
+              "label": "",
+              "data": [
+                16000
+              ],
+              "color": "#308882"
+            }
+          ]
+        }
+      ],
+      "funnel": [],
+      "product": {
+        "vision": "",
+        "roadmap": []
+      },
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [
+          {
+            "icon": "🕌",
+            "name": "Muslim Pro: Quran & Athan",
+            "description": "",
+            "rating": "",
+            "isThisApp": false
+          }
+        ],
+        "keywords": [
+          {
+            "keyword": "muslim",
+            "volume": "",
+            "rank": "#2"
+          }
+        ]
+      },
+      "opportunities": [],
+      "contact": {
+        "name": "Evelin Herrera",
+        "title": "",
+        "email": "apps@evelinherrera.com",
+        "phone": "",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "processSteps": []
+      },
+      "media": {
+        "icon": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/bd/f8/7d/bdf87d92-a40a-677d-4a18-327f5a0f4e0f/Placeholder.mill/400x400bb-75.webp",
+        "cover": "",
+        "screenshots": [
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/7f/2d/10/7f2d1088-2a1a-e511-465e-fbb1e98b913b/en_1.jpg/460x998bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/d1/06/38/d10638ca-59b7-42fa-4c4a-56da6fd6c1a9/en_2.jpg/460x998bb.webp",
+            "caption": "Prayer Times"
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/cc/18/d5/cc18d59f-4301-aa72-9603-88066390902d/en_3.jpg/460x998bb.webp",
+            "caption": "Qibla Finder"
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/31/da/67/31da6771-833f-f39b-d073-0c5e898af64e/en_5.jpg/460x998bb.webp",
+            "caption": "AI Quran English & Audio"
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/77/c4/82/77c482da-108e-5c26-6b71-221f21b5db81/en_8.jpg/460x998bb.webp",
+            "caption": "Nearby Mosques"
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/36/55/6f/36556f0d-90a0-7d4c-eb04-03e77c55435a/en_6.jpg/460x998bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/e6/97/67/e697678d-d780-86ce-996e-bf31dd788939/en_7.jpg/460x998bb.webp",
+            "caption": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "app_1774005358725",
+      "updatedAt": "2026-03-20T11:15:58.725Z",
+      "status": "draft",
+      "featured": false,
+      "ndaRequired": true,
+      "meta": {
+        "name": "Anonymous AI Notetaker",
+        "tagline": "AI Notetaker",
+        "description": "",
+        "category": "Productivity",
+        "platforms": "iOS + Android",
+        "model": "Subscription",
+        "badge": "Acquisition Opportunity • AI Notetaker",
+        "askingPrice": "~3x ARR",
+        "tags": [
+          "Notetaker"
+        ]
+      },
+      "kpis": [],
+      "financials": {
+        "mrr": "$90,000",
+        "arr": "$950,000",
+        "ltvCac": "",
+        "netMargin": "",
+        "yoyGrowth": "",
+        "askingMultiple": "",
+        "plRows": []
+      },
+      "charts": [],
+      "funnel": [],
+      "product": {
+        "vision": "",
+        "roadmap": []
+      },
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [],
+        "keywords": []
+      },
+      "opportunities": [],
+      "contact": {
+        "name": "",
+        "title": "",
+        "email": "",
+        "phone": "",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "processSteps": []
+      },
+      "media": {
+        "icon": "",
+        "cover": "",
+        "screenshots": []
+      }
+    },
+    {
+      "id": "app_1774006937211",
+      "updatedAt": "2026-03-20T11:42:17.211Z",
+      "status": "draft",
+      "featured": false,
+      "ndaRequired": true,
+      "meta": {
+        "name": "Anonymous Visual Meditation ",
+        "tagline": "",
+        "description": "",
+        "category": "Health & Fitness",
+        "platforms": "iOS + Android",
+        "model": "Subscription",
+        "badge": "Acquisition Opportunity • Wellness App",
+        "askingPrice": "~3x ARR",
+        "tags": [
+          "Wellness"
+        ]
+      },
+      "kpis": [],
+      "financials": {
+        "mrr": "$112,000",
+        "arr": "$1,388,000",
+        "ltvCac": "",
+        "netMargin": "",
+        "yoyGrowth": "",
+        "askingMultiple": "",
+        "plRows": []
+      },
+      "charts": [],
+      "funnel": [],
+      "product": {
+        "vision": "",
+        "roadmap": []
+      },
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [],
+        "keywords": []
+      },
+      "opportunities": [
+        {
+          "icon": "🎨",
+          "title": "New Ad Creatives",
+          "description": ""
+        },
+        {
+          "icon": "📲",
+          "title": "Influencer Marketing",
+          "description": ""
+        },
+        {
+          "icon": "🌎",
+          "title": "Global Ad campaigns",
+          "description": ""
+        }
+      ],
+      "contact": {
+        "name": "",
+        "title": "",
+        "email": "",
+        "phone": "",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "processSteps": []
+      },
+      "media": {
+        "icon": "",
+        "cover": "",
+        "screenshots": []
+      }
+    },
+    {
+      "id": "app_1774014554849",
+      "updatedAt": "2026-03-20T13:49:14.849Z",
+      "status": "draft",
+      "featured": false,
+      "ndaRequired": true,
+      "meta": {
+        "name": "Screen Recorder",
+        "tagline": "",
+        "description": "",
+        "category": "Health & Fitness",
+        "platforms": "iOS + Android",
+        "model": "Subscription",
+        "badge": "Acquisition Opportunity • Photo & Video",
+        "askingPrice": "~3x ARR",
+        "tags": [
+          "Screen Recorder"
+        ],
+        "appStoreUrl": "https://apps.apple.com/us/app/screen-recorder/id1479827719"
+      },
+      "kpis": [],
+      "financials": {
+        "mrr": "",
+        "arr": "",
+        "ltvCac": "",
+        "netMargin": "",
+        "yoyGrowth": "",
+        "askingMultiple": "",
+        "plRows": []
+      },
+      "charts": [],
+      "funnel": [],
+      "product": {
+        "vision": "",
+        "roadmap": []
+      },
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [],
+        "keywords": []
+      },
+      "opportunities": [],
+      "contact": {
+        "name": "",
+        "title": "",
+        "email": "",
+        "phone": "",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "processSteps": []
+      },
+      "media": {
         "icon": "",
         "cover": "",
         "screenshots": []
@@ -354,244 +965,32 @@
   ],
   "news": [
     {
-      "id": "news_ehvm-europe-tour",
-      "slug": "ehvm-europe-tour",
-      "title": "EHVM Europe Tour with 8 stops",
-      "subtitle": "Event",
-      "quote": "",
-      "image": "/images/eu-stars.png",
-      "buttonLabel": "Read article",
-      "buttonUrl": "/news/all",
-      "category": "Event",
-      "featured": true,
-      "published": true,
-      "updatedAt": "2026-02-09T20:00:00.000Z"
-    },
-    {
-      "id": "news_ehvm-dubai-meetup",
-      "slug": "ehvm-dubai-meetup",
-      "title": "EHVM Dubai meetup",
-      "subtitle": "Event",
-      "quote": "",
-      "image": "/images/dubai.png",
-      "buttonLabel": "Read article",
-      "buttonUrl": "/news/all",
+      "id": "news_1773249659525",
+      "slug": "news_1773249659525",
+      "title": "New article",
+      "subtitle": "test",
+      "quote": "test",
+      "image": "",
+      "buttonLabel": "Read more",
+      "buttonUrl": "",
       "category": "Event",
       "featured": false,
-      "published": true,
-      "updatedAt": "2026-01-27T20:00:00.000Z"
+      "published": false,
+      "updatedAt": "2026-03-11T17:21:09.967Z"
     },
     {
-      "id": "news_jane-doe-selling-notey",
-      "slug": "jane-doe-selling-notey",
-      "title": "How Jane Doe built and sold Notey for $2.4M",
-      "subtitle": "Jane Doe never planned to sell Notey. The note-taking app started as a weekend project in her Berlin apartment, a simple tool she built because nothing on the market worked the way she wanted it to.",
-      "quote": "I thought selling an app meant posting it on a marketplace and hoping for the best. EHVM showed me there's a proper way to do this — with the right buyers, the right terms, and the right support.",
-      "image": "/images/jane-doe.png",
-      "buttonLabel": "Read article",
-      "buttonUrl": "/news/all",
-      "category": "Story",
-      "featured": false,
-      "published": true,
-      "updatedAt": "2026-01-14T20:00:00.000Z"
-    },
-    {
-      "id": "news_ray-liu-fitlog-acquisition",
-      "slug": "ray-liu-fitlog-acquisition",
-      "title": "From side project to $800k exit — Ray Liu on selling FitLog",
-      "subtitle": "Story",
+      "id": "news_1773249675391",
+      "slug": "news_1773249675391",
+      "title": "New article",
+      "subtitle": "",
       "quote": "",
-      "image": "/images/rayul-_M6gy9oHgII-unsplash.jpg",
-      "buttonLabel": "Read article",
-      "buttonUrl": "/news/all",
-      "category": "Story",
-      "featured": false,
-      "published": true,
-      "updatedAt": "2026-02-04T20:00:00.000Z"
-    },
-    {
-      "id": "news_ehvm-founders-workshop",
-      "slug": "ehvm-founders-workshop",
-      "title": "EHVM Founders Workshop — Build, Scale, Exit",
-      "subtitle": "Event",
-      "quote": "",
-      "image": "/images/woman.png",
-      "buttonLabel": "Read article",
-      "buttonUrl": "/news/all",
+      "image": "",
+      "buttonLabel": "Read more",
+      "buttonUrl": "",
       "category": "Event",
       "featured": false,
-      "published": true,
-      "updatedAt": "2026-02-19T20:00:00.000Z"
-    },
-    {
-      "id": "news_ehvm-weekly-digest",
-      "slug": "ehvm-weekly-digest",
-      "title": "EHVM Weekly Digest — App M&A News",
-      "subtitle": "Event",
-      "quote": "",
-      "image": "/images/paper.png",
-      "buttonLabel": "Read article",
-      "buttonUrl": "/news/all",
-      "category": "Event",
-      "featured": false,
-      "published": true,
-      "updatedAt": "2026-02-17T20:00:00.000Z"
-    },
-    {
-      "id": "news_la-tech-week-recap",
-      "slug": "la-tech-week-recap",
-      "title": "LA Tech Week recap",
-      "subtitle": "Event",
-      "quote": "",
-      "image": "/images/la-tech-week.png",
-      "buttonLabel": "Read article",
-      "buttonUrl": "/news/all",
-      "category": "Event",
-      "featured": false,
-      "published": true,
-      "updatedAt": "2025-12-07T20:00:00.000Z"
-    },
-    {
-      "id": "news_max-man-selling-one",
-      "slug": "max-man-selling-one",
-      "title": "EHVM acquires One — a $130k MRR meditation app",
-      "subtitle": "One started as a side project by Max Man, a Copenhagen-based developer who wanted a meditation app that didn't feel like a Silicon Valley product. No gamification, no streaks, no push notifications begging you to come back. Just guided sessions and silence.",
-      "quote": "What made EHVM different is they didn't just find any buyer — they found the right buyer. Someone who saw the same value in the product that I did.",
-      "image": "/images/max-man.png",
-      "buttonLabel": "Read article",
-      "buttonUrl": "/news/all",
-      "category": "Story",
-      "featured": false,
-      "published": true,
-      "updatedAt": "2025-11-19T20:00:00.000Z"
-    }
-  ],
-  "story": {
-    "headline": "The story behind EHVM Apps Capital test",
-    "heroImage": "/images/evelin.png",
-    "blocks": [
-      {
-        "id": "s1",
-        "type": "text",
-        "content": "EHVM Apps Capital was founded by Evelin Herrera with a simple idea: create a space where app builders and buyers can connect directly, without the noise. A marketplace built by someone who understands both sides of the table."
-      },
-      {
-        "id": "s2",
-        "type": "youtube",
-        "videoId": "dQw4w9WgXcQ",
-        "videoTitle": "EHVM Apps Capital — Introduction"
-      },
-      {
-        "id": "s3",
-        "type": "text",
-        "content": "Before starting EHVM, Evelin spent years building and scaling mobile apps across industries — from wellness to fintech. She saw firsthand how difficult it was for independent developers to find the right exit, and how hard it was for buyers to discover quality apps with real traction."
-      },
-      {
-        "id": "s4",
-        "type": "tweet",
-        "tweetUrl": "https://x.com/ehvm/status/1234567890"
-      },
-      {
-        "id": "s5",
-        "type": "quote",
-        "quoteText": "I kept meeting incredible builders who had no idea what their app was worth, and buyers who couldn't find what they were looking for. EHVM is the bridge.",
-        "quoteCite": "— Evelin Herrera, Founder"
-      },
-      {
-        "id": "s6",
-        "type": "text",
-        "content": "Today, EHVM curates a portfolio of high-quality apps with verified metrics — monthly recurring revenue, user acquisition data, platform details, and growth potential. Every listing is vetted. Every transaction is supported."
-      },
-      {
-        "id": "s7",
-        "type": "youtube",
-        "videoId": "jNQXAC9IVRw",
-        "videoTitle": "Behind the scenes at EHVM"
-      },
-      {
-        "id": "s8",
-        "type": "text",
-        "content": "Whether you're a developer ready to move on to your next project, or an entrepreneur looking to acquire a proven product — EHVM is where it happens."
-      },
-      {
-        "id": "s9",
-        "type": "tweet",
-        "tweetUrl": "https://x.com/ehvm/status/9876543210"
-      }
-    ],
-    "social": {
-      "instagram": "https://instagram.com",
-      "twitter": "https://x.com",
-      "linkedin": "https://linkedin.com",
-      "tiktok": "https://tiktok.com"
-    },
-    "updatedAt": "2026-03-18T18:08:42.910Z"
-  },
-  "stories": [
-    {
-      "id": "evelin",
-      "slug": "evelin",
-      "name": "Evelin",
-      "published": true,
-      "headline": "The story behind EHVM Apps Capital",
-      "heroImage": "/images/evelin.png",
-      "blocks": [
-        {
-          "id": "s1",
-          "type": "text",
-          "content": "EHVM Apps Capital was founded by Evelin Herrera with a simple idea: create a space where app builders and buyers can connect directly, without the noise. A marketplace built by someone who understands both sides of the table."
-        },
-        {
-          "id": "s2",
-          "type": "youtube",
-          "videoId": "dQw4w9WgXcQ",
-          "videoTitle": "EHVM Apps Capital — Introduction"
-        },
-        {
-          "id": "s3",
-          "type": "text",
-          "content": "Before starting EHVM, Evelin spent years building and scaling mobile apps across industries — from wellness to fintech. She saw firsthand how difficult it was for independent developers to find the right exit, and how hard it was for buyers to discover quality apps with real traction."
-        },
-        {
-          "id": "s4",
-          "type": "tweet",
-          "tweetUrl": "https://x.com/ehvm/status/1234567890"
-        },
-        {
-          "id": "s5",
-          "type": "quote",
-          "quoteText": "I kept meeting incredible builders who had no idea what their app was worth, and buyers who couldn't find what they were looking for. EHVM is the bridge.",
-          "quoteCite": "— Evelin Herrera, Founder"
-        },
-        {
-          "id": "s6",
-          "type": "text",
-          "content": "Today, EHVM curates a portfolio of high-quality apps with verified metrics — monthly recurring revenue, user acquisition data, platform details, and growth potential. Every listing is vetted. Every transaction is supported."
-        },
-        {
-          "id": "s7",
-          "type": "youtube",
-          "videoId": "jNQXAC9IVRw",
-          "videoTitle": "Behind the scenes at EHVM"
-        },
-        {
-          "id": "s8",
-          "type": "text",
-          "content": "Whether you're a developer ready to move on to your next project, or an entrepreneur looking to acquire a proven product — EHVM is where it happens."
-        },
-        {
-          "id": "s9",
-          "type": "tweet",
-          "tweetUrl": "https://x.com/ehvm/status/9876543210"
-        }
-      ],
-      "social": {
-        "instagram": "https://instagram.com",
-        "twitter": "https://x.com",
-        "linkedin": "https://linkedin.com",
-        "tiktok": "https://tiktok.com"
-      },
-      "updatedAt": "2026-03-18T18:16:58.278Z"
+      "published": false,
+      "updatedAt": "2026-03-11T17:21:15.391Z"
     }
   ]
 }

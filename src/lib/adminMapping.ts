@@ -332,7 +332,9 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
         icon: clean(item.icon),
         name: clean(item.name),
         description: clean(item.description),
-        rating: clean(item.rating),
+        appStoreRating: clean(item.appStoreRating),
+        googleStoreRating: clean(item.googleStoreRating),
+        link: clean(item.link),
         isThisApp: Boolean(item.isThisApp),
       })),
       keywords: record.market.keywords.map((item) => ({

@@ -50,7 +50,9 @@ export interface Competitor {
   icon: string
   name: string
   description: string
-  rating: string
+  appStoreRating: string
+  googleStoreRating: string
+  link: string
   isThisApp: boolean
 }
 

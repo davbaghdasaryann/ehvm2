@@ -115,8 +115,6 @@ export function MarketPanel() {
               <div className="form-grid form-grid-3">
                 <div className="field"><label className="field-label">Emoji Icon</label><input type="text" value={c.icon} onChange={e => s.updateCompetitor(c.id, 'icon', e.target.value)} placeholder="💪" /></div>
                 <div className="field"><label className="field-label">App Name</label><input type="text" value={c.name} onChange={e => s.updateCompetitor(c.id, 'name', e.target.value)} placeholder="Fitbod" /></div>
-                <div className="field"><label className="field-label">Rating</label><input type="text" value={c.rating} onChange={e => s.updateCompetitor(c.id, 'rating', e.target.value)} placeholder="4.8 ⭐" /></div>
-                <div className="field" style={{ gridColumn: 'span 2' }}><label className="field-label">Description</label><input type="text" value={c.description} onChange={e => s.updateCompetitor(c.id, 'description', e.target.value)} placeholder="Adaptive strength training · $30M+ ARR" /></div>
                 <div className="field">
                   <label className="field-label">This App?</label>
                   <select value={c.isThisApp ? 'true' : 'false'} onChange={e => s.updateCompetitor(c.id, 'isThisApp', e.target.value === 'true')}>
@@ -124,6 +122,10 @@ export function MarketPanel() {
                     <option value="true">Yes ← This App</option>
                   </select>
                 </div>
+                <div className="field" style={{ gridColumn: 'span 3' }}><label className="field-label">Description</label><input type="text" value={c.description} onChange={e => s.updateCompetitor(c.id, 'description', e.target.value)} placeholder="Adaptive strength training · $30M+ ARR" /></div>
+                <div className="field"><label className="field-label">App Store Rating</label><input type="text" value={c.appStoreRating} onChange={e => s.updateCompetitor(c.id, 'appStoreRating', e.target.value)} placeholder="4.8" /></div>
+                <div className="field"><label className="field-label">Google Play Rating</label><input type="text" value={c.googleStoreRating} onChange={e => s.updateCompetitor(c.id, 'googleStoreRating', e.target.value)} placeholder="4.6" /></div>
+                <div className="field"><label className="field-label">App Link</label><input type="text" value={c.link} onChange={e => s.updateCompetitor(c.id, 'link', e.target.value)} placeholder="https://apps.apple.com/..." /></div>
               </div>
             </div>
           ))}

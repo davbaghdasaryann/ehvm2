@@ -621,7 +621,7 @@ export const useAdminStore = create<AdminStore>()(
       updateRoadmap: (id, key, val) => set(s => ({ roadmapItems: s.roadmapItems.map(r => r.id === id ? { ...r, [key]: val } : r), isDirty: true })),
 
       // Competitors
-      addCompetitor: (d = {}) => set(s => ({ competitors: [...s.competitors, { id: uid(), icon: '💪', name: '', description: '', rating: '', isThisApp: false, ...d }], isDirty: true })),
+      addCompetitor: (d = {}) => set(s => ({ competitors: [...s.competitors, { id: uid(), icon: '💪', name: '', description: '', appStoreRating: '', googleStoreRating: '', link: '', isThisApp: false, ...d }], isDirty: true })),
       removeCompetitor: (id) => set(s => ({ competitors: s.competitors.filter(c => c.id !== id), isDirty: true })),
       updateCompetitor: (id, key, val) => set(s => ({ competitors: s.competitors.map(c => c.id === id ? { ...c, [key]: val } : c), isDirty: true })),
 
@@ -713,9 +713,9 @@ export const useAdminStore = create<AdminStore>()(
           marketTam: '$15.3B', marketSam: '$2.1B', marketSom: '$210M',
           marketTamLabel: 'Global fitness apps', marketSamLabel: 'AI fitness apps', marketYear: '2025',
           competitors: [
-            { id: 50, icon: '🏋️', name: 'Coachify', description: 'AI-personalized workouts + nutrition · Profitable · $70K MRR', rating: '4.7 ⭐', isThisApp: true },
-            { id: 51, icon: '💪', name: 'Fitbod', description: 'Adaptive strength training · $30M+ ARR · VC-backed', rating: '4.8 ⭐', isThisApp: false },
-            { id: 52, icon: '📊', name: 'MyFitnessPal', description: 'Nutrition tracking · 200M+ users · Acquired by Francisco Partners', rating: '4.7 ⭐', isThisApp: false },
+            { id: 50, icon: '🏋️', name: 'Coachify', description: 'AI-personalized workouts + nutrition · Profitable · $70K MRR', appStoreRating: '4.7', googleStoreRating: '', link: '', isThisApp: true },
+            { id: 51, icon: '💪', name: 'Fitbod', description: 'Adaptive strength training · $30M+ ARR · VC-backed', appStoreRating: '4.8', googleStoreRating: '', link: '', isThisApp: false },
+            { id: 52, icon: '📊', name: 'MyFitnessPal', description: 'Nutrition tracking · 200M+ users · Acquired by Francisco Partners', appStoreRating: '4.7', googleStoreRating: '', link: '', isThisApp: false },
           ],
           keywords: [
             { id: 60, keyword: 'ai workout planner', store: 'App Store', country: 'US', rank: '#2' },
