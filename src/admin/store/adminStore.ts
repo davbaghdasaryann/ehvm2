@@ -54,7 +54,6 @@ export const REQUIRED_FIELDS = [
   { key: 'meta.description', label: 'Hero Description', panel: 'meta' as PanelName, check: (a: AppRecord) => !!a.meta?.description?.trim() },
   { key: 'meta.category', label: 'Category', panel: 'meta' as PanelName, check: (a: AppRecord) => !!a.meta?.category },
   { key: 'meta.badge', label: 'App Badge', panel: 'meta' as PanelName, check: (a: AppRecord) => !!a.meta?.badge?.trim() },
-  { key: 'kpis', label: 'At least 1 KPI card', panel: 'kpis' as PanelName, check: (a: AppRecord) => a.kpis?.length > 0 },
   { key: 'financials.mrr', label: 'MRR value', panel: 'financials' as PanelName, check: (a: AppRecord) => !!a.financials?.mrr?.trim() },
   { key: 'financials.plRows', label: 'At least 1 P&L row', panel: 'financials' as PanelName, check: (a: AppRecord) => a.financials?.plRows?.length > 0 },
   { key: 'charts', label: 'At least 1 chart', panel: 'charts' as PanelName, check: (a: AppRecord) => a.charts?.length > 0 },
@@ -627,7 +626,7 @@ export const useAdminStore = create<AdminStore>()(
       updateCompetitor: (id, key, val) => set(s => ({ competitors: s.competitors.map(c => c.id === id ? { ...c, [key]: val } : c), isDirty: true })),
 
       // Keywords
-      addKeyword: (d = {}) => set(s => ({ keywords: [...s.keywords, { id: uid(), keyword: '', volume: '', rank: '', ...d }], isDirty: true })),
+      addKeyword: (d = {}) => set(s => ({ keywords: [...s.keywords, { id: uid(), keyword: '', store: '', country: '', rank: '', ...d }], isDirty: true })),
       removeKeyword: (id) => set(s => ({ keywords: s.keywords.filter(k => k.id !== id), isDirty: true })),
       updateKeyword: (id, key, val) => set(s => ({ keywords: s.keywords.map(k => k.id === id ? { ...k, [key]: val } : k), isDirty: true })),
 
@@ -719,10 +718,10 @@ export const useAdminStore = create<AdminStore>()(
             { id: 52, icon: '📊', name: 'MyFitnessPal', description: 'Nutrition tracking · 200M+ users · Acquired by Francisco Partners', rating: '4.7 ⭐', isThisApp: false },
           ],
           keywords: [
-            { id: 60, keyword: 'ai workout planner', volume: '52K', rank: '#2' },
-            { id: 61, keyword: 'gym workout plan', volume: '48K', rank: '#4' },
-            { id: 62, keyword: 'ai personal trainer', volume: '41K', rank: '#3' },
-            { id: 63, keyword: 'workout tracker app', volume: '38K', rank: '#9' },
+            { id: 60, keyword: 'ai workout planner', store: 'App Store', country: 'US', rank: '#2' },
+            { id: 61, keyword: 'gym workout plan', store: 'App Store', country: 'US', rank: '#4' },
+            { id: 62, keyword: 'ai personal trainer', store: 'App Store', country: 'US', rank: '#3' },
+            { id: 63, keyword: 'workout tracker app', store: 'App Store', country: 'US', rank: '#9' },
           ],
           opportunities: [
             { id: 70, icon: '💳', title: 'Paywall A/B Testing', description: 'Systematic testing of pricing tiers, trial lengths, and offer structures. Conservative 15–20% improvement in trial-to-paid conversion is achievable within 90 days.' },

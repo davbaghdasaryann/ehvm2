@@ -57,7 +57,8 @@ export interface Competitor {
 export interface Keyword {
   id: number
   keyword: string
-  volume: string
+  store: string
+  country: string
   rank: string
 }
 

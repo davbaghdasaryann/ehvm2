@@ -101,7 +101,8 @@ function buildListingHTMLHelper(app) {
     var rankColor = rank <= 5 ? '#2d7a4f' : '#f0a020'
     return '<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid rgba(0,0,0,0.05);">' +
       '<div style="font-size:12px;font-weight:600;flex:1;">' + h(k.keyword) + '</div>' +
-      '<div style="font-size:11px;color:#888;width:48px;text-align:right;">' + h(k.volume) + '</div>' +
+      '<div style="font-size:11px;color:#888;width:60px;text-align:right;">' + h(k.store) + '</div>' +
+      '<div style="font-size:11px;color:#888;width:28px;text-align:right;">' + h(k.country) + '</div>' +
       '<div style="font-size:11px;font-weight:700;width:36px;text-align:right;color:' + rankColor + ';">' + h(k.rank) + '</div></div>'
   }).join('')
 

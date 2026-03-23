@@ -144,7 +144,8 @@ export function MarketPanel() {
               </div>
               <div className="form-grid form-grid-3">
                 <div className="field"><label className="field-label">Keyword</label><input type="text" value={k.keyword} onChange={e => s.updateKeyword(k.id, 'keyword', e.target.value)} placeholder="ai workout planner" /></div>
-                <div className="field"><label className="field-label">Monthly Volume</label><input type="text" value={k.volume} onChange={e => s.updateKeyword(k.id, 'volume', e.target.value)} placeholder="52K" /></div>
+                <div className="field"><label className="field-label">Store</label><input type="text" value={k.store} onChange={e => s.updateKeyword(k.id, 'store', e.target.value)} placeholder="App Store" /></div>
+                <div className="field"><label className="field-label">Country</label><input type="text" value={k.country} onChange={e => s.updateKeyword(k.id, 'country', e.target.value)} placeholder="US" /></div>
                 <div className="field"><label className="field-label">Rank</label><input type="text" value={k.rank} onChange={e => s.updateKeyword(k.id, 'rank', e.target.value)} placeholder="#2" /></div>
               </div>
             </div>

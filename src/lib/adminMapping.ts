@@ -157,7 +157,7 @@ function buildPageBlocks(record: AppRecord): NotionPageBlock[] {
     });
 
     record.market.keywords.forEach((item) => {
-      const text = [item.keyword, item.volume && `(${item.volume})`, item.rank].filter(Boolean).join(" ").trim();
+      const text = [item.keyword, item.store && `(${item.store})`, item.country && `[${item.country}]`, item.rank].filter(Boolean).join(" ").trim();
       if (text) blocks.push({ type: "bulleted_list_item", value: text });
     });
   }
@@ -337,7 +337,8 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
       })),
       keywords: record.market.keywords.map((item) => ({
         keyword: clean(item.keyword),
-        volume: clean(item.volume),
+        store: clean(item.store),
+        country: clean(item.country),
         rank: clean(item.rank),
       })),
     },

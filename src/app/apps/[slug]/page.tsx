@@ -114,7 +114,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
     { key: "som", label: "SOM", value: app.market?.som || "", sub: app.market?.year ? `Year ${app.market.year}` : "" },
   ].filter((item) => item.value);
   const competitors = (app.market?.competitors || []).filter((item) => item.name || item.description || item.rating);
-  const keywords = (app.market?.keywords || []).filter((item) => item.keyword || item.volume || item.rank);
+  const keywords = (app.market?.keywords || []).filter((item) => item.keyword || item.store || item.rank);
   const hasMarketSection = marketStats.length > 0 || competitors.length > 0 || keywords.length > 0;
   const processSteps = (app.contact.processSteps || []).filter((step) => step.title || step.note || step.description);
   const processTitles = new Set(
@@ -291,30 +291,34 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                 ))}
               </div>
             )}
-            {plRows.length > 0 && (
-              <div className="bg-tag rounded-[16px] p-[12px] overflow-x-auto w-full">
-                <table className="w-full min-w-[430px] border-collapse">
-                  <thead>
-                    <tr className="text-left text-[10px] uppercase tracking-[0.08em] text-caption">
-                      <th className="pb-[8px] pr-[10px]">Metric</th>
-                      <th className="pb-[8px] pr-[10px]">Amount</th>
-                      <th className="pb-[8px] pr-[10px]">Trend</th>
-                      <th className="pb-[8px]">Notes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {plRows.map((row, index) => (
-                      <tr key={`${row.label}-${index}`} className="border-t border-divider">
-                        <td className="py-[8px] pr-[10px] text-[13px]">{row.highlight ? <strong>{row.label}</strong> : row.label}</td>
-                        <td className="py-[8px] pr-[10px] text-[13px] font-bold">{row.amount || "—"}</td>
-                        <td className="py-[8px] pr-[10px] text-[12px] text-body">{row.trend || "—"}</td>
-                        <td className="py-[8px] text-[12px] text-caption">{row.notes || "—"}</td>
+            {plRows.length > 0 && (() => {
+              const hasTrend = plRows.some((r) => r.trend);
+              const hasNotes = plRows.some((r) => r.notes);
+              return (
+                <div className="bg-tag rounded-[16px] p-[12px] overflow-x-auto w-full">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="text-left text-[10px] uppercase tracking-[0.08em] text-caption">
+                        <th className="pb-[8px] pr-[10px]">Metric</th>
+                        <th className="pb-[8px] pr-[10px]">Amount</th>
+                        {hasTrend && <th className="pb-[8px] pr-[10px]">Trend</th>}
+                        {hasNotes && <th className="pb-[8px]">Notes</th>}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                    </thead>
+                    <tbody>
+                      {plRows.map((row, index) => (
+                        <tr key={`${row.label}-${index}`} className="border-t border-divider">
+                          <td className="py-[8px] pr-[10px] text-[13px]">{row.highlight ? <strong>{row.label}</strong> : row.label}</td>
+                          <td className="py-[8px] pr-[10px] text-[13px] font-bold">{row.amount || "—"}</td>
+                          {hasTrend && <td className="py-[8px] pr-[10px] text-[12px] text-body">{row.trend || "—"}</td>}
+                          {hasNotes && <td className="py-[8px] text-[12px] text-caption">{row.notes || "—"}</td>}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })()}
           </div>
         )}
 
@@ -418,8 +422,9 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                 {keywords.map((item, index) => (
                   <div key={`${item.keyword}-${index}`} className={`py-[8px] ${index > 0 ? "border-t border-divider" : ""} flex items-center gap-[8px]`}>
                     <p className="text-[12px] flex-1 truncate">{item.keyword || "—"}</p>
-                    <p className="text-[11px] text-caption w-[48px] text-right">{item.volume || "—"}</p>
-                    <p className="text-[11px] w-[40px] text-right font-bold" style={{ color: rankColor(item.rank) }}>
+                    <p className="text-[11px] text-caption w-[60px] text-right truncate">{item.store || "—"}</p>
+                    <p className="text-[11px] text-caption w-[28px] text-right">{item.country || "—"}</p>
+                    <p className="text-[11px] w-[36px] text-right font-bold" style={{ color: rankColor(item.rank) }}>
                       {item.rank || "—"}
                     </p>
                   </div>

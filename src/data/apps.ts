@@ -145,7 +145,8 @@ export type App = {
     }[];
     keywords: {
       keyword: string;
-      volume: string;
+      store: string;
+      country: string;
       rank: string;
     }[];
   };
