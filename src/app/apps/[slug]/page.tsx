@@ -233,23 +233,48 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
         )}
 
         {/* App Screenshots */}
-        <div className="relative w-full aspect-[1592/820] rounded-icon overflow-hidden">
-          {app.screenshotsImage ? (
-            <Image
-              src={app.screenshotsImage}
-              alt="App screenshots"
-              fill
-              unoptimized
-              className="object-cover"
-              sizes="(max-width: 640px) 100vw, 500px"
-              priority
-            />
-          ) : (
-            <div className="w-full h-full bg-tag flex items-center justify-center text-[17px] text-muted">
-              No screenshots uploaded
+        {app.screenshots && app.screenshots.length > 0 ? (
+          <div className="flex flex-col gap-[16px] w-full">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-[12px] w-full">
+              {app.screenshots.map((screenshot, index) => (
+                <div key={index} className="flex flex-col gap-[8px]">
+                  <div className="relative w-full aspect-[400/800] rounded-[12px] overflow-hidden">
+                    <Image
+                      src={screenshot.url}
+                      alt={screenshot.caption || `App screenshot ${index + 1}`}
+                      fill
+                      unoptimized
+                      className="object-cover"
+                      sizes="(max-width: 640px) 50vw, 25vw"
+                      priority={index === 0}
+                    />
+                  </div>
+                  {screenshot.caption && (
+                    <p className="text-[12px] text-body leading-[1.3] text-center">{screenshot.caption}</p>
+                  )}
+                </div>
+              ))}
             </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="relative w-full aspect-[1592/820] rounded-icon overflow-hidden">
+            {app.screenshotsImage ? (
+              <Image
+                src={app.screenshotsImage}
+                alt="App screenshots"
+                fill
+                unoptimized
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 500px"
+                priority
+              />
+            ) : (
+              <div className="w-full h-full bg-tag flex items-center justify-center text-[17px] text-muted">
+                No screenshots uploaded
+              </div>
+            )}
+          </div>
+        )}
 
         {kpis.length > 0 && (
           <div className="flex flex-col gap-[12px] w-full">

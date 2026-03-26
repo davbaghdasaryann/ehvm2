@@ -45,6 +45,7 @@ export type App = {
     followersLabel: string;
   };
   screenshotsImage: string;
+  screenshots?: { url: string; caption: string }[];
   appStoreLink?: string;
   playStoreLink?: string;
   userAcquisition: {

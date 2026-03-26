@@ -20,6 +20,7 @@ export interface ChartDataset {
   label: string
   data: string
   color: string
+  colors?: string
 }
 
 export interface ChartItem {

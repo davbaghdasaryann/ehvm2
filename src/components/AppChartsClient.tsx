@@ -66,15 +66,35 @@ export default function AppChartsClient({ charts }: { charts: AppChart[] }) {
               : [];
             if (data.length === 0) return null;
 
+            let backgroundColor: string | string[] = hexToRgba(color, 0.75);
+            let borderColor: string | string[] = isPie ? "#fff" : color;
+
+            const colors = (dataset as any).colors;
+            if (colors && typeof colors === 'string') {
+              const colorsArray = colors.split(',').map((c: string) => c.trim()).filter(Boolean);
+              if (colorsArray.length > 0) {
+                backgroundColor = colorsArray;
+                if (!isPie && resolvedType === "bar") {
+                  borderColor = colorsArray;
+                }
+              } else if (isPie) {
+                backgroundColor = PIE_PALETTE.slice(0, data.length);
+              }
+            } else if (isPie) {
+              backgroundColor = PIE_PALETTE.slice(0, data.length);
+            }
+
+            if (isPie) {
+              borderColor = "#fff";
+            } else if (resolvedType === "line") {
+              backgroundColor = hexToRgba(color, 0.08);
+            }
+
             return {
               label: dataset.label || "",
               data,
-              borderColor: isPie ? "#fff" : color,
-              backgroundColor: isPie
-                ? PIE_PALETTE.slice(0, data.length)
-                : resolvedType === "line"
-                  ? hexToRgba(color, 0.08)
-                  : hexToRgba(color, 0.75),
+              borderColor,
+              backgroundColor,
               borderWidth: isPie ? 2 : resolvedType === "line" ? 2 : 1,
               borderRadius: resolvedType === "bar" ? 4 : 0,
               pointRadius: resolvedType === "line" ? 3 : 0,

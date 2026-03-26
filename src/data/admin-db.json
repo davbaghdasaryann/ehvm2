@@ -2,7 +2,7 @@
   "apps": [
     {
       "id": "sample_coachify",
-      "updatedAt": "2026-03-23T12:18:42.049Z",
+      "updatedAt": "2026-03-26T19:43:53.910Z",
       "status": "published",
       "featured": true,
       "ndaRequired": true,
@@ -127,7 +127,8 @@
                 68000,
                 70000
               ],
-              "color": "#1a1a1a"
+              "color": "#601f1f",
+              "colors": "#3e54b6,#4155af,#50dc18,#4055b5,#4258b8,#4f65c4,#6176d6,#768ae5,#8396ec,#8c9ff2,#85ffe0,#ee5044,#f92e1f,#42ff8b"
             }
           ]
         },
@@ -146,7 +147,8 @@
                 71,
                 29
               ],
-              "color": "#2d7a4f"
+              "color": "#ffffff",
+              "colors": "#7ce774,#c31d1d"
             }
           ]
         },
@@ -173,7 +175,36 @@
                 6,
                 10
               ],
-              "color": "#3aa68b"
+              "color": "#3aa68b",
+              "colors": "#1a2e84,#9ba2c0,#61ee44,#4f6d67,#8b9ff9,#777b8d"
+            }
+          ]
+        },
+        {
+          "type": "pie",
+          "title": "test",
+          "subtitle": "test",
+          "labels": [
+            "United States",
+            "United Kingdom",
+            "Canada",
+            "Australia",
+            "Germany",
+            "Other"
+          ],
+          "datasets": [
+            {
+              "label": "",
+              "data": [
+                52,
+                14,
+                10,
+                8,
+                6,
+                10
+              ],
+              "color": "#5c0f0f",
+              "colors": "#d08925,#9ea3b7,#828736,#44eeb5,#ee44b8,#ee5e44"
             }
           ]
         }
@@ -567,8 +598,8 @@
     },
     {
       "id": "app_1773877057953",
-      "updatedAt": "2026-03-23T12:06:01.398Z",
-      "status": "draft",
+      "updatedAt": "2026-03-24T12:50:33.253Z",
+      "status": "published",
       "featured": true,
       "ndaRequired": true,
       "meta": {
@@ -592,7 +623,7 @@
       "kpis": [
         {
           "label": "ARR",
-          "value": "1,965,745",
+          "value": "$1,965,000",
           "trend": "",
           "sub": "",
           "icon": ""
@@ -661,31 +692,6 @@
               "color": "#37a963"
             }
           ]
-        },
-        {
-          "type": "pie",
-          "title": "Test",
-          "subtitle": "MRR",
-          "labels": [
-            "Organic",
-            "Apple Search Ads"
-          ],
-          "datasets": [
-            {
-              "label": "",
-              "data": [
-                12000
-              ],
-              "color": "#8f3d3d"
-            },
-            {
-              "label": "",
-              "data": [
-                16000
-              ],
-              "color": "#308882"
-            }
-          ]
         }
       ],
       "funnel": [],
@@ -704,16 +710,30 @@
           {
             "icon": "🕌",
             "name": "Muslim Pro: Quran & Athan",
-            "description": "",
+            "description": "Quran and Prayer Companion",
             "rating": "",
-            "isThisApp": false
+            "isThisApp": false,
+            "link": "https://apps.apple.com/us/app/muslim-pro-quran-athan/id388389451",
+            "appStoreRating": "4.7",
+            "googleStoreRating": "4.0"
+          },
+          {
+            "icon": "🕌",
+            "name": "Muslim: Ramadan 2026, Athan",
+            "description": "Prayer Times, Qibla, Quran",
+            "appStoreRating": "4.7",
+            "googleStoreRating": "4.7",
+            "link": "https://apps.apple.com/us/app/muslim-ramadan-2026-azan/id1137963102",
+            "isThisApp": true
           }
         ],
         "keywords": [
           {
             "keyword": "muslim",
             "volume": "",
-            "rank": "#2"
+            "rank": "#2",
+            "store": "App Store",
+            "country": "US"
           }
         ]
       },
@@ -924,6 +944,572 @@
       "financials": {
         "mrr": "",
         "arr": "",
+        "ltvCac": "",
+        "netMargin": "",
+        "yoyGrowth": "",
+        "askingMultiple": "",
+        "plRows": []
+      },
+      "charts": [],
+      "funnel": [],
+      "product": {
+        "vision": "",
+        "roadmap": []
+      },
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [],
+        "keywords": []
+      },
+      "opportunities": [],
+      "contact": {
+        "name": "",
+        "title": "",
+        "email": "",
+        "phone": "",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "processSteps": []
+      },
+      "media": {
+        "icon": "",
+        "cover": "",
+        "screenshots": []
+      }
+    },
+    {
+      "id": "app_1774278032144",
+      "updatedAt": "2026-03-23T15:07:15.235Z",
+      "status": "draft",
+      "featured": true,
+      "ndaRequired": true,
+      "meta": {
+        "name": "Playlist Transfer",
+        "tagline": "Transfer Playlists and Albums!",
+        "description": "Playlist Transfer is a unique app that makes it super easy to transfer music to other platforms. Scaling to almost $1m in annual revenue, Playlist Transfer supports many different music services such as Spotify, Apple Music, YouTube, Tidal and more!",
+        "category": "Health & Fitness",
+        "platforms": "iOS + Android",
+        "model": "Subscription",
+        "badge": "Acquisition Opportunity • Music",
+        "askingPrice": "~1.5 ARR",
+        "tags": [
+          "Music"
+        ],
+        "appStoreUrl": "https://apps.apple.com/us/app/playlist-transfer-for-my-music/id6478631467",
+        "playStoreUrl": "https://play.google.com/store/apps/details?gl=US&hl=en-US&id=com.playlist.transfer.app",
+        "developerCountry": "Turkey",
+        "developerFlag": "🇹🇷"
+      },
+      "kpis": [],
+      "financials": {
+        "mrr": "$73,000",
+        "arr": "$897,000",
+        "ltvCac": "",
+        "netMargin": "",
+        "yoyGrowth": "",
+        "askingMultiple": "",
+        "plRows": [
+          {
+            "label": "Net Revenue",
+            "amount": "$897,600",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          },
+          {
+            "label": "UA Costs",
+            "amount": "$469,000",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          },
+          {
+            "label": "EBITDA",
+            "amount": "$427,600",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          }
+        ]
+      },
+      "charts": [],
+      "funnel": [],
+      "product": {
+        "vision": "",
+        "roadmap": []
+      },
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [],
+        "keywords": []
+      },
+      "opportunities": [],
+      "contact": {
+        "name": "",
+        "title": "",
+        "email": "",
+        "phone": "",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "processSteps": []
+      },
+      "media": {
+        "icon": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/de/e1/b5/dee1b554-eca5-a22a-fbb1-5081160ff4bb/Placeholder.mill/400x400bb-75.webp",
+        "cover": "",
+        "screenshots": [
+          {
+            "url": "https://play-lh.googleusercontent.com/rmw-JCENoJ10yPMwIIia0NhEYxfSwJukS8hPhvlNZaw36GKbUytA5_QL_9bVLi-e1Ak=w1052-h592-rw",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/6d/50/a3/6d50a3a8-8954-dd21-00f7-5621ba928e87/4.jpg/314x680bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/af/9e/6c/af9e6cf3-3ff2-274d-3ac0-e052a92c9e83/2.jpg/314x680bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/d8/b8/74/d8b87400-02ae-ac42-561b-79e98556d89b/3.jpg/314x680bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/24/b2/e0/24b2e04a-edba-3c99-8e22-471d987caf5e/6.jpg/314x680bb.webp",
+            "caption": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "app_1774280354471",
+      "updatedAt": "2026-03-24T01:32:46.618Z",
+      "status": "published",
+      "featured": false,
+      "ndaRequired": true,
+      "meta": {
+        "name": "Qibla Finder Compass 100%",
+        "tagline": "Qibla Finder",
+        "description": "Qibla Finder is one of the rules that every Muslim should pay attention to. The Qibla Finder 100% is the n.1 Qibla Finder globally. With more than 1 million Monthly Active Users, the app covers both App and Google Store and offers a mixture of Subscriptions and Ad monetization.",
+        "category": "Navigation",
+        "platforms": "iOS + Android",
+        "model": "IAP + AdMon",
+        "badge": "Acquisition Opportunity • Muslim Lifestyle",
+        "askingPrice": "~2x ARR",
+        "tags": [
+          "Muslim"
+        ],
+        "appStoreUrl": "https://apps.apple.com/us/app/qibla-finder-100-%D8%A7%D8%AA%D8%AC%D8%A7%D9%87-%D8%A7%D9%84%D9%82%D8%A8%D9%84%D8%A9/id1444860666",
+        "playStoreUrl": "https://play.google.com/store/apps/details?gl=US&hl=en-US&id=com.hundred.qibla.finder",
+        "developerCountry": "Turkey",
+        "developerFlag": "🇹🇷"
+      },
+      "kpis": [],
+      "financials": {
+        "mrr": "$170,000",
+        "arr": "$1,960,000",
+        "ltvCac": "",
+        "netMargin": "",
+        "yoyGrowth": "",
+        "askingMultiple": "",
+        "plRows": [
+          {
+            "label": "Gross Revenue",
+            "amount": "$1,961,000",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          }
+        ]
+      },
+      "charts": [
+        {
+          "type": "pie",
+          "title": "Subscriptions by Duration",
+          "subtitle": "",
+          "labels": [
+            "Annual",
+            "Monthly",
+            "Weekly",
+            "3 months"
+          ],
+          "datasets": [
+            {
+              "label": "",
+              "data": [
+                41179,
+                9871,
+                854,
+                121
+              ],
+              "color": "#1a1a1a"
+            }
+          ]
+        },
+        {
+          "type": "doughnut",
+          "title": "GEOs",
+          "subtitle": "",
+          "labels": [
+            "Turkey",
+            "Saudi Arabia",
+            "Indonesia",
+            "Malaysia",
+            "United States",
+            "Germany",
+            "India",
+            "Russia",
+            "United Kingdom",
+            "Iran",
+            "United Arab Emirates",
+            "France",
+            "Other"
+          ],
+          "datasets": [
+            {
+              "label": "",
+              "data": [
+                1080133,
+                920576,
+                856744,
+                761480,
+                306246,
+                226277,
+                201061,
+                193682,
+                188564,
+                183932,
+                179100,
+                166367,
+                1441686
+              ],
+              "color": "#1a1a1a"
+            }
+          ]
+        }
+      ],
+      "funnel": [],
+      "product": {
+        "vision": "",
+        "roadmap": []
+      },
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [],
+        "keywords": []
+      },
+      "opportunities": [],
+      "contact": {
+        "name": "Evelin Herrera",
+        "title": "",
+        "email": "apps@evelinherrera.com",
+        "phone": "",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "processSteps": []
+      },
+      "media": {
+        "icon": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/aa/2e/1e/aa2e1ec1-d207-3583-7b3f-be24cef5edd2/Placeholder.mill/400x400bb-75.webp",
+        "cover": "",
+        "screenshots": [
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/10/a9/57/10a957c7-9230-abbe-0c18-152d8ca28e8a/211.jpg/314x680bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/e3/28/bd/e328bda2-c9cf-383d-00f6-04195e6342f8/452.jpg/314x680bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/da/c2/bc/dac2bc64-6b0a-4d7c-e9e0-166f58aeef72/396.jpg/314x680bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/3f/13/3f/3f133f6e-7390-a42e-4c4c-143f54b944d9/6656afae-16e1-46fc-8f1a-55a1c5d8f22e_27.jpg/314x680bb.webp",
+            "caption": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "app_1774312076695",
+      "updatedAt": "2026-03-24T01:34:32.132Z",
+      "status": "published",
+      "featured": false,
+      "ndaRequired": true,
+      "meta": {
+        "name": "HelloHabit - Daily Planner",
+        "tagline": "Habit Tracker",
+        "description": "HelloHabit is a simple app that helps you manage goals, build habits, and achieve success. Growing excellently YoY, HelloHabit a stunning 4.9* rating in the US app store, its n.1 GEO. Overall 80% of traffic is coming from t1 countries",
+        "category": "Productivity",
+        "platforms": "iOS + Android",
+        "model": "Subscription",
+        "badge": "Acquisition Opportunity • Productivity",
+        "askingPrice": "",
+        "tags": [
+          "Productivity",
+          "Habit Tracker"
+        ],
+        "appStoreUrl": "https://apps.apple.com/us/app/hellohabit-daily-planner/id6476824223?see-all=reviews&platform=iphone",
+        "playStoreUrl": "https://play.google.com/store/apps/details?gl=US&hl=en-US&id=com.studio.hellohabit",
+        "developerCountry": "United States",
+        "developerFlag": "🇺🇸"
+      },
+      "kpis": [
+        {
+          "label": "DAU",
+          "value": "12,000",
+          "trend": "",
+          "sub": "",
+          "icon": "👥"
+        },
+        {
+          "label": "MAU",
+          "value": "84,000",
+          "trend": "",
+          "sub": "",
+          "icon": "👥"
+        }
+      ],
+      "financials": {
+        "mrr": "$62,000",
+        "arr": "$743,000",
+        "ltvCac": "",
+        "netMargin": "",
+        "yoyGrowth": "",
+        "askingMultiple": "~3x ARR",
+        "plRows": [
+          {
+            "label": "Gross Revenue",
+            "amount": "$708,000",
+            "trend": "",
+            "notes": "",
+            "highlight": false
+          }
+        ]
+      },
+      "charts": [
+        {
+          "type": "pie",
+          "title": "GEOs",
+          "subtitle": "",
+          "labels": [
+            "United States",
+            "United Kingdom",
+            "Canada",
+            "Australia",
+            "India",
+            "Germany",
+            "Spain",
+            "Netherlands",
+            "Italy",
+            "Other"
+          ],
+          "datasets": [
+            {
+              "label": "",
+              "data": [
+                219.469,
+                94.695,
+                46.935,
+                38.494,
+                24.431,
+                17.692,
+                13.206,
+                4.601,
+                4.176,
+                77.899
+              ],
+              "color": "#1a1a1a"
+            }
+          ]
+        },
+        {
+          "type": "bar",
+          "title": "MRR",
+          "subtitle": "",
+          "labels": [
+            "March 25",
+            "April 25",
+            "May 25",
+            "June 25",
+            "July 25",
+            "August 25",
+            "September 25",
+            "October 25",
+            "November 25",
+            "December 25",
+            "January 25",
+            "February 25",
+            "March 25"
+          ],
+          "datasets": [
+            {
+              "label": "",
+              "data": [
+                24775.35,
+                25476.2,
+                25932.65,
+                26967.66,
+                27426.56,
+                27601.47,
+                27641.88,
+                28037.66,
+                27991.26,
+                35820.1,
+                66606.61,
+                63571.23,
+                61978.5
+              ],
+              "color": "#1a1a1a"
+            }
+          ]
+        }
+      ],
+      "funnel": [],
+      "product": {
+        "vision": "",
+        "roadmap": []
+      },
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [
+          {
+            "icon": "🗓",
+            "name": "HelloHabit",
+            "description": "To do List & Habit Tracker",
+            "appStoreRating": "4.9",
+            "googleStoreRating": "4.4",
+            "link": "https://apps.apple.com/us/app/hellohabit-daily-planner/id6476824223",
+            "isThisApp": true
+          },
+          {
+            "icon": "💪",
+            "name": "Habit Tracker",
+            "description": "Goal Tracker & ADHD Planner",
+            "appStoreRating": "4.8",
+            "googleStoreRating": "",
+            "link": "https://apps.apple.com/us/app/habit-tracker/id1438388363",
+            "isThisApp": false
+          }
+        ],
+        "keywords": [
+          {
+            "keyword": "habit tracker free",
+            "store": "App Store",
+            "country": "US",
+            "rank": "#5"
+          }
+        ]
+      },
+      "opportunities": [
+        {
+          "icon": "🚀",
+          "title": "Web to app",
+          "description": ""
+        },
+        {
+          "icon": "🚀",
+          "title": "Weekly subscriptions\t",
+          "description": ""
+        },
+        {
+          "icon": "🚀",
+          "title": "Task management features\t\t\t",
+          "description": ""
+        }
+      ],
+      "contact": {
+        "name": "Evelin Herrera",
+        "title": "",
+        "email": "apps@evelinherrera.com",
+        "phone": "",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "processSteps": []
+      },
+      "media": {
+        "icon": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/3d/21/de/3d21de2a-43a3-76b3-1b05-4d10ff2e3dab/Placeholder.mill/400x400bb-75.webp",
+        "cover": "",
+        "screenshots": [
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/4b/1c/14/4b1c14a5-f789-de29-990e-142305350eec/1_home_mobile_large.png/314x680bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/19/8e/ac/198eac0a-4e96-dbb9-167b-73364a9ae0f2/2_reports_mobile_large.png/314x680bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/8f/d7/9c/8fd79c47-60e1-01d9-2d82-12e71b3fd202/7_widgets_mobile_large.png/314x680bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/02/56/c1/0256c182-f47d-161f-7e4b-cd90bb357c2f/4_reminders_mobile_large.png/314x680bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/4f/fc/ca/4ffcca5e-df48-e25b-60e3-987e8999f159/3_notes_mobile_large.png/314x680bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/3f/21/98/3f2198f4-c540-4916-249f-7f339d914536/6_timer_mobile_large.png/314x680bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/c3/8f/94/c38f944c-0064-6ecd-a41f-a814995ece87/8_apple_health_mobile_large.png/314x680bb.webp",
+            "caption": ""
+          },
+          {
+            "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/00/74/a3/0074a3ad-b21f-0db4-99ed-f581cc4f5777/13_community_mobile_large.png/314x680bb.webp",
+            "caption": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "app_1774312829923",
+      "updatedAt": "2026-03-24T00:40:29.923Z",
+      "status": "draft",
+      "featured": false,
+      "ndaRequired": true,
+      "meta": {
+        "name": "AI Chat Assistant",
+        "tagline": "AI models aggregator",
+        "description": "",
+        "category": "Productivity",
+        "platforms": "iOS Only",
+        "model": "Subscription",
+        "badge": "Acquisition Opportunity • AI Chat",
+        "askingPrice": "~1x ARR",
+        "tags": [
+          "AI Chat",
+          "Productivity"
+        ]
+      },
+      "kpis": [],
+      "financials": {
+        "mrr": "$790,000",
+        "arr": "$8,700,000",
         "ltvCac": "",
         "netMargin": "",
         "yoyGrowth": "",

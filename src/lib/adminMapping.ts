@@ -245,6 +245,10 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
       followersLabel: followersMeta.label,
     },
     screenshotsImage,
+    screenshots: record.media.screenshots.map((s) => ({
+      url: clean(s.url),
+      caption: clean(s.caption),
+    })),
     appStoreLink: clean(record.meta.appStoreUrl) || undefined,
     playStoreLink: clean(record.meta.playStoreUrl) || undefined,
     userAcquisition: {
@@ -306,6 +310,7 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
         label: clean(dataset.label),
         data: (Array.isArray(dataset.data) ? dataset.data : []).filter((value) => Number.isFinite(value)),
         color: clean(dataset.color),
+        colors: (dataset as any).colors ? clean((dataset as any).colors) : undefined,
       })),
     })),
     funnel: record.funnel.map((step) => ({
