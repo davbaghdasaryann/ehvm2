@@ -22,7 +22,7 @@ export default function AppsGallery({ apps, categories, siteLinks }: AppsGallery
         <FilterTabs tabs={categories} active={active} onSelect={setActive} />
       </div>
 
-      <div className="ehvm-slide-up flex flex-wrap gap-[10px] justify-center items-center max-w-[1180px] w-full mt-[18px] pb-[40px] px-[10px]">
+      <div className="ehvm-slide-up flex flex-wrap gap-[10px] justify-center items-center max-w-[1180px] w-full mt-[18px] pb-[40px] px-[20px] sm:px-[24px]">
         {filtered.map((app) => (
           <AppCard key={app.slug} app={app} />
         ))}

@@ -17,17 +17,16 @@ function generatePositions(count: number): { top: string; left: string }[] {
   if (count === 0) return [];
 
   // 8 zones arranged around the center safe area (logo/text).
-  // Center content lives at ~y:42-58%. Icons are ~80px on mobile (715px main)
-  // so icon centers need ≥6% clearance → top yMax≤28, bottom yMin≥68.
+  // Icons ~80-100px, add 8-10% margin from edges to prevent clipping.
   const zones = [
-    { xMin: 0, xMax: 33, yMin: 0, yMax: 28 },      // top-left
+    { xMin: 8, xMax: 33, yMin: 0, yMax: 28 },       // top-left (with margin)
     { xMin: 33, xMax: 67, yMin: 0, yMax: 22 },      // top-center (extra buffer)
-    { xMin: 67, xMax: 100, yMin: 0, yMax: 28 },     // top-right
-    { xMin: 0, xMax: 12, yMin: 30, yMax: 70 },      // mid-left (peeking from edge)
-    { xMin: 88, xMax: 100, yMin: 30, yMax: 70 },    // mid-right (peeking from edge)
-    { xMin: 0, xMax: 33, yMin: 68, yMax: 90 },      // bottom-left
+    { xMin: 67, xMax: 92, yMin: 0, yMax: 28 },      // top-right (with margin)
+    { xMin: 8, xMax: 15, yMin: 30, yMax: 70 },      // mid-left (with margin)
+    { xMin: 85, xMax: 92, yMin: 30, yMax: 70 },     // mid-right (with margin)
+    { xMin: 8, xMax: 33, yMin: 68, yMax: 90 },      // bottom-left (with margin)
     { xMin: 33, xMax: 67, yMin: 76, yMax: 90 },     // bottom-center (extra buffer)
-    { xMin: 67, xMax: 100, yMin: 68, yMax: 90 },    // bottom-right
+    { xMin: 67, xMax: 92, yMin: 68, yMax: 90 },     // bottom-right (with margin)
   ];
 
   // Fisher-Yates shuffle

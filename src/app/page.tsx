@@ -3,14 +3,16 @@ import Link from "next/link";
 import FloatingIcons from "@/components/FloatingIcons";
 import EhvmLogo from "@/components/EhvmLogo";
 import DarkModeToggle from "@/components/DarkModeToggle";
-import { getFeaturedApps } from "@/lib/data";
+import { getFeaturedApps, getPageSubtitles } from "@/lib/data";
 
 // Depth values for parallax intensity on each floating icon.
 // Positions are randomized by FloatingIcons; depth controls how much each icon responds to mouse movement.
 const depths = [0.3, 0.7, 0.5, 0.8, 0.4, 0.6, 0.9];
 
+export const revalidate = 60;
+
 export default async function Home() {
-  const featuredApps = await getFeaturedApps();
+  const [featuredApps, pageSubtitles] = await Promise.all([getFeaturedApps(), getPageSubtitles()]);
 
   // First 6 depths → featured apps, last depth → dark mode toggle
   const appItems = featuredApps.slice(0, depths.length - 1).map((app, i) => ({
@@ -54,9 +56,15 @@ export default async function Home() {
           <EhvmLogo width={109} height={44} />
           <span className="text-[17.5px] -mt-1 -ml-1 ehvm-fade-in" style={{ animationDelay: "1.1s" }}>™</span>
         </div>
-        <p className="text-[12px] text-center max-w-[189px] mt-[10px] ehvm-fade-in" style={{ animationDelay: "1.3s" }}>
-          EHVM Apps Capital<br />$438M in total asking value across our portfolio.
-        </p>
+        {pageSubtitles.home ? (
+          <p className="text-[12px] text-center max-w-[189px] mt-[10px] ehvm-fade-in" style={{ animationDelay: "1.3s" }}>
+            {pageSubtitles.home}
+          </p>
+        ) : (
+          <p className="text-[12px] text-center max-w-[189px] mt-[10px] ehvm-fade-in" style={{ animationDelay: "1.3s" }}>
+            EHVM Apps Capital<br />$438M in total asking value across our portfolio.
+          </p>
+        )}
       </div>
 
       <div className="flex-1 flex items-end justify-center pb-[42px]">

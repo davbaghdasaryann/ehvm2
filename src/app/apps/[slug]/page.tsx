@@ -2,7 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getAppBySlug, getAppSlugs } from "@/lib/data";
 import AppChartsClient from "@/components/AppChartsClient";
-import CalendarWidget from "@/components/CalendarWidget";
+import CalendarEmbed from "@/components/CalendarEmbed";
 import FaqAccordion from "@/components/FaqAccordion";
 import HistoryBackLink from "@/components/HistoryBackLink";
 
@@ -438,10 +438,10 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     </div>
                     <div className="flex flex-col items-end gap-[3px] shrink-0">
                       {item.appStoreRating ? (
-                        <span className="bg-card px-[8px] py-[2px] rounded-pill text-[11px]">🍎 {item.appStoreRating}</span>
+                        <span className="bg-card px-[8px] py-[2px] rounded-pill text-[11px]">{item.appStoreIcon || '🍎'} {item.appStoreRating}</span>
                       ) : null}
                       {item.googleStoreRating ? (
-                        <span className="bg-card px-[8px] py-[2px] rounded-pill text-[11px]">▶ {item.googleStoreRating}</span>
+                        <span className="bg-card px-[8px] py-[2px] rounded-pill text-[11px]">{item.googleStoreIcon || '▶'} {item.googleStoreRating}</span>
                       ) : null}
                     </div>
                   </div>
@@ -644,12 +644,9 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
         {/* Calendar */}
         {app.contact.calendarUrl ? (
-          <CalendarWidget
-            hostName={app.contact.name}
-            hostImage={app.contact.image}
-            title={app.contact.title || "M&A Questions"}
-            bookingUrl={app.contact.calendarUrl}
-          />
+          <div className="bg-tag rounded-icon p-[20px] w-full">
+            <CalendarEmbed calendarUrl={app.contact.calendarUrl} />
+          </div>
         ) : null}
       </div>
     </main>

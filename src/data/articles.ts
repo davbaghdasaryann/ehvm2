@@ -3,6 +3,19 @@ export type ContentBlock =
   | { type: "image"; src: string; caption?: string }
   | { type: "quote"; value: string; author: string };
 
+export type NewsBlockType = "text" | "image" | "title" | "quote";
+
+export type NewsBlock = {
+  id: string;
+  type: NewsBlockType;
+  content?: string;
+  imageUrl?: string;
+  imageCaption?: string;
+  quoteText?: string;
+  quoteCite?: string;
+  links?: Array<{ text: string; url: string }>;
+};
+
 export type Article = {
   slug: string;
   title: string;
@@ -18,6 +31,7 @@ export type Article = {
   readTime?: string;
   author?: { name: string; image: string };
   content?: ContentBlock[];
+  blocks?: NewsBlock[];
 };
 
 export const articles: Article[] = [

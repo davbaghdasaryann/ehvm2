@@ -1,15 +1,17 @@
 'use client'
 import { create, persist } from '@/admin/store/storeCore'
 import type {
-  AdminNewsRecord, AppRecord, PanelName, PersonStory, StoryBlock, SiteLinks,
+  AdminNewsRecord, AppRecord, PanelName, PersonStory, StoryBlock, SiteLinks, PageSubtitles,
   KpiItem, FinRow, ChartItem, FunnelStep,
   RoadmapItem, Competitor, Keyword, Opportunity, ProcessStep, Screenshot
 } from '@/admin/types'
+import type { NewsBlock } from '@/data/articles'
 
 const uid = () => Date.now() + Math.random()
 const ADMIN_APPS_API = '/api/admin/apps'
 const ADMIN_STORY_API = '/api/admin/story'
 const ADMIN_SITE_LINKS_API = '/api/admin/site-links'
+const ADMIN_PAGE_SUBTITLES_API = '/api/admin/page-subtitles'
 const SAMPLE_APP_ID = 'sample_coachify'
 const NEWS_ID_PREFIX = 'news_'
 
@@ -101,6 +103,7 @@ interface AdminStore extends FormState {
   news: AdminNewsRecord[]
   personStories: PersonStory[]
   siteLinks: SiteLinks | null
+  pageSubtitles: PageSubtitles | null
   currentAppId: string | null
   activePanel: PanelName
   isDirty: boolean
@@ -123,13 +126,20 @@ interface AdminStore extends FormState {
   deleteApp: (id: string) => void
   exportJSON: () => void
   addNews: () => void
-  updateNews: (id: string, key: keyof AdminNewsRecord, value: string | boolean) => void
+  updateNews: (id: string, key: keyof AdminNewsRecord, value: string | boolean | NewsBlock[]) => void
   deleteNews: (id: string) => void
+  moveNewsBlock: (itemId: string, blockId: string, direction: 'up' | 'down') => void
+  saveNews: () => Promise<void>
 
   // site links actions
   fetchSiteLinks: () => Promise<void>
   saveSiteLinks: () => Promise<void>
   updateSiteLink: <K extends keyof SiteLinks>(key: K, val: SiteLinks[K]) => void
+
+  // page subtitles actions
+  fetchPageSubtitles: () => Promise<void>
+  savePageSubtitles: () => Promise<void>
+  updatePageSubtitle: (page: 'home' | 'news' | 'contact', text: string) => void
 
   // person story actions
   fetchPersonStories: () => Promise<void>
@@ -218,6 +228,7 @@ export const useAdminStore = create<AdminStore>()(
       news: [],
       personStories: [],
       siteLinks: null,
+      pageSubtitles: null,
       currentAppId: null,
       activePanel: 'apps',
       isDirty: false,
@@ -255,8 +266,8 @@ export const useAdminStore = create<AdminStore>()(
             })
           }
 
-          // Also fetch person stories and site links
-          await Promise.all([get().fetchPersonStories(), get().fetchSiteLinks()])
+          // Also fetch person stories, site links, and page subtitles
+          await Promise.all([get().fetchPersonStories(), get().fetchSiteLinks(), get().fetchPageSubtitles()])
         } catch (error) {
           if (error instanceof Error && error.message === 'unauthorized' && typeof window !== 'undefined') {
             window.location.href = '/admin/login'
@@ -415,19 +426,14 @@ export const useAdminStore = create<AdminStore>()(
           id,
           slug: id,
           title: 'New article',
-          subtitle: '',
-          quote: '',
-          image: '',
-          buttonLabel: 'Read more',
-          buttonUrl: '',
           category: 'Event',
-          featured: false,
           published: false,
           updatedAt: new Date().toISOString(),
+          date: new Date().toISOString(),
+          blocks: [],
         }
         const news = [next, ...s.news]
-        set({ news })
-        void pushServerData(s.apps, news)
+        set({ news, isDirty: true })
       },
       updateNews: (id, key, value) => {
         const s = get()
@@ -443,14 +449,45 @@ export const useAdminStore = create<AdminStore>()(
           next.updatedAt = new Date().toISOString()
           return next
         })
-        set({ news })
-        void pushServerData(s.apps, news)
+        set({ news, isDirty: true })
       },
       deleteNews: (id) => {
         const s = get()
         const news = s.news.filter((item) => item.id !== id)
-        set({ news })
-        void pushServerData(s.apps, news)
+        set({ news, isDirty: true })
+      },
+      moveNewsBlock: (itemId, blockId, direction) => {
+        const s = get()
+        const news = s.news.map((item) => {
+          if (item.id !== itemId || !item.blocks) return item
+          const blocks = [...item.blocks]
+          const idx = blocks.findIndex(b => b.id === blockId)
+          if (idx < 0) return item
+          const newIdx = direction === 'up' ? idx - 1 : idx + 1
+          if (newIdx < 0 || newIdx >= blocks.length) return item
+          ;[blocks[idx], blocks[newIdx]] = [blocks[newIdx], blocks[idx]]
+          return { ...item, blocks, updatedAt: new Date().toISOString() }
+        })
+        set({ news, isDirty: true })
+      },
+      saveNews: async () => {
+        const news = get().news
+        try {
+          const res = await fetch(ADMIN_APPS_API, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ apps: get().apps, news }),
+          })
+          if (res.status === 401) { window.location.href = '/admin/login'; return }
+          if (res.ok) {
+            get().showToast('Articles saved!', '📰')
+            set({ isDirty: false })
+          } else {
+            get().showToast('Failed to save articles', '⚠️')
+          }
+        } catch {
+          get().showToast('Failed to save articles', '⚠️')
+        }
       },
 
       openValidation: (failures) => set({ validationModal: { open: true, failures } }),
@@ -488,6 +525,40 @@ export const useAdminStore = create<AdminStore>()(
       updateSiteLink: (key, val) => {
         const links = get().siteLinks
         set({ siteLinks: { ...(links ?? {} as SiteLinks), [key]: val }, isDirty: true })
+      },
+
+      fetchPageSubtitles: async () => {
+        try {
+          const res = await fetch(ADMIN_PAGE_SUBTITLES_API, { method: 'GET', cache: 'no-store' })
+          if (res.status === 401) { window.location.href = '/admin/login'; return }
+          if (!res.ok) return
+          const payload = await res.json() as { pageSubtitles?: { home: string; news: string; contact: string } }
+          if (payload.pageSubtitles) set({ pageSubtitles: payload.pageSubtitles })
+        } catch { /* silent */ }
+      },
+      savePageSubtitles: async () => {
+        const pageSubtitles = get().pageSubtitles
+        if (!pageSubtitles) return
+        try {
+          const res = await fetch(ADMIN_PAGE_SUBTITLES_API, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pageSubtitles }),
+          })
+          if (res.status === 401) { window.location.href = '/admin/login'; return }
+          if (res.ok) {
+            get().showToast('Page subtitles saved!', '✓')
+            set({ isDirty: false })
+          } else {
+            get().showToast('Failed to save page subtitles', '⚠️')
+          }
+        } catch {
+          get().showToast('Failed to save page subtitles', '⚠️')
+        }
+      },
+      updatePageSubtitle: (page, text) => {
+        const subtitles = get().pageSubtitles ?? { home: '', news: '', contact: '' }
+        set({ pageSubtitles: { ...subtitles, [page]: text }, isDirty: true })
       },
 
       fetchPersonStories: async () => {
@@ -750,7 +821,7 @@ export const useAdminStore = create<AdminStore>()(
     }),
     {
       name: 'ehvm_admin',
-      partialize: (state) => ({ apps: state.apps, news: state.news, personStories: state.personStories, siteLinks: state.siteLinks }),
+      partialize: (state) => ({ apps: state.apps, news: state.news, personStories: state.personStories, siteLinks: state.siteLinks, pageSubtitles: state.pageSubtitles }),
     }
   )
 )

@@ -152,7 +152,9 @@ function buildPageBlocks(record: AppRecord): NotionPageBlock[] {
     blocks.push({ type: "heading_2", value: "Market context" });
 
     record.market.competitors.forEach((item) => {
-      const text = [item.icon, item.name, item.description, item.appStoreRating && `🍎${item.appStoreRating}`, item.googleStoreRating && `▶${item.googleStoreRating}`].filter(Boolean).join(" ").trim();
+      const appIcon = item.appStoreIcon || '🍎';
+      const googleIcon = item.googleStoreIcon || '▶';
+      const text = [item.icon, item.name, item.description, item.appStoreRating && `${appIcon}${item.appStoreRating}`, item.googleStoreRating && `${googleIcon}${item.googleStoreRating}`].filter(Boolean).join(" ").trim();
       if (text) blocks.push({ type: "bulleted_list_item", value: text });
     });
 
@@ -338,7 +340,9 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
         name: clean(item.name),
         description: clean(item.description),
         appStoreRating: clean(item.appStoreRating),
+        appStoreIcon: item.appStoreIcon ? clean(item.appStoreIcon) : undefined,
         googleStoreRating: clean(item.googleStoreRating),
+        googleStoreIcon: item.googleStoreIcon ? clean(item.googleStoreIcon) : undefined,
         link: clean(item.link),
         isThisApp: Boolean(item.isThisApp),
       })),

@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import FloatingIcons from "@/components/FloatingIcons";
 import EhvmLogo from "@/components/EhvmLogo";
-import { getPublishedStories, getSiteLinks } from "@/lib/data";
+import { getPublishedStories, getSiteLinks, getPageSubtitles } from "@/lib/data";
 
 const PEOPLE_META: Record<string, { src: string; depth: number }> = {
   evelin: { src: "/images/evelin.png", depth: 0.7 },
@@ -17,7 +17,7 @@ const FALLBACK_PEOPLE = [
 export const revalidate = 60;
 
 export default async function Contact() {
-  const [stories, siteLinks] = await Promise.all([getPublishedStories(), getSiteLinks()]);
+  const [stories, siteLinks, pageSubtitles] = await Promise.all([getPublishedStories(), getSiteLinks(), getPageSubtitles()]);
 
   // Build floating people from published stories; fall back to hardcoded list
   const floatingPeople = stories.length > 0
@@ -60,7 +60,7 @@ export default async function Contact() {
           <span className="text-[17.5px] -mt-1 -ml-1 ehvm-fade-in" style={{ animationDelay: "1.1s" }}>™</span>
         </div>
         <p className="text-[12px] text-center max-w-[189px] mt-[10px] ehvm-fade-in" style={{ animationDelay: "1.3s" }}>
-          Connecting app builders and buyers. Reach out to get started.
+          {pageSubtitles.contact}
         </p>
       </div>
 

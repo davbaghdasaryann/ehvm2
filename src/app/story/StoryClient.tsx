@@ -50,6 +50,23 @@ export default function StoryClient({ story }: { story: StoryRecord }) {
     }
   }, []);
 
+  function renderTextWithLinks(text: string) {
+    const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
+    return parts.map((part, idx) => {
+      const linkMatch = part.match(/\[([^\]]+)\]\(([^)]+)\)/);
+      if (linkMatch) {
+        const linkText = linkMatch[1];
+        const linkUrl = linkMatch[2];
+        return (
+          <a key={idx} href={linkUrl} className="underline hover:opacity-70" target="_blank" rel="noopener noreferrer">
+            {linkText}
+          </a>
+        );
+      }
+      return part ? <span key={idx}>{part}</span> : null;
+    });
+  }
+
   return (
     <main className="flex justify-center w-full px-[10px] pb-[40px]">
       <div className="bg-card flex flex-col items-start p-[15px] rounded-card w-full max-w-[500px]">
@@ -85,8 +102,8 @@ export default function StoryClient({ story }: { story: StoryRecord }) {
           {story.blocks.map((block) => {
             if (block.type === 'text' && block.content) {
               return (
-                <p key={block.id} className="text-[16px] leading-[1.7] text-body" style={{ fontFamily: "var(--font-serif)" }}>
-                  {block.content}
+                <p key={block.id} className="text-[16px] leading-[1.7] text-body" style={{ fontFamily: "var(--font-serif)", whiteSpace: "pre-wrap" }}>
+                  {renderTextWithLinks(block.content)}
                 </p>
               );
             }

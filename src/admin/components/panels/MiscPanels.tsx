@@ -124,7 +124,9 @@ export function MarketPanel() {
                 </div>
                 <div className="field" style={{ gridColumn: 'span 3' }}><label className="field-label">Description</label><input type="text" value={c.description} onChange={e => s.updateCompetitor(c.id, 'description', e.target.value)} placeholder="Adaptive strength training · $30M+ ARR" /></div>
                 <div className="field"><label className="field-label">App Store Rating</label><input type="text" value={c.appStoreRating} onChange={e => s.updateCompetitor(c.id, 'appStoreRating', e.target.value)} placeholder="4.8" /></div>
+                <div className="field"><label className="field-label">App Store Icon</label><input type="text" value={c.appStoreIcon || ''} onChange={e => s.updateCompetitor(c.id, 'appStoreIcon', e.target.value)} placeholder="🍎 (optional)" /></div>
                 <div className="field"><label className="field-label">Google Play Rating</label><input type="text" value={c.googleStoreRating} onChange={e => s.updateCompetitor(c.id, 'googleStoreRating', e.target.value)} placeholder="4.6" /></div>
+                <div className="field"><label className="field-label">Google Play Icon</label><input type="text" value={c.googleStoreIcon || ''} onChange={e => s.updateCompetitor(c.id, 'googleStoreIcon', e.target.value)} placeholder="▶ (optional)" /></div>
                 <div className="field"><label className="field-label">App Link</label><input type="text" value={c.link} onChange={e => s.updateCompetitor(c.id, 'link', e.target.value)} placeholder="https://apps.apple.com/..." /></div>
               </div>
             </div>

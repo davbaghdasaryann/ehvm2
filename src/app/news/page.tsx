@@ -2,14 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import FloatingIcons from "@/components/FloatingIcons";
 import EhvmLogo from "@/components/EhvmLogo";
-import { getArticles } from "@/lib/data";
+import { getArticles, getPageSubtitles } from "@/lib/data";
 
 const depths = [0.5, 0.3, 0.8, 0.6, 0.4];
 
 export const revalidate = 60;
 
 export default async function Newsroom() {
-  const articles = await getArticles();
+  const [articles, pageSubtitles] = await Promise.all([getArticles(), getPageSubtitles()]);
   const featuredFirst = [...articles].sort(
     (a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)),
   );
@@ -75,7 +75,7 @@ export default async function Newsroom() {
           <span className="text-[44px] tracking-[-1.5px] ml-1 -mt-4 ehvm-fade-in" style={{ fontFamily: "var(--font-serif)", animationDelay: "1.2s" }}>News</span>
         </div>
         <p className="text-[12px] text-center max-w-[189px] mt-[10px] ehvm-fade-in" style={{ animationDelay: "1.4s" }}>
-          News, Stories, Events
+          {pageSubtitles.news}
         </p>
       </div>
 

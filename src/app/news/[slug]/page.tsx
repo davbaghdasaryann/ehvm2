@@ -2,6 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import HistoryBackLink from "@/components/HistoryBackLink";
 import { getArticleBySlug, getArticleSlugs } from "@/lib/data";
+import type { NewsBlock } from "@/data/articles";
 
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
@@ -10,10 +11,90 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
+function renderTextWithLinks(text: string) {
+  const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
+  return parts.map((part, idx) => {
+    const linkMatch = part.match(/\[([^\]]+)\]\(([^)]+)\)/);
+    if (linkMatch) {
+      const linkText = linkMatch[1];
+      const linkUrl = linkMatch[2];
+      return (
+        <a key={idx} href={linkUrl} className="underline hover:opacity-70" target="_blank" rel="noopener noreferrer">
+          {linkText}
+        </a>
+      );
+    }
+    return part ? <span key={idx}>{part}</span> : null;
+  });
+}
+
+function renderNewsBlock(block: NewsBlock) {
+  if (block.type === "text" && block.content) {
+    return (
+      <p key={block.id} className="text-[16px] leading-[1.7]" style={{ fontFamily: "var(--font-serif)", whiteSpace: "pre-wrap" }}>
+        {renderTextWithLinks(block.content)}
+      </p>
+    );
+  }
+  if (block.type === "title" && block.content) {
+    return (
+      <h2 key={block.id} className="text-[24px] leading-[1.2] mt-[20px]" style={{ fontFamily: "var(--font-serif)" }}>
+        {block.content}
+      </h2>
+    );
+  }
+  if (block.type === "image" && block.imageUrl) {
+    return (
+      <div key={block.id} className="w-full my-[20px]">
+        <div className="relative w-full aspect-[16/9] rounded-icon overflow-hidden bg-thumbnail">
+          <Image src={block.imageUrl} alt={block.imageCaption || "Article image"} fill unoptimized className="object-cover" />
+        </div>
+        {block.imageCaption && (
+          <p className="text-[12px] text-caption text-center mt-[8px] italic">{block.imageCaption}</p>
+        )}
+      </div>
+    );
+  }
+  if (block.type === "quote" && block.quoteText) {
+    return (
+      <blockquote key={block.id} className="border-l-[3px] border-primary pl-[20px] py-[4px] my-[20px]">
+        <p className="text-[18px] leading-[1.6] italic" style={{ fontFamily: "var(--font-serif)" }}>
+          &ldquo;{block.quoteText}&rdquo;
+        </p>
+        {block.quoteCite && (
+          <cite className="text-[13px] text-caption not-italic mt-[8px] block">{block.quoteCite}</cite>
+        )}
+      </blockquote>
+    );
+  }
+  return null;
+}
+
 export default async function ArticleDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
+
+  // Support both legacy articles and new block-based articles
+  const blocks: NewsBlock[] = article.blocks || [];
+
+  // If no blocks, create them from legacy fields
+  if (blocks.length === 0 && (article.quote || article.subtitle)) {
+    if (article.subtitle) {
+      blocks.push({
+        id: "legacy-subtitle",
+        type: "text",
+        content: article.subtitle,
+      });
+    }
+    if (article.quote) {
+      blocks.push({
+        id: "legacy-quote",
+        type: "quote",
+        quoteText: article.quote,
+      });
+    }
+  }
 
   return (
     <main className="flex justify-center w-full px-[10px] pb-[40px]">
@@ -27,45 +108,32 @@ export default async function ArticleDetail({ params }: { params: Promise<{ slug
           </HistoryBackLink>
         </div>
 
-        <div className="relative w-full aspect-[16/9] rounded-icon overflow-hidden mb-[16px] bg-thumbnail">
-          {article.thumbnail ? (
-            <Image src={article.thumbnail} alt={article.title} fill unoptimized className="object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-[14px] text-muted">
-              No image uploaded
-            </div>
-          )}
-        </div>
-
-        <p className="text-[26px] leading-[1.1]" style={{ fontFamily: "var(--font-serif)" }}>
+        {/* Title and date above image */}
+        <h1 className="text-[28px] leading-[1.15] tracking-[-0.5px] mb-[12px]" style={{ fontFamily: "var(--font-serif)" }}>
           {article.title}
-        </p>
+        </h1>
 
-        {article.subtitle ? (
-          <p className="text-[16px] leading-[1.5] text-body mt-[10px]">
-            {article.subtitle}
+        {article.date && (
+          <p className="text-[13px] text-caption mb-[20px]">
+            {new Date(article.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
           </p>
-        ) : null}
+        )}
 
-        {article.quote ? (
-          <blockquote className="w-full mt-[14px] bg-tag rounded-[14px] p-[12px] text-[16px] leading-[1.5] text-body">
-            “{article.quote}”
-          </blockquote>
-        ) : null}
+        {/* Hero image */}
+        {article.thumbnail && (
+          <div className="relative w-full aspect-[16/9] rounded-icon overflow-hidden mb-[20px] bg-thumbnail">
+            <Image src={article.thumbnail} alt={article.title} fill unoptimized className="object-cover" />
+          </div>
+        )}
 
-        <div className="w-full mt-[16px]">
-          {(article.buttonLabel || article.buttonUrl) && (
-            <a
-              href={article.buttonUrl || "/news/all"}
-              className="bg-primary inline-flex h-[40px] items-center justify-center px-[15px] rounded-pill text-[14px] text-primary-text no-underline leading-normal"
-            >
-              {article.buttonLabel || "Read more"}
-            </a>
-          )}
+        {/* Content blocks */}
+        <div className="flex flex-col gap-[16px] w-full">
+          {blocks.map((block) => renderNewsBlock(block))}
         </div>
 
-        <div className="w-full mt-[22px] pt-[16px] border-t border-divider">
-          <HistoryBackLink href="/news/all" className="bg-tag inline-flex h-[36px] items-center justify-center px-[12px] rounded-pill text-[13px] no-underline">
+        {/* Back link */}
+        <div className="w-full mt-[32px] pt-[16px] border-t border-divider">
+          <HistoryBackLink href="/news/all" className="bg-primary inline-flex h-[40px] items-center justify-center px-[20px] rounded-pill text-[14px] no-underline font-semibold text-primary-text">
             ← Back to News
           </HistoryBackLink>
         </div>

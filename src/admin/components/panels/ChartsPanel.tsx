@@ -39,39 +39,107 @@ export default function ChartsPanel() {
                   const isLineChart = c.type === 'line'
                   const dataValues = ds.data.split(',').map(d => d.trim()).filter(Boolean)
                   const colorValues = ds.colors ? ds.colors.split(',').map(c => c.trim()).filter(Boolean) : []
-                  const sectionLabel = isPieChart ? 'Slice' : 'Bar'
+
+                  const suggestedColors = [
+                    '#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4',
+                    '#3b82f6', '#8b5cf6', '#ec4899', '#6b7280', '#64748b'
+                  ]
+
+                  // Generate gradient for current color
+                  const generateGradient = (baseColor: string, count: number) => {
+                    const normalized = baseColor.trim()
+                    const full = /^#([0-9a-f]{6})$/i
+                    const short = /^#([0-9a-f]{3})$/i
+                    let val = 0
+                    if (full.test(normalized)) val = Number.parseInt(normalized.slice(1), 16)
+                    else if (short.test(normalized)) {
+                      const ex = normalized.slice(1).split('').map((c) => c + c).join('')
+                      val = Number.parseInt(ex, 16)
+                    } else return Array(count).fill('#1a1a1a')
+
+                    const r = (val >> 16) & 255
+                    const g = (val >> 8) & 255
+                    const b = val & 255
+
+                    const palette = []
+                    for (let i = 0; i < count; i++) {
+                      const ratio = i / Math.max(count - 1, 1)
+                      const lightness = 0.7 - ratio * 0.55
+
+                      const lr = Math.round(r + (255 - r) * (lightness - 0.5) * 2)
+                      const lg = Math.round(g + (255 - g) * (lightness - 0.5) * 2)
+                      const lb = Math.round(b + (255 - b) * (lightness - 0.5) * 2)
+                      palette.push(`rgb(${Math.max(0, Math.min(255, lr))},${Math.max(0, Math.min(255, lg))},${Math.max(0, Math.min(255, lb))})`)
+                    }
+                    return palette
+                  }
+
+                  const gradientPalette = generateGradient(ds.color, Math.max(dataValues.length, 1))
 
                   return (
                     <div key={di}>
                       <div className="chart-data-row">
-                        <input type="color" value={ds.color} onChange={e => s.updateDataset(c.id, di, 'color', e.target.value)} title="Default color" style={{ width: 32, height: 32, borderRadius: 6, border: '2px solid var(--border)', background: 'none', cursor: 'pointer', padding: 0 }} />
                         <input type="text" value={ds.label} onChange={e => s.updateDataset(c.id, di, 'label', e.target.value)} placeholder="Series label" style={{ maxWidth: 120 }} />
                         <input type="text" value={ds.data} onChange={e => s.updateDataset(c.id, di, 'data', e.target.value)} placeholder="Comma-separated values: 12000,16500…" style={{ flex: 3, fontFamily: 'var(--mono)', fontSize: 11 }} />
                         <button className="remove-btn" onClick={() => s.removeDataset(c.id, di)}>×</button>
                       </div>
-                      {dataValues.length > 0 && !isLineChart && (
-                        <div style={{ marginLeft: 40, marginBottom: 12 }}>
-                          <label className="field-label" style={{ fontSize: 11, marginBottom: 8 }}>{sectionLabel} Colors (optional)</label>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                            {dataValues.map((_, colorIndex) => {
-                              const currentColor = colorValues[colorIndex] || '#4361ee'
-                              return (
-                                <div key={colorIndex} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+
+                      {!isLineChart && (
+                        <div style={{ marginLeft: 0, marginBottom: 12, marginTop: 12 }}>
+                          <label className="field-label" style={{ fontSize: 11, marginBottom: 8 }}>Gradient Base Color</label>
+                          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+                            {suggestedColors.map((color) => (
+                              <button
+                                key={color}
+                                onClick={() => s.updateDataset(c.id, di, 'color', color)}
+                                style={{
+                                  width: 32,
+                                  height: 32,
+                                  borderRadius: 6,
+                                  backgroundColor: color,
+                                  border: ds.color === color ? '2px solid #000' : '2px solid var(--border)',
+                                  cursor: 'pointer',
+                                  padding: 0
+                                }}
+                              />
+                            ))}
+                            <input
+                              type="color"
+                              value={ds.color}
+                              onChange={e => s.updateDataset(c.id, di, 'color', e.target.value)}
+                              title="Custom color"
+                              style={{ width: 32, height: 32, borderRadius: 6, border: '2px solid var(--border)', background: 'none', cursor: 'pointer', padding: 0 }}
+                            />
+                          </div>
+
+                          {dataValues.length > 0 && (
+                            <div>
+                              <label className="field-label" style={{ fontSize: 11, marginBottom: 8 }}>Slice Colors (click to customize)</label>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                                {gradientPalette.map((color, idx) => (
                                   <input
+                                    key={idx}
                                     type="color"
-                                    value={currentColor}
+                                    value={colorValues[idx] || color}
                                     onChange={e => {
                                       const newColors = [...colorValues]
-                                      newColors[colorIndex] = e.target.value
+                                      newColors[idx] = e.target.value
                                       s.updateDataset(c.id, di, 'colors', newColors.join(','))
                                     }}
-                                    style={{ width: 32, height: 32, borderRadius: 6, border: '2px solid var(--border)', background: 'none', cursor: 'pointer', padding: 0 }}
+                                    title={`Customize slice ${idx + 1}`}
+                                    style={{
+                                      width: 40,
+                                      height: 40,
+                                      borderRadius: 0,
+                                      border: '2px solid rgba(0,0,0,0.2)',
+                                      cursor: 'pointer',
+                                      padding: 0
+                                    }}
                                   />
-                                  <span style={{ fontSize: 11, color: 'var(--color-caption)' }}>{sectionLabel} {colorIndex + 1}</span>
-                                </div>
-                              )
-                            })}
-                          </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>

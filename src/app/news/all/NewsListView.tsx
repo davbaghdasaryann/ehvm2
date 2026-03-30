@@ -25,7 +25,7 @@ export default function NewsListView({ articles }: NewsListViewProps) {
   );
 
   return (
-    <main className="ehvm-slide-up mx-auto flex flex-col items-center w-full max-w-[560px] px-[18px] pb-[40px]">
+    <main className="ehvm-slide-up mx-auto flex flex-col items-center w-full max-w-[560px] px-[20px] sm:px-[24px] pb-[40px]">
       <div className="w-full mb-[18px]">
         <FilterTabs tabs={filterTabs} active={active} onSelect={setActive} center />
       </div>

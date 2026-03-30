@@ -23,6 +23,34 @@ function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${(val >> 16) & 255},${(val >> 8) & 255},${val & 255},${alpha})`;
 }
 
+function generateGradientPalette(baseHex: string, count: number): string[] {
+  const normalized = baseHex.trim();
+  const full = /^#([0-9a-f]{6})$/i;
+  const short = /^#([0-9a-f]{3})$/i;
+  let val = 0;
+  if (full.test(normalized)) val = Number.parseInt(normalized.slice(1), 16);
+  else if (short.test(normalized)) {
+    const ex = normalized.slice(1).split("").map((c) => c + c).join("");
+    val = Number.parseInt(ex, 16);
+  } else return Array(count).fill("#1a1a1a");
+
+  const r = (val >> 16) & 255;
+  const g = (val >> 8) & 255;
+  const b = val & 255;
+
+  const palette: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const ratio = i / Math.max(count - 1, 1);
+    const lightness = 0.7 - ratio * 0.55;
+
+    const lr = Math.round(r + (255 - r) * (lightness - 0.5) * 2);
+    const lg = Math.round(g + (255 - g) * (lightness - 0.5) * 2);
+    const lb = Math.round(b + (255 - b) * (lightness - 0.5) * 2);
+    palette.push(`rgb(${Math.max(0, Math.min(255, lr))},${Math.max(0, Math.min(255, lg))},${Math.max(0, Math.min(255, lb))})`);
+  }
+  return palette;
+}
+
 function normalizeChartType(type: string): {
   resolvedType: "line" | "bar" | "doughnut" | "pie";
   indexAxis: "x" | "y";
@@ -74,17 +102,17 @@ export default function AppChartsClient({ charts }: { charts: AppChart[] }) {
               const colorsArray = colors.split(',').map((c: string) => c.trim()).filter(Boolean);
               if (colorsArray.length > 0) {
                 backgroundColor = colorsArray;
-                if (!isPie && resolvedType === "bar") {
+                if (isPie) {
+                  borderColor = "#fff";
+                } else if (resolvedType === "bar") {
                   borderColor = colorsArray;
                 }
               } else if (isPie) {
-                backgroundColor = PIE_PALETTE.slice(0, data.length);
+                backgroundColor = generateGradientPalette(color, data.length);
+                borderColor = "#fff";
               }
             } else if (isPie) {
-              backgroundColor = PIE_PALETTE.slice(0, data.length);
-            }
-
-            if (isPie) {
+              backgroundColor = generateGradientPalette(color, data.length);
               borderColor = "#fff";
             } else if (resolvedType === "line") {
               backgroundColor = hexToRgba(color, 0.08);
@@ -93,12 +121,12 @@ export default function AppChartsClient({ charts }: { charts: AppChart[] }) {
             return {
               label: dataset.label || "",
               data,
-              borderColor,
+              borderColor: isPie ? "#fff" : borderColor,
               backgroundColor,
               borderWidth: isPie ? 2 : resolvedType === "line" ? 2 : 1,
-              borderRadius: resolvedType === "bar" ? 4 : 0,
-              pointRadius: resolvedType === "line" ? 3 : 0,
-              fill: resolvedType === "line",
+              borderRadius: 0,
+              pointRadius: resolvedType === "line" ? 5 : 0,
+              fill: false,
               tension: 0.4,
             };
           })
@@ -124,8 +152,12 @@ export default function AppChartsClient({ charts }: { charts: AppChart[] }) {
         if (isPie && normalizedDatasets[0]) {
           const vals = normalizedDatasets[0].data as number[];
           const total = vals.reduce((a, b) => a + b, 0);
+          const datasetColor = chart.datasets[0]?.color || "#4361ee";
+          const customColors = (chart.datasets[0] as any)?.colors;
+          const colorsArray = customColors ? customColors.split(',').map((c: string) => c.trim()).filter(Boolean) : [];
+          const palette = colorsArray.length > 0 ? colorsArray : generateGradientPalette(datasetColor, vals.length);
           nextLegends[chartIndex] = chart.labels.map((label, i) => ({
-            color: (PIE_PALETTE[i % PIE_PALETTE.length]),
+            color: palette[i] || (PIE_PALETTE[i % PIE_PALETTE.length]),
             label: String(label),
             pct: total > 0 ? `${Math.round((vals[i] / total) * 100)}%` : "—",
           }));

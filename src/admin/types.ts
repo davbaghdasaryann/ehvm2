@@ -1,3 +1,7 @@
+import type { NewsBlock } from '@/data/articles'
+
+export type { NewsBlockType } from '@/data/articles'
+
 export interface KpiItem {
   id: number
   label: string
@@ -52,7 +56,9 @@ export interface Competitor {
   name: string
   description: string
   appStoreRating: string
+  appStoreIcon?: string
   googleStoreRating: string
+  googleStoreIcon?: string
   link: string
   isThisApp: boolean
 }
@@ -155,15 +161,19 @@ export interface AdminNewsRecord {
   id: string
   slug: string
   title: string
-  subtitle: string
-  quote: string
-  image: string
-  buttonLabel: string
-  buttonUrl: string
+  subtitle?: string
+  quote?: string
+  image?: string
+  buttonLabel?: string
+  buttonUrl?: string
   category: 'Event' | 'Story'
-  featured: boolean
+  featured?: boolean
   published: boolean
   updatedAt: string
+  date?: string
+  author?: string
+  authorImage?: string
+  blocks?: NewsBlock[]
 }
 
 export type StoryBlockType = 'text' | 'youtube' | 'tweet' | 'quote'
@@ -207,11 +217,18 @@ export interface SiteLinks {
   updatedAt: string
 }
 
+export interface PageSubtitles {
+  home: string
+  news: string
+  contact: string
+}
+
 export interface AdminDatabase {
   apps: AppRecord[]
   news: AdminNewsRecord[]
   stories?: PersonStory[]
   siteLinks?: SiteLinks
+  pageSubtitles?: PageSubtitles
 }
 
 export type PanelName =
@@ -220,6 +237,7 @@ export type PanelName =
   | 'news'
   | 'story'
   | 'sitelinks'
+  | 'pagesubtitles'
   | 'meta'
   | 'kpis'
   | 'financials'

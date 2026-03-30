@@ -4,8 +4,8 @@ import {
   type Article,
   type ContentBlock,
 } from "@/data/articles";
-import { readAdminDb, readStories, readSiteLinks } from "@/lib/adminDb";
-import type { AdminNewsRecord, PersonStory, SiteLinks } from "@/admin/types";
+import { readAdminDb, readStories, readSiteLinks, readPageSubtitles } from "@/lib/adminDb";
+import type { AdminNewsRecord, PersonStory, SiteLinks, PageSubtitles } from "@/admin/types";
 import { DEFAULT_EVELIN_STORY } from "@/lib/defaultStory";
 import { mapAdminRecordToApp, type ParsedAppContent } from "@/lib/adminMapping";
 
@@ -100,7 +100,7 @@ async function getNewsPayload(): Promise<NewsPayload> {
 }
 
 function mapAdminNewsToArticle(item: AdminNewsRecord): Article {
-  const fallbackDate = new Date(item.updatedAt || Date.now()).toISOString();
+  const fallbackDate = item.date || new Date(item.updatedAt || Date.now()).toISOString();
   return {
     slug: item.slug,
     title: item.title,
@@ -112,6 +112,7 @@ function mapAdminNewsToArticle(item: AdminNewsRecord): Article {
     thumbnail: item.image || "",
     date: fallbackDate,
     featured: item.featured,
+    blocks: item.blocks,
   };
 }
 
@@ -203,6 +204,25 @@ import { DEFAULT_SITE_LINKS } from "@/lib/defaultSiteLinks";
 export async function getSiteLinks(): Promise<SiteLinks> {
   const links = await readSiteLinks();
   return links ?? DEFAULT_SITE_LINKS;
+}
+
+const DEFAULT_PAGE_SUBTITLES: PageSubtitles = {
+  home: '',
+  news: 'News, Stories, Events',
+  contact: 'Connecting app builders and buyers. Reach out to get started.',
+};
+
+const getCachedPageSubtitles = unstable_cache(
+  async (): Promise<PageSubtitles> => {
+    const subtitles = await readPageSubtitles();
+    return subtitles ?? DEFAULT_PAGE_SUBTITLES;
+  },
+  ["ehvm-page-subtitles"],
+  { tags: ["page-subtitles-data"], revalidate: 60 }
+);
+
+export async function getPageSubtitles(): Promise<PageSubtitles> {
+  return getCachedPageSubtitles();
 }
 
 export async function getArticleSlugs(): Promise<string[]> {

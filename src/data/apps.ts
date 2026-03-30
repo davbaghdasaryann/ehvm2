@@ -142,7 +142,9 @@ export type App = {
       name: string;
       description: string;
       appStoreRating: string;
+      appStoreIcon?: string;
       googleStoreRating: string;
+      googleStoreIcon?: string;
       link: string;
       isThisApp: boolean;
     }[];

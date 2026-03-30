@@ -7,6 +7,7 @@ import GuidePanel from '@/admin/components/panels/GuidePanel'
 import NewsPanel from '@/admin/components/panels/NewsPanel'
 import StoryPanel from '@/admin/components/panels/StoryPanel'
 import SiteLinksPanel from '@/admin/components/panels/SiteLinksPanel'
+import PageSubtitlesPanel from '@/admin/components/panels/PageSubtitlesPanel'
 import MetaPanel from '@/admin/components/panels/MetaPanel'
 import KpisPanel from '@/admin/components/panels/KpisPanel'
 import FinancialsPanel from '@/admin/components/panels/FinancialsPanel'
@@ -22,6 +23,7 @@ const NAV_ITEMS: { panel: PanelName; icon: string; label: string; editOnly?: boo
   { panel: 'news', icon: '📰', label: 'News', editOnly: false },
   { panel: 'story', icon: '📖', label: 'Our Story', editOnly: false },
   { panel: 'sitelinks', icon: '🔗', label: 'Site Links', editOnly: false },
+  { panel: 'pagesubtitles', icon: '✍', label: 'Page Subtitles', editOnly: false },
   { panel: 'meta', icon: '🏷', label: 'Meta & Identity', editOnly: true },
   { panel: 'kpis', icon: '📊', label: 'KPI Cards', editOnly: true },
   { panel: 'financials', icon: '💰', label: 'Financials', editOnly: true },
@@ -72,6 +74,7 @@ export default function AdminClient() {
     news: <NewsPanel />,
     story: <StoryPanel />,
     sitelinks: <SiteLinksPanel />,
+    pagesubtitles: <PageSubtitlesPanel />,
     meta: <MetaPanel />,
     kpis: <KpisPanel />,
     financials: <FinancialsPanel />,

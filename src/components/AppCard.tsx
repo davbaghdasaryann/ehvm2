@@ -26,9 +26,9 @@ export default function AppCard({ app }: { app: App }) {
       onFocus={handleWarm}
       onTouchStart={handleWarm}
       onMouseDown={handleWarm}
-      className="bg-card flex flex-[1_0_0] items-center max-w-[382px] min-w-[335px] p-[15px] rounded-card no-underline text-foreground"
+      className="bg-card flex flex-[1_0_0] items-center max-w-[382px] min-w-[300px] sm:min-w-[335px] p-[15px] rounded-card no-underline text-foreground overflow-hidden"
     >
-      <div className="flex flex-[1_0_0] gap-[10px] items-center">
+      <div className="flex flex-[1_0_0] gap-[10px] items-center min-w-0">
         {app.icon ? (
           <div className="relative shrink-0 size-[100px] rounded-icon shadow-icon overflow-hidden">
             <Image

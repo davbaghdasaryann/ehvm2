@@ -38,6 +38,10 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+button, a {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 /* ─── Dark Mode Overrides ─── */
 html.dark {
   --color-background: #1a1a1a;

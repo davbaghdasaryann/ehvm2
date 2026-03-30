@@ -10,7 +10,7 @@ type FilterTabsProps = {
 export default function FilterTabs({ tabs, active, onSelect, center }: FilterTabsProps) {
   return (
     <div
-      className={`flex gap-[10px] items-center overflow-x-auto w-full scrollbar-none px-[10px] ${center ? "justify-center" : ""}`}
+      className={`flex gap-[10px] items-center overflow-x-auto w-full scrollbar-none px-[20px] sm:px-[24px] ${center ? "justify-center" : ""}`}
       style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
     >
       {tabs.map((tab) => (

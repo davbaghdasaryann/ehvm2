@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { AdminDatabase, AdminNewsRecord, AppRecord, PersonStory, SiteLinks } from "@/admin/types";
+import type { AdminDatabase, AdminNewsRecord, AppRecord, PersonStory, SiteLinks, PageSubtitles } from "@/admin/types";
 import { getMongoDb } from "@/lib/mongodb";
 
 const DB_PATH = path.join(process.cwd(), "src/data/admin-db.json");
@@ -9,6 +9,8 @@ const NEWS_COLLECTION = "news";
 const STORIES_COLLECTION = "stories";
 const SITE_LINKS_COLLECTION = "site_links";
 const SITE_LINKS_DOC_ID = "site_links";
+const PAGE_SUBTITLES_COLLECTION = "page_subtitles";
+const PAGE_SUBTITLES_DOC_ID = "page_subtitles";
 const LEGACY_STATE_COLLECTION = "admin_state";
 const LEGACY_APPS_DOC_ID = "apps";
 const hasMongoConfigured = Boolean(process.env.MONGODB_URI?.trim());
@@ -107,10 +109,14 @@ export async function readAdminDb(): Promise<AdminDatabase> {
             buttonLabel: normalized.buttonLabel,
             buttonUrl: normalized.buttonUrl,
             category: normalized.category,
-            featured: Boolean(normalized.featured),
+            featured: normalized.featured ? Boolean(normalized.featured) : undefined,
             published: Boolean(normalized.published),
             updatedAt: normalized.updatedAt,
-          };
+            date: normalized.date,
+            author: normalized.author,
+            authorImage: normalized.authorImage,
+            blocks: normalized.blocks,
+          } as AdminNewsRecord;
         });
 
         const validNews = news.filter(
@@ -360,4 +366,62 @@ export async function writeAdminDb(db: AdminDatabase): Promise<void> {
 
   await writeAdminDbToFile(db);
   rememberDatabase(db);
+}
+
+export async function readPageSubtitles(): Promise<PageSubtitles | null> {
+  const mongoDb = await getMongoDb();
+  if (mongoDb) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const doc = await (mongoDb.collection(PAGE_SUBTITLES_COLLECTION) as any)
+        .findOne({ _id: PAGE_SUBTITLES_DOC_ID }) as (PageSubtitles & { _id: string }) | null;
+      if (doc) {
+        const { _id: _ignored, ...subtitles } = doc;
+        return subtitles as PageSubtitles;
+      }
+    } catch (error) {
+      console.error("Failed to read page subtitles from MongoDB.", error);
+    }
+  }
+  try {
+    const raw = await readFile(DB_PATH, "utf8");
+    const parsed = JSON.parse(raw) as { pageSubtitles?: PageSubtitles };
+    return parsed.pageSubtitles ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function writePageSubtitles(subtitles: PageSubtitles): Promise<void> {
+  const mongoDb = await getMongoDb();
+  if (mongoDb) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (mongoDb.collection(PAGE_SUBTITLES_COLLECTION) as any)
+        .replaceOne(
+          { _id: PAGE_SUBTITLES_DOC_ID },
+          { ...subtitles, _id: PAGE_SUBTITLES_DOC_ID },
+          { upsert: true },
+        );
+      try {
+        const raw = await readFile(DB_PATH, "utf8").catch(() => "{}");
+        const parsed = JSON.parse(raw) as Record<string, unknown>;
+        parsed.pageSubtitles = subtitles;
+        await writeFile(DB_PATH, `${JSON.stringify(parsed, null, 2)}\n`, "utf8");
+      } catch (fileError) {
+        console.warn("Failed to mirror page subtitles to local file after MongoDB write.", fileError);
+      }
+      return;
+    } catch (error) {
+      console.error("Failed to write page subtitles to MongoDB.", error);
+      if (hasMongoConfigured) {
+        throw error;
+      }
+    }
+  }
+
+  const raw = await readFile(DB_PATH, "utf8").catch(() => "{}");
+  const parsed = JSON.parse(raw) as Record<string, unknown>;
+  parsed.pageSubtitles = subtitles;
+  await writeFile(DB_PATH, `${JSON.stringify(parsed, null, 2)}\n`, "utf8");
 }

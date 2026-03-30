@@ -38,6 +38,35 @@ function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${(val >> 16) & 255},${(val >> 8) & 255},${val & 255},${alpha})`
 }
 
+function generateGradientPalette(baseHex: string, count: number): string[] {
+  const normalized = baseHex.trim()
+  const full = /^#([0-9a-f]{6})$/i
+  const short = /^#([0-9a-f]{3})$/i
+  let val = 0
+  if (full.test(normalized)) val = Number.parseInt(normalized.slice(1), 16)
+  else if (short.test(normalized)) {
+    const ex = normalized.slice(1).split('').map((c) => c + c).join('')
+    val = Number.parseInt(ex, 16)
+  } else return Array(count).fill('#1a1a1a')
+
+  const r = (val >> 16) & 255
+  const g = (val >> 8) & 255
+  const b = val & 255
+
+  const palette: string[] = []
+  for (let i = 0; i < count; i++) {
+    const ratio = i / Math.max(count - 1, 1)
+    // Light to dark: start at 70% lightness, go to 30% darkness
+    const lightness = 0.7 - ratio * 0.55
+
+    const lr = Math.round(r + (255 - r) * (lightness - 0.5) * 2)
+    const lg = Math.round(g + (255 - g) * (lightness - 0.5) * 2)
+    const lb = Math.round(b + (255 - b) * (lightness - 0.5) * 2)
+    palette.push(`rgb(${Math.max(0, Math.min(255, lr))},${Math.max(0, Math.min(255, lg))},${Math.max(0, Math.min(255, lb))})`)
+  }
+  return palette
+}
+
 export default function ChartPreview({ type, title, subtitle, labels, datasets }: ChartPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const instanceRef = useRef<{ destroy: () => void } | null>(null)
@@ -66,13 +95,17 @@ export default function ChartPreview({ type, title, subtitle, labels, datasets }
             const colorsArray = ds.colors.split(',').map((c) => c.trim()).filter(Boolean)
             if (colorsArray.length > 0) {
               backgroundColor = colorsArray
-              if (!isPie && resolvedType === 'bar') {
+              if (isPie) {
+                borderColor = '#fff'
+              } else if (resolvedType === 'bar') {
                 borderColor = colorsArray
               }
+            } else if (isPie) {
+              backgroundColor = generateGradientPalette(color, dataArray.length)
+              borderColor = '#fff'
             }
-          }
-
-          if (isPie) {
+          } else if (isPie) {
+            backgroundColor = generateGradientPalette(color, dataArray.length)
             borderColor = '#fff'
           } else if (resolvedType === 'line') {
             backgroundColor = hexToRgba(color, 0.08)
@@ -81,12 +114,12 @@ export default function ChartPreview({ type, title, subtitle, labels, datasets }
           return {
             label: ds.label || 'Series',
             data: dataArray,
-            borderColor,
+            borderColor: isPie ? '#fff' : borderColor,
             backgroundColor,
             borderWidth: isPie ? 2 : resolvedType === 'line' ? 2 : 1,
-            borderRadius: 4,
-            pointRadius: 3,
-            fill: resolvedType === 'line',
+            borderRadius: resolvedType === 'bar' ? 0 : 0,
+            pointRadius: resolvedType === 'line' ? 5 : 3,
+            fill: false,
             tension: 0.4,
           }
         })
