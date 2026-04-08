@@ -6,6 +6,7 @@ import type {
   RoadmapItem, Competitor, Keyword, Opportunity, ProcessStep, Screenshot
 } from '@/admin/types'
 import type { NewsBlock } from '@/data/articles'
+import type { AppfiguresConfig, AppfiguresProductConfig } from '@/lib/appfigures-types'
 
 const uid = () => Date.now() + Math.random()
 const ADMIN_APPS_API = '/api/admin/apps'
@@ -71,6 +72,11 @@ interface FormState {
   metaAppStoreUrl: string; metaPlayStoreUrl: string; metaWebsiteUrl: string
   metaDeveloperCountry: string; metaDeveloperFlag: string
   featured: boolean; ndaRequired: boolean
+  appfiguresDefaultCountry: string
+  appfiguresAppleProductId: string
+  appfiguresAppleAppId: string
+  appfiguresGoogleProductId: string
+  appfiguresGooglePackageName: string
   // financials
   finMrr: string; finArr: string; finLtvCac: string
   finMargin: string; finYoy: string; finMultiple: string
@@ -210,6 +216,9 @@ const emptyForm: FormState = {
   metaAppStoreUrl: '', metaPlayStoreUrl: '', metaWebsiteUrl: '',
   metaDeveloperCountry: '', metaDeveloperFlag: '',
   featured: false, ndaRequired: true,
+  appfiguresDefaultCountry: 'US',
+  appfiguresAppleProductId: '', appfiguresAppleAppId: '',
+  appfiguresGoogleProductId: '', appfiguresGooglePackageName: '',
   finMrr: '', finArr: '', finLtvCac: '', finMargin: '', finYoy: '', finMultiple: '',
   productVision: '',
   marketTam: '', marketSam: '', marketSom: '', marketTamLabel: '', marketSamLabel: '', marketYear: '',
@@ -280,6 +289,36 @@ export const useAdminStore = create<AdminStore>()(
       collectApp: () => {
         const s = get()
         const existing = s.apps.find(a => a.id === s.currentAppId)
+        const appfiguresProducts: AppfiguresProductConfig[] = []
+        const defaultCountry = s.appfiguresDefaultCountry.trim().toUpperCase() || 'US'
+
+        if (s.appfiguresAppleProductId.trim() || s.appfiguresAppleAppId.trim()) {
+          appfiguresProducts.push({
+            id: 'apple',
+            label: 'iOS',
+            store: 'apple',
+            productId: s.appfiguresAppleProductId.trim() || undefined,
+            storeProductId: s.appfiguresAppleAppId.trim() || undefined,
+            country: defaultCountry,
+          })
+        }
+
+        if (s.appfiguresGoogleProductId.trim() || s.appfiguresGooglePackageName.trim()) {
+          appfiguresProducts.push({
+            id: 'google_play',
+            label: 'Android',
+            store: 'google_play',
+            productId: s.appfiguresGoogleProductId.trim() || undefined,
+            storeProductId: s.appfiguresGooglePackageName.trim() || undefined,
+            country: defaultCountry,
+          })
+        }
+
+        const appfigures: AppfiguresConfig | undefined =
+          appfiguresProducts.length > 0 || defaultCountry !== 'US'
+            ? { defaultCountry, products: appfiguresProducts }
+            : undefined
+
         return {
           id: s.currentAppId || ('app_' + Date.now()),
           updatedAt: new Date().toISOString(),
@@ -328,7 +367,8 @@ export const useAdminStore = create<AdminStore>()(
           media: {
             icon: s.imgIcon, cover: s.imgCover,
             screenshots: s.screenshots.map(({ id: _id, ...rest }) => rest)
-          }
+          },
+          appfigures,
         }
       },
 
@@ -370,6 +410,8 @@ export const useAdminStore = create<AdminStore>()(
       loadApp: (id) => {
         const app = get().apps.find(a => a.id === id)
         if (!app) return
+        const appleProduct = app.appfigures?.products.find((product) => product.store === 'apple')
+        const googleProduct = app.appfigures?.products.find((product) => product.store === 'google_play')
         set({
           currentAppId: id, activePanel: 'meta', isDirty: false,
           metaName: app.meta.name, metaTagline: app.meta.tagline,
@@ -383,6 +425,11 @@ export const useAdminStore = create<AdminStore>()(
           metaDeveloperFlag: app.meta.developerFlag || '',
           tags: [...app.meta.tags],
           featured: app.featured, ndaRequired: app.ndaRequired,
+          appfiguresDefaultCountry: app.appfigures?.defaultCountry || 'US',
+          appfiguresAppleProductId: appleProduct?.productId || '',
+          appfiguresAppleAppId: appleProduct?.storeProductId || '',
+          appfiguresGoogleProductId: googleProduct?.productId || '',
+          appfiguresGooglePackageName: googleProduct?.storeProductId || '',
           finMrr: app.financials.mrr, finArr: app.financials.arr,
           finLtvCac: app.financials.ltvCac, finMargin: app.financials.netMargin,
           finYoy: app.financials.yoyGrowth, finMultiple: app.financials.askingMultiple,

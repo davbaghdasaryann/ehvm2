@@ -1,4 +1,5 @@
 import type { NewsBlock } from '@/data/articles'
+import type { AppfiguresConfig } from '@/lib/appfigures-types'
 
 export type { NewsBlockType } from '@/data/articles'
 
@@ -155,6 +156,7 @@ export interface AppRecord {
     cover: string
     screenshots: Omit<Screenshot, 'id'>[]
   }
+  appfigures?: AppfiguresConfig
 }
 
 export interface AdminNewsRecord {

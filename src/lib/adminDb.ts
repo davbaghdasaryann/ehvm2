@@ -89,6 +89,7 @@ export async function readAdminDb(): Promise<AdminDatabase> {
             opportunities: normalized.opportunities,
             contact: normalized.contact,
             media: normalized.media,
+            ...(normalized.appfigures ? { appfigures: normalized.appfigures } : {}),
           };
         });
 

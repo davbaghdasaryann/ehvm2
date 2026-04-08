@@ -1,3 +1,5 @@
+import type { AppfiguresConfig } from "@/lib/appfigures-types";
+
 export type NotionPageBlock = {
   type:
     | "paragraph"
@@ -166,4 +168,5 @@ export type App = {
     src?: string;
   }[];
   notionPageBlocks?: NotionPageBlock[];
+  appfigures?: AppfiguresConfig;
 };

@@ -1,7 +1,10 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getAppBySlug, getAppSlugs } from "@/lib/data";
+import { getAppfiguresSnapshot } from "@/lib/appfigures";
+import { deriveAppfiguresData } from "@/lib/appfiguresDerived";
 import AppChartsClient from "@/components/AppChartsClient";
+import AppfiguresSectionClient from "@/components/AppfiguresSectionClient";
 import CalendarEmbed from "@/components/CalendarEmbed";
 import FaqAccordion from "@/components/FaqAccordion";
 import HistoryBackLink from "@/components/HistoryBackLink";
@@ -32,6 +35,33 @@ function rankColor(rank: string): string {
   return "var(--color-body)";
 }
 
+function mergeUniqueByLabel<T extends { label: string }>(primary: T[], secondary: T[]): T[] {
+  const seen = new Set(primary.map((item) => item.label.trim().toLowerCase()).filter(Boolean));
+  const extra = secondary.filter((item) => {
+    const label = item.label.trim().toLowerCase();
+    if (!label || seen.has(label)) return false;
+    seen.add(label);
+    return true;
+  });
+  return [...primary, ...extra];
+}
+
+function mergeUniqueCharts<T extends { title: string }>(primary: T[], secondary: T[]): T[] {
+  const seen = new Set(primary.map((item) => item.title.trim().toLowerCase()).filter(Boolean));
+  const extra = secondary.filter((item) => {
+    const title = item.title.trim().toLowerCase();
+    if (!title || seen.has(title)) return false;
+    seen.add(title);
+    return true;
+  });
+  return [...primary, ...extra];
+}
+
+function formatReviewStars(value: number): string {
+  const rounded = Math.max(1, Math.min(5, Math.round(value)));
+  return `${"★".repeat(rounded)}${"☆".repeat(5 - rounded)}`;
+}
+
 export const revalidate = 300;
 
 export async function generateStaticParams() {
@@ -43,13 +73,10 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
   const { slug } = await params;
   const app = await getAppBySlug(slug);
   if (!app) notFound();
-  const ratingValue = app.rating > 0 ? String(app.rating) : "";
+  const appfiguresSnapshot = await getAppfiguresSnapshot(app.appfigures);
+  const appfiguresDerived = deriveAppfiguresData(appfiguresSnapshot);
   const topRating = app.rating > 0 ? String(app.rating) : app.highlights.rating !== "—" ? app.highlights.rating : "";
   const topFollowers = app.followers || (app.highlights.followers !== "—" ? app.highlights.followers : "");
-  const monetization = app.monetizationType || "";
-  const offerStatus = app.hearingOffersStatus || "";
-  const fallbackPill = monetization || offerStatus || "";
-  const fallbackEmoji = monetization ? "🎟️" : "📬";
   const highlightItems: Array<{ key: string; emoji: string; value: string; label: string }> = [];
 
   if (app.highlights.mrr && app.highlights.mrr !== "—") {
@@ -94,7 +121,17 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
       label: "OS",
     });
   }
-  const kpis = (app.kpis || []).filter((item) => item.label || item.value);
+  appfiguresDerived.highlights.forEach((item) => {
+    const exists = highlightItems.some((existing) => existing.label.trim().toLowerCase() === item.label.trim().toLowerCase());
+    if (!exists) {
+      highlightItems.push(item);
+    }
+  });
+
+  const kpis = mergeUniqueByLabel(
+    (app.kpis || []).filter((item) => item.label || item.value),
+    appfiguresDerived.kpis,
+  );
   const financialSummary = [
     { key: "mrr", label: "MRR", value: app.financials?.mrr || "" },
     { key: "arr", label: "ARR", value: app.financials?.arr || "" },
@@ -103,8 +140,15 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
     { key: "yoy", label: "YoY Growth", value: app.financials?.yoyGrowth || "" },
     { key: "multiple", label: "Asking Multiple", value: app.financials?.askingMultiple || "" },
   ].filter((item) => item.value);
+  const appfiguresFinancialSummary = appfiguresDerived.financialCards.filter((item) => {
+    const label = item.label.trim().toLowerCase();
+    return !financialSummary.some((existing) => existing.label.trim().toLowerCase() === label);
+  });
   const plRows = (app.financials?.plRows || []).filter((row) => row.label || row.amount || row.notes);
-  const charts = (app.charts || []).filter((chart) => chart.labels.length > 0 && chart.datasets.length > 0);
+  const charts = mergeUniqueCharts(
+    (app.charts || []).filter((chart) => chart.labels.length > 0 && chart.datasets.length > 0),
+    appfiguresDerived.charts,
+  );
   const funnel = (app.funnel || []).filter((step) => step.label || step.value || step.pct);
   const roadmap = (app.product?.roadmap || []).filter((item) => item.title || item.description);
   const hasProductSection = Boolean(app.product?.vision || roadmap.length > 0);
@@ -116,6 +160,10 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
   const competitors = (app.market?.competitors || []).filter((item) => item.name || item.description || item.appStoreRating || item.googleStoreRating);
   const keywords = (app.market?.keywords || []).filter((item) => item.keyword || item.store || item.rank);
   const hasMarketSection = marketStats.length > 0 || competitors.length > 0 || keywords.length > 0;
+  const hasStoreIntelligence =
+    appfiguresDerived.storeSignals.length > 0 ||
+    appfiguresDerived.featuredPlacements.length > 0 ||
+    appfiguresDerived.activeSdks.length > 0;
   const processSteps = (app.contact.processSteps || []).filter((step) => step.title || step.note || step.description);
   const processTitles = new Set(
     processSteps.map((step) => step.title.trim().toLowerCase()).filter(Boolean),
@@ -280,7 +328,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
               </div>
             )}
 
-        {(financialSummary.length > 0 || plRows.length > 0) && (
+        {(financialSummary.length > 0 || appfiguresFinancialSummary.length > 0 || plRows.length > 0) && (
           <div className="flex flex-col gap-[12px] w-full">
             <p className="font-bold text-[20px] leading-[1.2]">Financial Snapshot</p>
             {financialSummary.length > 0 && (
@@ -291,6 +339,19 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     <p className="font-bold text-[20px] leading-[1.1] mt-[4px] break-words">{item.value}</p>
                   </div>
                 ))}
+              </div>
+            )}
+            {appfiguresFinancialSummary.length > 0 && (
+              <div className="flex flex-col gap-[8px]">
+                <p className="text-[11px] uppercase tracking-[0.08em] text-caption">Appfigures</p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-[10px] w-full">
+                  {appfiguresFinancialSummary.map((item) => (
+                    <div key={item.key} className="bg-tag rounded-[16px] p-[12px]">
+                      <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
+                      <p className="font-bold text-[20px] leading-[1.1] mt-[4px] break-words">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             {plRows.length > 0 && (() => {
@@ -444,6 +505,83 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             )}
           </div>
         )}
+
+        {hasStoreIntelligence && (
+          <div className="flex flex-col gap-[12px] w-full">
+            <p className="font-bold text-[20px] leading-[1.2]">Store Intelligence</p>
+            {appfiguresDerived.storeSignals.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[10px] w-full">
+                {appfiguresDerived.storeSignals.map((item) => (
+                  <div key={item.key} className="bg-tag rounded-[16px] p-[12px]">
+                    <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
+                    <p className="font-bold text-[18px] mt-[4px]">{item.value}</p>
+                    {item.sub ? <p className="text-[11px] text-caption mt-[2px]">{item.sub}</p> : null}
+                  </div>
+                ))}
+              </div>
+            )}
+            {appfiguresDerived.featuredPlacements.length > 0 && (
+              <div className="bg-tag rounded-[16px] p-[12px] flex flex-col">
+                <p className="font-bold text-[14px]">Featured Placements</p>
+                {appfiguresDerived.featuredPlacements.map((item, index) => (
+                  <div key={item.id} className={`py-[10px] ${index > 0 ? "border-t border-divider" : ""} flex items-center gap-[10px]`}>
+                    <div className="size-[32px] rounded-[10px] bg-card flex items-center justify-center text-[14px] shrink-0">
+                      #{item.position}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13px] font-bold">{item.title}</p>
+                      <p className="text-[11px] text-caption">{item.category} · {item.viewedFrom} · {item.country}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {appfiguresDerived.activeSdks.length > 0 && (
+              <div className="bg-tag rounded-[16px] p-[12px] flex flex-col gap-[10px]">
+                <p className="font-bold text-[14px]">SDK Footprint</p>
+                <div className="flex flex-wrap gap-[8px]">
+                  {appfiguresDerived.activeSdks.map((sdk) => (
+                    <span key={sdk} className="bg-card px-[10px] py-[5px] rounded-pill text-[11px]">
+                      {sdk}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {appfiguresDerived.reviews.length > 0 && (
+          <div className="flex flex-col gap-[12px] w-full">
+            <p className="font-bold text-[20px] leading-[1.2]">Recent Store Reviews</p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[10px] w-full">
+              {appfiguresDerived.reviews.map((review) => (
+                <div key={review.id} className="bg-tag rounded-[16px] p-[12px] flex flex-col gap-[8px]">
+                  <div className="flex items-start justify-between gap-[10px]">
+                    <div>
+                      <p className="font-bold text-[14px] leading-[1.2]">{review.title || "Review"}</p>
+                      <p className="text-[11px] text-caption mt-[2px]">
+                        {review.author} · {review.productName}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-[13px] font-bold">{formatReviewStars(review.stars)}</p>
+                      <p className="text-[10px] text-caption">{review.store}</p>
+                    </div>
+                  </div>
+                  <p className="text-[13px] text-body leading-[1.45]">{review.review}</p>
+                  <p className="text-[10px] text-caption">
+                    {new Date(review.date).toLocaleDateString()} {review.version ? `· v${review.version}` : ""}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {app.appfigures?.products.length ? (
+          <AppfiguresSectionClient slug={app.slug} />
+        ) : null}
 
         {/* ── USER ACQUISITION + OPPORTUNITIES: 2-col on PC ── */}
         {(app.userAcquisition.paid.length > 0 || app.userAcquisition.organic.length > 0 || app.opportunities.length > 0) && (

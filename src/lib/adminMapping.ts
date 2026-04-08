@@ -1,5 +1,6 @@
 import type { App, NotionPageBlock } from "@/data/apps";
 import type { AppRecord } from "@/admin/types";
+import type { AppfiguresConfig, AppfiguresProductConfig } from "@/lib/appfigures-types";
 
 export type ParsedAppContent = {
   about?: string;
@@ -38,6 +39,25 @@ function parseFloatFromText(value: string): number {
   if (!match) return 0;
   const parsed = Number.parseFloat(match[1]);
   return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function extractAppleAppId(url?: string): string | undefined {
+  const cleaned = clean(url);
+  if (!cleaned) return undefined;
+  const match = cleaned.match(/\/id(\d+)/i);
+  return match?.[1];
+}
+
+function extractGooglePackageName(url?: string): string | undefined {
+  const cleaned = clean(url);
+  if (!cleaned) return undefined;
+
+  try {
+    const parsed = new URL(cleaned);
+    return parsed.searchParams.get("id")?.trim() || undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 function parsePlatform(platforms: string): { platform: string; emoji: string } {
@@ -204,6 +224,46 @@ function buildPageBlocks(record: AppRecord): NotionPageBlock[] {
   return blocks;
 }
 
+function buildAppfiguresConfig(record: AppRecord): AppfiguresConfig | undefined {
+  const defaultCountry = clean(record.appfigures?.defaultCountry).toUpperCase() || "US";
+  const products: AppfiguresProductConfig[] = [];
+
+  const configuredApple = record.appfigures?.products.find((item) => item.store === "apple");
+  const configuredGoogle = record.appfigures?.products.find((item) => item.store === "google_play");
+
+  const appleStoreProductId = clean(configuredApple?.storeProductId) || extractAppleAppId(record.meta.appStoreUrl);
+  const googleStoreProductId = clean(configuredGoogle?.storeProductId) || extractGooglePackageName(record.meta.playStoreUrl);
+
+  if (clean(configuredApple?.productId) || appleStoreProductId) {
+    products.push({
+      id: configuredApple?.id || "apple",
+      label: clean(configuredApple?.label) || "iOS",
+      store: "apple",
+      productId: clean(configuredApple?.productId) || undefined,
+      storeProductId: appleStoreProductId || undefined,
+      country: clean(configuredApple?.country).toUpperCase() || defaultCountry,
+    });
+  }
+
+  if (clean(configuredGoogle?.productId) || googleStoreProductId) {
+    products.push({
+      id: configuredGoogle?.id || "google_play",
+      label: clean(configuredGoogle?.label) || "Android",
+      store: "google_play",
+      productId: clean(configuredGoogle?.productId) || undefined,
+      storeProductId: googleStoreProductId || undefined,
+      country: clean(configuredGoogle?.country).toUpperCase() || defaultCountry,
+    });
+  }
+
+  if (products.length === 0) return undefined;
+
+  return {
+    defaultCountry,
+    products,
+  };
+}
+
 export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
   const appName = clean(record.meta.name) || "Untitled App";
   const slug = toSlug(clean(record.meta.name) || record.id);
@@ -223,6 +283,7 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
 
   const pageBlocks = buildPageBlocks(record);
   const detailBlocks = toNotionDetailBlocks(pageBlocks);
+  const appfigures = buildAppfiguresConfig(record);
 
   const app: App = {
     notionPageId: record.id,
@@ -356,6 +417,7 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
     notionDbFields: buildNotionDbFields(record),
     notionDetailBlocks: detailBlocks.length > 0 ? detailBlocks : undefined,
     notionPageBlocks: pageBlocks.length > 0 ? pageBlocks : undefined,
+    appfigures,
   };
 
   return {
