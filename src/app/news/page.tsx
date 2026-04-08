@@ -82,7 +82,7 @@ export default async function Newsroom() {
       <div className="flex-1 flex items-end justify-center pb-[42px]">
         <Link
           href="/news/all"
-          className="relative z-20 bg-glass backdrop-blur-[12px] flex h-[41px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[17px] text-foreground no-underline leading-normal"
+          className="relative z-20 bg-tag flex h-[41px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[17px] text-foreground no-underline leading-normal"
         >
           See more News
         </Link>

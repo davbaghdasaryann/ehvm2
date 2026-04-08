@@ -11,6 +11,7 @@ export default function SiteLinksPanel() {
     if (!s.siteLinks) {
       s.updateSiteLink('seeAllAppsUrl', DEFAULT_SITE_LINKS.seeAllAppsUrl)
       s.updateSiteLink('seeAllAppsLabel', DEFAULT_SITE_LINKS.seeAllAppsLabel)
+      s.updateSiteLink('ndaUrl', DEFAULT_SITE_LINKS.ndaUrl)
       s.updateSiteLink('wantToBuyUrl', DEFAULT_SITE_LINKS.wantToBuyUrl)
       s.updateSiteLink('wantToSellUrl', DEFAULT_SITE_LINKS.wantToSellUrl)
       s.updateSiteLink('updatedAt', new Date().toISOString())
@@ -42,7 +43,7 @@ export default function SiteLinksPanel() {
               placeholder="🔒 See all Apps & Numbers"
             />
           </div>
-          <div className="field">
+          <div className="field" style={{ marginBottom: 12 }}>
             <label className="field-label">Button URL</label>
             <input
               type="text"
@@ -52,6 +53,18 @@ export default function SiteLinksPanel() {
             />
             <div style={{ marginTop: 4, fontSize: 11, color: 'var(--text3)' }}>
               Shown at the bottom of the /apps gallery page
+            </div>
+          </div>
+          <div className="field">
+            <label className="field-label">NDA Gate — URL</label>
+            <input
+              type="text"
+              value={links.ndaUrl || ''}
+              onChange={e => s.updateSiteLink('ndaUrl', e.target.value)}
+              placeholder="https://docuseal.com/..."
+            />
+            <div style={{ marginTop: 4, fontSize: 11, color: 'var(--text3)' }}>
+              "Sign NDA and get full access" overlay on the apps gallery
             </div>
           </div>
         </div>

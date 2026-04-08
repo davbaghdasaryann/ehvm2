@@ -79,7 +79,7 @@ export default function CalendarEmbed({ calendarUrl }: { calendarUrl: string }) 
 
   return (
     <div
-      style={{ width: "100%", minHeight: "600px" }}
+      style={{ width: "100%" }}
       id="my-cal-inline-m-a"
     />
   );

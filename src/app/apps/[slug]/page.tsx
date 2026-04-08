@@ -128,180 +128,157 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
   return (
     <main className="flex justify-center w-full px-[10px] pb-[40px]">
-      <div className="ehvm-slide-up bg-card flex flex-col gap-[20px] items-start p-[15px] rounded-card w-full max-w-[500px]">
-        {/* Top Header */}
-        <div className="flex gap-[10px] items-center w-full">
-          {app.icon ? (
-            <div className="relative shrink-0 size-[100px] rounded-icon shadow-icon overflow-hidden">
-              <Image
-                src={app.icon}
-                alt={app.name}
-                fill
-                unoptimized
-                className="object-cover"
-                sizes="100px"
-              />
-            </div>
-          ) : (
-            <div className="shrink-0 size-[100px] rounded-icon bg-tag flex items-center justify-center text-[28px]">
-              📱
-            </div>
-          )}
-          <div className="flex flex-[1_0_0] flex-col h-full items-start justify-between min-h-[100px] min-w-0">
-            <div className="flex items-start justify-between w-full">
-              <div className="flex flex-[1_0_0] flex-col gap-[4px] items-start leading-[1.2] min-w-0">
-                <p className="font-bold text-[20px] w-full truncate">{app.name}</p>
-                <p className="text-[12px] w-full truncate">{app.subtitle}</p>
-              </div>
-              <HistoryBackLink href="/apps" className="flex size-[16px] items-center justify-center rounded-full shrink-0 no-underline" style={{ background: '#6e6e73' }}>
-                <svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1 1L6 6M6 1L1 6" stroke="white" strokeWidth="1.6" strokeLinecap="round"/>
-                </svg>
-              </HistoryBackLink>
-            </div>
-            <div className="flex gap-[5px] items-center w-full flex-wrap min-w-0">
-              <div className="bg-tag flex h-[27px] items-center justify-center p-[10px] rounded-pill shrink-0 max-w-[132px]">
-                <span className="text-[12px] leading-[1.2] truncate">💰{app.mrr} mrr</span>
-              </div>
-              <div className="bg-tag flex h-[27px] items-center justify-center p-[10px] rounded-pill shrink-0 max-w-[140px]">
-                <span className="text-[12px] leading-[1.2] truncate">{app.platformEmoji} {app.platform}</span>
-              </div>
-              {ratingValue ? (
-                <div className="bg-tag flex h-[27px] items-center justify-center p-[10px] rounded-pill shrink-0 max-w-[92px]">
-                  <span className="text-[12px] leading-[1.2]">⭐ {ratingValue}</span>
-                </div>
-              ) : fallbackPill ? (
-                <div className="bg-tag flex h-[27px] items-center justify-center p-[10px] rounded-pill shrink-0 max-w-[150px]">
-                  <span className="text-[12px] leading-[1.2] truncate">{fallbackEmoji} {fallbackPill}</span>
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </div>
+      <div className="ehvm-slide-up bg-card relative flex flex-col gap-[20px] items-start p-[15px] rounded-card w-full max-w-[500px] lg:max-w-[960px]">
 
-        {/* About */}
-        <div className="flex flex-col gap-[10px] w-full leading-[1.2]">
-          <p className="font-bold text-[20px]">About</p>
-          <p className="text-[17px]">{app.about}</p>
-        </div>
+        {/* Close button – top-right of card */}
+        <HistoryBackLink href="/apps" className="absolute top-[15px] right-[15px] flex size-[20px] items-center justify-center rounded-full shrink-0 no-underline z-10" style={{ background: '#6e6e73' }}>
+          <svg width="8" height="8" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1L6 6M6 1L1 6" stroke="white" strokeWidth="1.6" strokeLinecap="round"/>
+          </svg>
+        </HistoryBackLink>
 
-        {/* Links */}
-        {(app.appStoreLink || app.playStoreLink) && (
-          <div className="flex flex-wrap gap-[10px] items-start">
-            {app.appStoreLink && (
-              <a href={app.appStoreLink} className="flex gap-[7px] items-center justify-center px-[14px] py-[8px] rounded-pill text-[15px] no-underline leading-normal transition-opacity duration-200 hover:opacity-70" style={{ background: 'var(--color-button)', color: 'var(--color-button-text)' }}>
-                App Store
-                <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-                  <path d="M2 9L9 2M9 2H4.5M9 2V6.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </a>
+        {/* ── TOP SECTION: 2-col on PC ── */}
+        <div className="w-full grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-[30px] items-start">
+
+          {/* Left column */}
+          <div className="flex flex-col gap-[20px]">
+
+            {/* Icon + Name row */}
+            <div className="flex items-center gap-[16px] min-w-0 pr-[30px]">
+              {app.icon ? (
+                <div className="relative shrink-0 size-[80px] rounded-icon shadow-icon overflow-hidden">
+                  <Image src={app.icon} alt={app.name} fill unoptimized className="object-cover" sizes="80px" />
+                </div>
+              ) : (
+                <div className="shrink-0 size-[80px] rounded-icon bg-tag flex items-center justify-center text-[28px]">📱</div>
+              )}
+              <p className="font-bold text-[28px] leading-[1.15] min-w-0">{app.name}</p>
+            </div>
+
+            {/* Store buttons */}
+            {(app.appStoreLink || app.playStoreLink) && (
+              <div className="flex flex-wrap gap-[10px] items-start">
+                {app.appStoreLink && (
+                  <a href={app.appStoreLink} className="flex gap-[8px] items-center justify-center px-[18px] py-[10px] rounded-pill text-[15px] font-medium no-underline leading-normal transition-opacity duration-200 hover:opacity-70" style={{ background: 'var(--color-button)', color: 'var(--color-button-text)' }}>
+                    App Store
+                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                      <path d="M2 9L9 2M9 2H4.5M9 2V6.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </a>
+                )}
+                {app.playStoreLink && (
+                  <a href={app.playStoreLink} className="flex gap-[8px] items-center justify-center px-[18px] py-[10px] rounded-pill text-[15px] font-medium no-underline leading-normal transition-opacity duration-200 hover:opacity-70" style={{ background: 'var(--color-button)', color: 'var(--color-button-text)' }}>
+                    Play Store
+                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                      <path d="M2 9L9 2M9 2H4.5M9 2V6.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </a>
+                )}
+              </div>
             )}
-            {app.playStoreLink && (
-              <a href={app.playStoreLink} className="flex gap-[7px] items-center justify-center px-[14px] py-[8px] rounded-pill text-[15px] no-underline leading-normal transition-opacity duration-200 hover:opacity-70" style={{ background: 'var(--color-button)', color: 'var(--color-button-text)' }}>
-                Play Store
-                <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-                  <path d="M2 9L9 2M9 2H4.5M9 2V6.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </a>
+
+            {/* About */}
+            <p className="text-[17px] leading-[1.6]">
+              <strong>About.</strong>{" "}{app.about}
+            </p>
+
+            {/* Developer Country */}
+            {app.developerCountry && app.developerCountry !== "Unknown" && (
+              <p className="text-[17px] leading-[1.4]">
+                <strong>Developer.</strong>{" "}{app.developerCountry} {app.developerFlag}
+              </p>
             )}
-          </div>
-        )}
 
-        {highlightItems.length > 0 && (
-          <div className="flex flex-col gap-[12px] w-full leading-[1.2]">
-            <p className="font-bold text-[20px]">Highlights</p>
-            <div className="flex items-start justify-between w-full text-center gap-[8px]">
-              {highlightItems.slice(0, 3).map((item) => (
-                <div key={item.key} className="flex flex-[1_0_0] flex-col gap-[6px] items-center text-center min-w-0">
-                  <div className="font-bold text-[20px] leading-[1.2] min-w-0">
-                    {item.emoji ? <p>{item.emoji}</p> : null}
-                    <p className="break-words">{item.value}</p>
-                  </div>
-                  <p className="text-[12px] text-muted leading-[1.2] break-words">{item.label}</p>
+            {/* Highlights (mobile only – shown on mobile, hidden on PC since no highlights box in design) */}
+            {highlightItems.length > 0 && (
+              <div className="flex flex-col gap-[12px] w-full leading-[1.2] lg:hidden">
+                <p className="font-bold text-[20px]">Highlights</p>
+                <div className="flex items-start justify-between w-full text-center gap-[8px]">
+                  {highlightItems.slice(0, 3).map((item) => (
+                    <div key={item.key} className="flex flex-[1_0_0] flex-col gap-[6px] items-center text-center min-w-0">
+                      <div className="font-bold text-[20px] leading-[1.2] min-w-0">
+                        {item.emoji ? <p>{item.emoji}</p> : null}
+                        <p className="break-words">{item.value}</p>
+                      </div>
+                      <p className="text-[12px] text-muted leading-[1.2] break-words">{item.label}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+              </div>
+            )}
 
-        {/* Developer Country */}
-        {app.developerCountry && app.developerCountry !== "Unknown" && (
-          <div className="flex items-center gap-[6px] leading-[1.2]">
-            <span className="text-[17px]">{app.developerFlag}</span>
-            <span className="text-[14px] text-muted">Developer · {app.developerCountry}</span>
-          </div>
-        )}
+          </div>{/* end left column */}
 
-        {/* App Screenshots */}
-        {app.screenshots && app.screenshots.length > 0 ? (
-          <div className="flex flex-col gap-[16px] w-full">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-[12px] w-full">
-              {app.screenshots.map((screenshot, index) => (
-                <div key={index} className="flex flex-col gap-[8px]">
-                  <div className="relative w-full aspect-[400/800] rounded-[12px] overflow-hidden">
+          {/* Right column: screenshots */}
+          <div className="w-full">
+            {app.screenshots && app.screenshots.length > 0 ? (
+              <div className="grid grid-cols-4 gap-[10px] w-full">
+                {app.screenshots.slice(0, 4).map((screenshot, index) => (
+                  <div key={index} className="relative w-full aspect-[9/19] rounded-[16px] overflow-hidden">
                     <Image
                       src={screenshot.url}
                       alt={screenshot.caption || `App screenshot ${index + 1}`}
                       fill
                       unoptimized
                       className="object-cover"
-                      sizes="(max-width: 640px) 50vw, 25vw"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
                       priority={index === 0}
                     />
                   </div>
-                  {screenshot.caption && (
-                    <p className="text-[12px] text-body leading-[1.3] text-center">{screenshot.caption}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="relative w-full aspect-[1592/820] rounded-icon overflow-hidden">
-            {app.screenshotsImage ? (
-              <Image
-                src={app.screenshotsImage}
-                alt="App screenshots"
-                fill
-                unoptimized
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, 500px"
-                priority
-              />
+                ))}
+              </div>
             ) : (
-              <div className="w-full h-full bg-tag flex items-center justify-center text-[17px] text-muted">
-                No screenshots uploaded
+              <div className="relative w-full aspect-[1592/820] rounded-icon overflow-hidden">
+                {app.screenshotsImage ? (
+                  <Image
+                    src={app.screenshotsImage}
+                    alt="App screenshots"
+                    fill
+                    unoptimized
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, 500px"
+                    priority
+                  />
+                ) : (
+                  <div className="w-full h-full bg-tag flex items-center justify-center text-[17px] text-muted">
+                    No screenshots uploaded
+                  </div>
+                )}
               </div>
             )}
-          </div>
-        )}
+          </div>{/* end right column */}
 
-        {kpis.length > 0 && (
-          <div className="flex flex-col gap-[12px] w-full">
-            <p className="font-bold text-[20px] leading-[1.2]">KPI Cards</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-[10px] w-full">
-              {kpis.map((item, index) => (
-                <div key={`${item.label}-${index}`} className="bg-tag rounded-[16px] p-[12px]">
-                  <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
-                  <p className="font-bold text-[22px] leading-[1.1] mt-[4px]">{item.value || "—"}</p>
-                  {item.trend ? (
-                    <p className="flex items-center gap-[4px] text-[12px] mt-[6px] text-body">
-                      {/^↑/.test(item.trend) && (
-                        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-                          <path d="M2 9L9 2M9 2H4.5M9 2V6.5" stroke="#34a853" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      )}
-                      {item.trend.replace(/^↑\s*/, '')}
-                    </p>
-                  ) : null}
-                  {item.sub ? (
-                    <p className="text-[12px] text-caption mt-[2px]">{item.sub}</p>
-                  ) : null}
+        </div>{/* end top 2-col grid */}
+
+        {/* ── KPI + FUNNEL: 2-col on PC ── */}
+        {(kpis.length > 0 || funnel.length > 0) && (
+          <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[20px] items-start">
+            {kpis.length > 0 && (
+              <div className="flex flex-col gap-[12px] w-full">
+                <p className="font-bold text-[20px] leading-[1.2]">KPI Cards</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-[10px] w-full">
+                  {kpis.map((item, index) => (
+                    <div key={`${item.label}-${index}`} className="bg-tag rounded-[16px] p-[12px]">
+                      <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
+                      <p className="font-bold text-[22px] leading-[1.1] mt-[4px]">{item.value || "—"}</p>
+                      {item.trend ? (
+                        <p className="flex items-center gap-[4px] text-[12px] mt-[6px] text-body">
+                          {/^↑/.test(item.trend) && (
+                            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                              <path d="M2 9L9 2M9 2H4.5M9 2V6.5" stroke="#34a853" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          )}
+                          {item.trend.replace(/^↑\s*/, '')}
+                        </p>
+                      ) : null}
+                      {item.sub ? (
+                        <p className="text-[12px] text-caption mt-[2px]">{item.sub}</p>
+                      ) : null}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+              </div>
+            )}
 
         {(financialSummary.length > 0 || plRows.length > 0) && (
           <div className="flex flex-col gap-[12px] w-full">
@@ -347,32 +324,34 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           </div>
         )}
 
-        {charts.length > 0 && <AppChartsClient charts={charts} />}
-
-        {funnel.length > 0 && (
-          <div className="flex flex-col gap-[12px] w-full">
-            <p className="font-bold text-[20px] leading-[1.2]">Conversion Funnel</p>
-            <div className="bg-tag rounded-[16px] p-[12px] flex flex-col gap-[8px]">
-              {funnel.map((step, index) => {
-                const percent = parsePercent(step.pct, Math.max(20, 100 - index * 14));
-                return (
-                  <div key={`${step.label}-${index}`} className="flex items-center gap-[8px]">
-                    <p className="w-[102px] text-[11px] text-body text-right truncate">{step.label}</p>
-                    <div className="flex-1 h-[24px] rounded-[10px] bg-card overflow-hidden">
-                      <div
-                        className="h-full rounded-[10px] bg-primary text-primary-text text-[11px] px-[8px] flex items-center"
-                        style={{ width: `${percent}%`, minWidth: "38px" }}
-                      >
-                        {step.value || "—"}
+            {funnel.length > 0 && (
+              <div className="flex flex-col gap-[12px] w-full">
+                <p className="font-bold text-[20px] leading-[1.2]">Conversion Funnel</p>
+                <div className="bg-tag rounded-[16px] p-[12px] flex flex-col gap-[8px]">
+                  {funnel.map((step, index) => {
+                    const percent = parsePercent(step.pct, Math.max(20, 100 - index * 14));
+                    return (
+                      <div key={`${step.label}-${index}`} className="flex items-center gap-[8px]">
+                        <p className="w-[102px] text-[11px] text-body text-right truncate">{step.label}</p>
+                        <div className="flex-1 h-[24px] rounded-[10px] bg-card overflow-hidden">
+                          <div
+                            className="h-full rounded-[10px] bg-primary text-primary-text text-[11px] px-[8px] flex items-center"
+                            style={{ width: `${percent}%`, minWidth: "38px" }}
+                          >
+                            {step.value || "—"}
+                          </div>
+                        </div>
+                        <p className="w-[42px] text-[11px] font-bold text-right">{step.pct || "—"}</p>
                       </div>
-                    </div>
-                    <p className="w-[42px] text-[11px] font-bold text-right">{step.pct || "—"}</p>
-                  </div>
-                );
-              })}
-            </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        )}{/* end KPI + Funnel 2-col grid */}
+
+        {charts.length > 0 && <AppChartsClient charts={charts} />}
 
         {hasProductSection && (
           <div className="flex flex-col gap-[12px] w-full">
@@ -465,6 +444,10 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             )}
           </div>
         )}
+
+        {/* ── USER ACQUISITION + OPPORTUNITIES: 2-col on PC ── */}
+        {(app.userAcquisition.paid.length > 0 || app.userAcquisition.organic.length > 0 || app.opportunities.length > 0) && (
+        <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[20px] items-start">
 
         {/* User Acquisition */}
         {(app.userAcquisition.paid.length > 0 || app.userAcquisition.organic.length > 0) && (
@@ -561,6 +544,9 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           </div>
         )}
 
+        </div>
+        )}{/* end User Acquisition + Opportunities 2-col grid */}
+
         {/* Acquisition Process */}
         {processSteps.length > 0 && (
           <div className="flex flex-col gap-[10px] w-full">
@@ -595,59 +581,64 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           <FaqAccordion faqs={visibleFaqs} />
         )}
 
-        {/* Contact */}
-        <div className="flex flex-col gap-[10px] w-full">
-          <div className="flex flex-col gap-[10px] leading-[1.2]">
-            <p className="font-bold text-[20px]">Interested?</p>
-            <p className="text-[17px]">If you have more questions, reach out or book a call with your POC</p>
-          </div>
-          <div className="flex gap-[10px] items-center w-full">
-            {app.contact.image ? (
-              <div className="relative size-[97px] rounded-icon shadow-icon overflow-hidden shrink-0">
-                <Image
-                  src={app.contact.image}
-                  alt={app.contact.name}
-                  fill
-                  unoptimized
-                  className="object-cover"
-                  sizes="97px"
-                />
-              </div>
-            ) : (
-              <div className="size-[97px] rounded-icon bg-tag flex items-center justify-center text-[24px] shrink-0">
-                👤
-              </div>
-            )}
-            <div className="flex flex-col gap-[10px] flex-[1_0_0]">
-              {app.contact.title ? (
-                <p className="text-[14px] text-body leading-[1.3]">{app.contact.title}</p>
-              ) : null}
-              <a href={`mailto:${app.contact.email}`} className="bg-primary flex gap-[10px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[14px] text-primary-text no-underline leading-normal">
-                📫 {app.contact.email}
-              </a>
-              <a href={`tel:${app.contact.phone}`} className="bg-primary flex gap-[10px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[14px] text-primary-text no-underline leading-normal">
-                ☎️ {app.contact.phone}
-              </a>
-              {app.contact.calendarUrl ? (
-                <a href={app.contact.calendarUrl} target="_blank" rel="noopener noreferrer" className="bg-tag flex gap-[10px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[14px] text-foreground no-underline leading-normal">
-                  📅 Book a call
+        {/* ── CONTACT ── */}
+        <div className="w-full grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] gap-[20px] items-start">
+
+          <div className="flex flex-col gap-[24px]">
+            <div className="flex flex-col gap-[12px]">
+              <p className="font-bold text-[28px] leading-[1.2]">Interested?</p>
+              <p className="text-[16px] text-body leading-[1.5]">If you have more questions, reach out or book a call with your POC</p>
+            </div>
+
+            <div className="flex flex-col gap-[12px]">
+              {app.contact.email && (
+                <a
+                  href={`mailto:${app.contact.email}`}
+                  className="flex items-center gap-[14px] bg-tag rounded-[16px] px-[20px] py-[18px] no-underline transition-opacity hover:opacity-70"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 text-foreground">
+                    <rect x="2" y="4" width="20" height="16" rx="3" stroke="currentColor" strokeWidth="1.8"/>
+                    <path d="M2 7l10 7 10-7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span className="text-[15px] text-foreground leading-normal">{app.contact.email}</span>
                 </a>
-              ) : null}
-              {app.contact.ndaUrl ? (
-                <a href={app.contact.ndaUrl} target="_blank" rel="noopener noreferrer" className="bg-tag flex gap-[10px] items-center justify-center px-[15px] py-[10px] rounded-pill text-[14px] text-foreground no-underline leading-normal">
-                  ✍️ Sign NDA
+              )}
+              {app.contact.phone && (
+                <a
+                  href={`tel:${app.contact.phone}`}
+                  className="flex items-center gap-[14px] bg-tag rounded-[16px] px-[20px] py-[18px] no-underline transition-opacity hover:opacity-70"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 text-foreground">
+                    <path d="M6.6 10.8a15.05 15.05 0 006.6 6.6l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.26.2 2.47.57 3.58a1 1 0 01-.24 1.02L6.6 10.8z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span className="text-[15px] text-foreground leading-normal">{app.contact.phone}</span>
                 </a>
-              ) : null}
+              )}
+              {app.contact.ndaUrl && (
+                <a
+                  href={app.contact.ndaUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-[14px] bg-tag rounded-[16px] px-[20px] py-[18px] no-underline transition-opacity hover:opacity-70"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 text-foreground">
+                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span className="text-[15px] text-foreground leading-normal">Sign NDA</span>
+                </a>
+              )}
             </div>
           </div>
+
+          {/* Calendar in its own card */}
+          {app.contact.calendarUrl ? (
+            <div className="bg-card rounded-card p-[15px] w-full overflow-hidden">
+              <CalendarEmbed calendarUrl={app.contact.calendarUrl} />
+            </div>
+          ) : null}
+
         </div>
 
-        {/* Calendar */}
-        {app.contact.calendarUrl ? (
-          <div className="bg-tag rounded-icon p-[20px] w-full">
-            <CalendarEmbed calendarUrl={app.contact.calendarUrl} />
-          </div>
-        ) : null}
       </div>
     </main>
   );

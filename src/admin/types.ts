@@ -212,6 +212,7 @@ export type StoryRecord = PersonStory
 export interface SiteLinks {
   seeAllAppsUrl: string
   seeAllAppsLabel: string
+  ndaUrl: string
   wantToBuyUrl: string
   wantToSellUrl: string
   updatedAt: string

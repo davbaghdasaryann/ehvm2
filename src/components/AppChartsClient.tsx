@@ -121,9 +121,9 @@ export default function AppChartsClient({ charts }: { charts: AppChart[] }) {
             return {
               label: dataset.label || "",
               data,
-              borderColor: isPie ? "#fff" : borderColor,
+              borderColor: isPie ? "transparent" : borderColor,
               backgroundColor,
-              borderWidth: isPie ? 2 : resolvedType === "line" ? 2 : 1,
+              borderWidth: isPie ? 0 : resolvedType === "line" ? 2 : 1,
               borderRadius: 0,
               pointRadius: resolvedType === "line" ? 5 : 0,
               fill: false,
@@ -220,42 +220,42 @@ export default function AppChartsClient({ charts }: { charts: AppChart[] }) {
   return (
     <div className="flex flex-col gap-[12px] w-full">
       <p className="font-bold text-[20px] leading-[1.2]">Business Charts</p>
-      <div className="grid grid-cols-1 gap-[10px] w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[10px] w-full">
         {charts.map((chart, chartIndex) => {
           const { resolvedType } = normalizeChartType(chart.type);
           const isPie = resolvedType === "pie" || resolvedType === "doughnut";
           const legend = pieLegends[chartIndex];
 
           return (
-            <div key={`${chart.title}-${chartIndex}`} className="bg-tag rounded-[16px] p-[12px]">
-              <p className="font-bold text-[15px] leading-[1.2]">{chart.title || `Chart ${chartIndex + 1}`}</p>
+            <div key={`${chart.title}-${chartIndex}`} className="bg-tag rounded-[16px] p-[16px]">
+              <p className="font-bold text-[22px] leading-[1.2]">{chart.title || `Chart ${chartIndex + 1}`}</p>
               {chart.subtitle ? (
-                <p className="text-[12px] text-caption mt-[4px]">{chart.subtitle}</p>
+                <p className="text-[12px] text-caption mt-[2px]">{chart.subtitle}</p>
               ) : null}
               {isPie ? (
-                <div className="flex flex-col sm:flex-row items-center gap-[16px] mt-[10px]">
-                  <div className="relative h-[200px] w-[200px] shrink-0">
+                <div className="flex flex-row items-center gap-[16px] mt-[14px]">
+                  <div className="relative h-[130px] w-[130px] shrink-0">
                     <canvas
                       ref={(node) => { canvasRefs.current[chartIndex] = node; }}
                     />
                   </div>
                   {legend && (
-                    <div className="flex flex-col gap-[8px] flex-1 w-full">
+                    <div className="flex flex-col gap-[10px] flex-1">
                       {legend.map((item, i) => (
                         <div key={i} className="flex items-center gap-[8px]">
                           <span
                             className="size-[10px] rounded-full shrink-0"
                             style={{ backgroundColor: item.color }}
                           />
-                          <span className="text-[13px] flex-1 leading-[1.2]">{item.label}</span>
-                          <span className="text-[13px] font-bold tabular-nums">{item.pct}</span>
+                          <span className="text-[14px] flex-1 leading-[1.2]">{item.label}</span>
+                          <span className="text-[14px] text-caption tabular-nums">{item.pct}</span>
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="relative h-[220px] mt-[10px]">
+                <div className="relative h-[180px] mt-[10px]">
                   <canvas
                     ref={(node) => { canvasRefs.current[chartIndex] = node; }}
                   />
