@@ -92,12 +92,21 @@ export interface Screenshot {
   caption: string
 }
 
+export type DataSourceMode = 'auto' | 'manual' | 'live'
+
+export interface DataSources {
+  kpis?: DataSourceMode
+  charts?: DataSourceMode
+  financials?: DataSourceMode
+}
+
 export interface AppRecord {
   id: string
   updatedAt: string
   status: 'draft' | 'published'
   featured: boolean
   ndaRequired: boolean
+  dataSources?: DataSources
   meta: {
     name: string
     tagline: string

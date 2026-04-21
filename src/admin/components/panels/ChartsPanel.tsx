@@ -1,6 +1,13 @@
 'use client'
 import { useAdminStore } from '@/admin/store/adminStore'
 import ChartPreview from '@/admin/components/ChartPreview'
+import type { DataSourceMode } from '@/admin/types'
+
+const SOURCE_OPTIONS: { value: DataSourceMode; label: string }[] = [
+  { value: 'auto', label: 'Auto' },
+  { value: 'manual', label: 'Manual only' },
+  { value: 'live', label: 'Live Appfigures' },
+]
 
 export default function ChartsPanel() {
   const s = useAdminStore()
@@ -9,6 +16,25 @@ export default function ChartsPanel() {
       <div className="panel-header">
         <div><div className="panel-title">Charts & Graphs</div><div className="panel-subtitle">Define chart data — rendered as Chart.js on the app page</div></div>
         <button className="btn btn-primary btn-sm" onClick={() => s.addChart()}>+ Add Chart</button>
+      </div>
+      <div className="card" style={{ marginBottom: 16 }}>
+        <div className="card-header"><div className="card-title">Data Source</div></div>
+        <div className="card-body">
+          <div style={{ display: 'flex', gap: 8 }}>
+            {SOURCE_OPTIONS.map(opt => (
+              <button
+                key={opt.value}
+                onClick={() => s.setField('dataSourceCharts', opt.value)}
+                className={`btn btn-sm ${s.dataSourceCharts === opt.value ? 'btn-primary' : 'btn-ghost'}`}
+              >{opt.label}</button>
+            ))}
+          </div>
+          <p className="panel-subtitle" style={{ marginTop: 6 }}>
+            {s.dataSourceCharts === 'auto' && 'Manual charts shown first; Appfigures fills unique gaps.'}
+            {s.dataSourceCharts === 'manual' && 'Only manually entered charts shown; Appfigures data ignored.'}
+            {s.dataSourceCharts === 'live' && 'Only live Appfigures charts shown; manual entries ignored.'}
+          </p>
+        </div>
       </div>
       {s.charts.map((c, ci) => (
         <div key={c.id} className="card" style={{ marginBottom: 16 }}>

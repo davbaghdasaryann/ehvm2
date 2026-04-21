@@ -3,7 +3,7 @@ import { create, persist } from '@/admin/store/storeCore'
 import type {
   AdminNewsRecord, AppRecord, PanelName, PersonStory, StoryBlock, SiteLinks, PageSubtitles,
   KpiItem, FinRow, ChartItem, FunnelStep,
-  RoadmapItem, Competitor, Keyword, Opportunity, ProcessStep, Screenshot
+  RoadmapItem, Competitor, Keyword, Opportunity, ProcessStep, Screenshot, DataSourceMode
 } from '@/admin/types'
 import type { NewsBlock } from '@/data/articles'
 import type { AppfiguresConfig, AppfiguresProductConfig } from '@/lib/appfigures-types'
@@ -77,6 +77,10 @@ interface FormState {
   appfiguresAppleAppId: string
   appfiguresGoogleProductId: string
   appfiguresGooglePackageName: string
+  // data sources
+  dataSourceKpis: DataSourceMode
+  dataSourceCharts: DataSourceMode
+  dataSourceFinancials: DataSourceMode
   // financials
   finMrr: string; finArr: string; finLtvCac: string
   finMargin: string; finYoy: string; finMultiple: string
@@ -219,6 +223,7 @@ const emptyForm: FormState = {
   appfiguresDefaultCountry: 'US',
   appfiguresAppleProductId: '', appfiguresAppleAppId: '',
   appfiguresGoogleProductId: '', appfiguresGooglePackageName: '',
+  dataSourceKpis: 'auto', dataSourceCharts: 'auto', dataSourceFinancials: 'auto',
   finMrr: '', finArr: '', finLtvCac: '', finMargin: '', finYoy: '', finMultiple: '',
   productVision: '',
   marketTam: '', marketSam: '', marketSom: '', marketTamLabel: '', marketSamLabel: '', marketYear: '',
@@ -369,6 +374,11 @@ export const useAdminStore = create<AdminStore>()(
             screenshots: s.screenshots.map(({ id: _id, ...rest }) => rest)
           },
           appfigures,
+          dataSources: {
+            kpis: s.dataSourceKpis,
+            charts: s.dataSourceCharts,
+            financials: s.dataSourceFinancials,
+          },
         }
       },
 
@@ -430,6 +440,9 @@ export const useAdminStore = create<AdminStore>()(
           appfiguresAppleAppId: appleProduct?.storeProductId || '',
           appfiguresGoogleProductId: googleProduct?.productId || '',
           appfiguresGooglePackageName: googleProduct?.storeProductId || '',
+          dataSourceKpis: app.dataSources?.kpis || 'auto',
+          dataSourceCharts: app.dataSources?.charts || 'auto',
+          dataSourceFinancials: app.dataSources?.financials || 'auto',
           finMrr: app.financials.mrr, finArr: app.financials.arr,
           finLtvCac: app.financials.ltvCac, finMargin: app.financials.netMargin,
           finYoy: app.financials.yoyGrowth, finMultiple: app.financials.askingMultiple,

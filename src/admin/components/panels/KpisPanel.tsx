@@ -1,13 +1,39 @@
 'use client'
 import { useAdminStore } from '@/admin/store/adminStore'
+import type { DataSourceMode } from '@/admin/types'
+
+const SOURCE_OPTIONS: { value: DataSourceMode; label: string }[] = [
+  { value: 'auto', label: 'Auto' },
+  { value: 'manual', label: 'Manual only' },
+  { value: 'live', label: 'Live Appfigures' },
+]
 
 export default function KpisPanel() {
-  const { kpiItems, addKpi, removeKpi, updateKpi } = useAdminStore()
+  const { kpiItems, addKpi, removeKpi, updateKpi, dataSourceKpis, setField } = useAdminStore()
   return (
     <div>
       <div className="panel-header">
         <div><div className="panel-title">KPI Cards</div><div className="panel-subtitle">Up to 6 headline metrics displayed prominently</div></div>
         <button className="btn btn-primary btn-sm" onClick={() => addKpi()}>+ Add KPI</button>
+      </div>
+      <div className="card" style={{ marginBottom: 16 }}>
+        <div className="card-header"><div className="card-title">Data Source</div></div>
+        <div className="card-body">
+          <div style={{ display: 'flex', gap: 8 }}>
+            {SOURCE_OPTIONS.map(opt => (
+              <button
+                key={opt.value}
+                onClick={() => setField('dataSourceKpis', opt.value)}
+                className={`btn btn-sm ${dataSourceKpis === opt.value ? 'btn-primary' : 'btn-ghost'}`}
+              >{opt.label}</button>
+            ))}
+          </div>
+          <p className="panel-subtitle" style={{ marginTop: 6 }}>
+            {dataSourceKpis === 'auto' && 'Manual KPIs shown first; Appfigures fills unique gaps.'}
+            {dataSourceKpis === 'manual' && 'Only manually entered KPIs shown; Appfigures data ignored.'}
+            {dataSourceKpis === 'live' && 'Only live Appfigures KPIs shown; manual entries ignored.'}
+          </p>
+        </div>
       </div>
       {kpiItems.map((k, i) => (
         <div key={k.id} className="array-item">

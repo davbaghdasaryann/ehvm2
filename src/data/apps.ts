@@ -169,4 +169,5 @@ export type App = {
   }[];
   notionPageBlocks?: NotionPageBlock[];
   appfigures?: AppfiguresConfig;
+  dataSources?: { kpis?: 'auto' | 'manual' | 'live'; charts?: 'auto' | 'manual' | 'live'; financials?: 'auto' | 'manual' | 'live' };
 };

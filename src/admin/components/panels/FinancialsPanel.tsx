@@ -1,5 +1,12 @@
 'use client'
 import { useAdminStore } from '@/admin/store/adminStore'
+import type { DataSourceMode } from '@/admin/types'
+
+const SOURCE_OPTIONS: { value: DataSourceMode; label: string }[] = [
+  { value: 'auto', label: 'Auto' },
+  { value: 'manual', label: 'Manual only' },
+  { value: 'live', label: 'Live Appfigures' },
+]
 
 export default function FinancialsPanel() {
   const s = useAdminStore()
@@ -8,6 +15,25 @@ export default function FinancialsPanel() {
       <div className="panel-header">
         <div><div className="panel-title">Financial Table</div><div className="panel-subtitle">TTM P&L rows shown in the Financial Snapshot</div></div>
         <button className="btn btn-primary btn-sm" onClick={() => s.addFinRow()}>+ Add Row</button>
+      </div>
+      <div className="card" style={{ marginBottom: 16 }}>
+        <div className="card-header"><div className="card-title">Data Source</div></div>
+        <div className="card-body">
+          <div style={{ display: 'flex', gap: 8 }}>
+            {SOURCE_OPTIONS.map(opt => (
+              <button
+                key={opt.value}
+                onClick={() => s.setField('dataSourceFinancials', opt.value)}
+                className={`btn btn-sm ${s.dataSourceFinancials === opt.value ? 'btn-primary' : 'btn-ghost'}`}
+              >{opt.label}</button>
+            ))}
+          </div>
+          <p className="panel-subtitle" style={{ marginTop: 6 }}>
+            {s.dataSourceFinancials === 'auto' && 'Manual financials shown first; Appfigures fills unique gaps.'}
+            {s.dataSourceFinancials === 'manual' && 'Only manually entered financials shown; Appfigures data ignored.'}
+            {s.dataSourceFinancials === 'live' && 'Only live Appfigures financials shown; manual entries ignored.'}
+          </p>
+        </div>
       </div>
       <div className="card" style={{ marginBottom: 16 }}>
         <div className="card-header"><div className="card-title">Summary Metrics</div></div>

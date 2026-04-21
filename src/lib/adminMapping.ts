@@ -418,6 +418,7 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
     notionDetailBlocks: detailBlocks.length > 0 ? detailBlocks : undefined,
     notionPageBlocks: pageBlocks.length > 0 ? pageBlocks : undefined,
     appfigures,
+    dataSources: record.dataSources,
   };
 
   return {

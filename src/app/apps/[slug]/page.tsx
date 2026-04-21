@@ -128,11 +128,17 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
     }
   });
 
-  const kpis = mergeUniqueByLabel(
-    (app.kpis || []).filter((item) => item.label || item.value),
-    appfiguresDerived.kpis,
-  );
-  const financialSummary = [
+  const dsKpis = app.dataSources?.kpis || 'auto';
+  const dsCharts = app.dataSources?.charts || 'auto';
+  const dsFinancials = app.dataSources?.financials || 'auto';
+
+  const manualKpis = (app.kpis || []).filter((item) => item.label || item.value);
+  const kpis =
+    dsKpis === 'manual' ? manualKpis :
+    dsKpis === 'live' ? appfiguresDerived.kpis :
+    mergeUniqueByLabel(manualKpis, appfiguresDerived.kpis);
+
+  const manualFinancialSummary = [
     { key: "mrr", label: "MRR", value: app.financials?.mrr || "" },
     { key: "arr", label: "ARR", value: app.financials?.arr || "" },
     { key: "ltvcac", label: "LTV : CAC", value: app.financials?.ltvCac || "" },
@@ -140,15 +146,18 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
     { key: "yoy", label: "YoY Growth", value: app.financials?.yoyGrowth || "" },
     { key: "multiple", label: "Asking Multiple", value: app.financials?.askingMultiple || "" },
   ].filter((item) => item.value);
-  const appfiguresFinancialSummary = appfiguresDerived.financialCards.filter((item) => {
+  const financialSummary = dsFinancials === 'live' ? [] : manualFinancialSummary;
+  const appfiguresFinancialSummary = dsFinancials === 'manual' ? [] : appfiguresDerived.financialCards.filter((item) => {
     const label = item.label.trim().toLowerCase();
     return !financialSummary.some((existing) => existing.label.trim().toLowerCase() === label);
   });
   const plRows = (app.financials?.plRows || []).filter((row) => row.label || row.amount || row.notes);
-  const charts = mergeUniqueCharts(
-    (app.charts || []).filter((chart) => chart.labels.length > 0 && chart.datasets.length > 0),
-    appfiguresDerived.charts,
-  );
+
+  const manualCharts = (app.charts || []).filter((chart) => chart.labels.length > 0 && chart.datasets.length > 0);
+  const charts =
+    dsCharts === 'manual' ? manualCharts :
+    dsCharts === 'live' ? appfiguresDerived.charts :
+    mergeUniqueCharts(manualCharts, appfiguresDerived.charts);
   const funnel = (app.funnel || []).filter((step) => step.label || step.value || step.pct);
   const roadmap = (app.product?.roadmap || []).filter((item) => item.title || item.description);
   const hasProductSection = Boolean(app.product?.vision || roadmap.length > 0);
