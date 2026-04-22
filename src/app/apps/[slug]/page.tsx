@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getAppBySlug, getAppSlugs } from "@/lib/data";
+import { getAppBySlug, getAppSlugs, getSiteLinks } from "@/lib/data";
 import { getAppfiguresSnapshot } from "@/lib/appfigures";
 import { deriveAppfiguresData } from "@/lib/appfiguresDerived";
 import AppChartsClient from "@/components/AppChartsClient";
 import AppfiguresSectionClient from "@/components/AppfiguresSectionClient";
 import CalendarEmbed from "@/components/CalendarEmbed";
+import NdaGatePortal from "@/components/NdaGatePortal";
 import FaqAccordion from "@/components/FaqAccordion";
 import HistoryBackLink from "@/components/HistoryBackLink";
 
@@ -71,7 +72,7 @@ export async function generateStaticParams() {
 
 export default async function AppDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const app = await getAppBySlug(slug);
+  const [app, siteLinks] = await Promise.all([getAppBySlug(slug), getSiteLinks()]);
   if (!app) notFound();
   const appfiguresSnapshot = await getAppfiguresSnapshot(app.appfigures);
   const appfiguresDerived = deriveAppfiguresData(appfiguresSnapshot);
@@ -306,6 +307,10 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           </div>{/* end right column */}
 
         </div>{/* end top 2-col grid */}
+
+        {/* ── LOCKED CONTENT: blurred NDA gate ── */}
+        <div className="relative w-full">
+          <div className="flex flex-col gap-[20px] w-full pointer-events-none select-none" style={{ filter: "blur(5px)", opacity: 0.7 }}>
 
         {/* ── KPI + FUNNEL: 2-col on PC ── */}
         {(kpis.length > 0 || funnel.length > 0) && (
@@ -784,7 +789,14 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             </div>
           ) : null}
 
-        </div>
+        </div>{/* end contact grid */}
+
+          </div>{/* end blurred content */}
+
+          {/* NDA overlay — rendered via portal to escape transform stacking context */}
+          <NdaGatePortal ndaUrl={siteLinks.ndaUrl || siteLinks.seeAllAppsUrl} />
+
+        </div>{/* end relative locked container */}
 
       </div>
     </main>
