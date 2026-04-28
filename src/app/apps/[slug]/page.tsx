@@ -310,7 +310,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
         {/* ── LOCKED CONTENT: blurred NDA gate ── */}
         <div className="relative w-full">
-          <div className="flex flex-col gap-[20px] w-full pointer-events-none select-none" style={{ filter: "blur(5px)", opacity: 0.7 }}>
+          <div className="flex flex-col gap-[20px] w-full" /* pointer-events-none select-none style={{ filter: "blur(5px)", opacity: 0.7 }} */>
 
         {/* ── KPI + FUNNEL: 2-col on PC ── */}
         {(kpis.length > 0 || funnel.length > 0) && (
