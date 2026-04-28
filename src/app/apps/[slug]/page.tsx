@@ -794,7 +794,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           </div>{/* end blurred content */}
 
           {/* NDA overlay — rendered via portal to escape transform stacking context */}
-          <NdaGatePortal ndaUrl={siteLinks.ndaUrl || siteLinks.seeAllAppsUrl} />
+          {/* <NdaGatePortal ndaUrl={siteLinks.ndaUrl || siteLinks.seeAllAppsUrl} /> */}
 
         </div>{/* end relative locked container */}
 
