@@ -2,9 +2,9 @@
   "apps": [
     {
       "id": "sample_coachify",
-      "updatedAt": "2026-04-27T13:07:47.021Z",
-      "status": "draft",
-      "featured": false,
+      "updatedAt": "2026-04-30T17:48:26.726Z",
+      "status": "published",
+      "featured": true,
       "ndaRequired": true,
       "meta": {
         "name": "Coachify",
@@ -13,18 +13,16 @@
         "category": "Health & Fitness",
         "platforms": "iOS + Android",
         "model": "AI / Subscription",
-        "badge": "Acquisition Opportunity · Health & Fitness",
-        "askingPrice": "Asking ~3.5× ARR",
+        "badge": "where is this",
+        "askingPrice": "where is this",
         "tags": [
           "iOS + Android",
-          "AI / Subscription",
           "Profitable",
-          "Health & Fitness",
-          "Asking ~3.5× ARR"
+          "AI",
+          "Photo & Video",
+          "🔥 Trendy"
         ],
-        "appStoreUrl": "https://apps.apple.com",
-        "playStoreUrl": "https://play.google.com/store",
-        "websiteUrl": "https://ehvm.com",
+        "appStoreUrl": "https://apps.apple.com/us/app/ai-dance-generator-art-maker/id6475566752",
         "developerCountry": "United States",
         "developerFlag": "🇺🇸"
       },
@@ -42,13 +40,6 @@
           "trend": "Top 5% category",
           "sub": "1,249 ranked keywords",
           "icon": "⭐"
-        },
-        {
-          "label": "Social Following",
-          "value": "110K",
-          "trend": "99.7K TikTok",
-          "sub": "Combined channels",
-          "icon": "📱"
         }
       ],
       "financials": {
@@ -136,7 +127,8 @@
                 68000,
                 70000
               ],
-              "color": "#1a1a1a"
+              "color": "#601f1f",
+              "colors": "#3e54b6,#4155af,#50dc18,#4055b5,#4258b8,#4f65c4,#6176d6,#768ae5,#8396ec,#8c9ff2,#85ffe0,#ee5044,#f92e1f,#42ff8b"
             }
           ]
         },
@@ -155,12 +147,13 @@
                 71,
                 29
               ],
-              "color": "#2d7a4f"
+              "color": "#ffffff",
+              "colors": "#7ce774,#c31d1d"
             }
           ]
         },
         {
-          "type": "doughnut",
+          "type": "pie",
           "title": "Revenue by Geography",
           "subtitle": "Top markets by revenue share",
           "labels": [
@@ -181,6 +174,81 @@
                 8,
                 6,
                 10
+              ],
+              "color": "#3aa68b",
+              "colors": "#1a2e84,#9ba2c0,#61ee44,#4f6d67,#8b9ff9,#777b8d"
+            }
+          ]
+        },
+        {
+          "type": "pie",
+          "title": "test",
+          "subtitle": "test",
+          "labels": [
+            "United States",
+            "United Kingdom",
+            "Canada",
+            "Australia",
+            "Germany",
+            "Other"
+          ],
+          "datasets": [
+            {
+              "label": "",
+              "data": [
+                52,
+                14,
+                10,
+                8,
+                6,
+                10
+              ],
+              "color": "#06b6d4",
+              "colors": "#d08925,#9ea3b7,#828736,#44eeb5,#ee44b8,#ee5e44"
+            }
+          ]
+        },
+        {
+          "type": "pie",
+          "title": "",
+          "subtitle": "",
+          "labels": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "datasets": [
+            {
+              "label": "",
+              "data": [
+                1,
+                2,
+                3,
+                4
+              ],
+              "color": "#ef4444"
+            }
+          ]
+        },
+        {
+          "type": "line",
+          "title": "",
+          "subtitle": "",
+          "labels": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "datasets": [
+            {
+              "label": "",
+              "data": [
+                1,
+                2,
+                3,
+                6
               ],
               "color": "#1a1a1a"
             }
@@ -251,53 +319,44 @@
             "icon": "🏋️",
             "name": "Coachify",
             "description": "AI-personalized workouts + nutrition · Profitable · $70K MRR",
-            "appStoreRating": "4.7",
-            "googleStoreRating": "",
-            "link": "",
+            "rating": "4.7 ⭐",
             "isThisApp": true
           },
           {
             "icon": "💪",
             "name": "Fitbod",
             "description": "Adaptive strength training · $30M+ ARR · VC-backed",
-            "appStoreRating": "4.8",
-            "googleStoreRating": "",
-            "link": "",
-            "isThisApp": false
+            "rating": "4.8 ⭐",
+            "isThisApp": false,
+            "link": "https://www.apple.com/app-store/"
           },
           {
             "icon": "📊",
             "name": "MyFitnessPal",
             "description": "Nutrition tracking · 200M+ users · Acquired by Francisco Partners",
-            "appStoreRating": "4.7",
-            "googleStoreRating": "",
-            "link": "",
+            "rating": "4.7 ⭐",
             "isThisApp": false
           }
         ],
         "keywords": [
           {
             "keyword": "ai workout planner",
-            "store": "App Store",
-            "country": "US",
+            "volume": "52K",
             "rank": "#2"
           },
           {
             "keyword": "gym workout plan",
-            "store": "App Store",
-            "country": "US",
+            "volume": "48K",
             "rank": "#4"
           },
           {
             "keyword": "ai personal trainer",
-            "store": "App Store",
-            "country": "US",
+            "volume": "41K",
             "rank": "#3"
           },
           {
             "keyword": "workout tracker app",
-            "store": "App Store",
-            "country": "US",
+            "volume": "38K",
             "rank": "#9"
           }
         ]
@@ -354,6 +413,342 @@
             "description": "Closing via escrow. Asset transfer includes App Store & Play Store accounts, source code, brand assets, social handles, and 30-day seller support."
           }
         ]
+      },
+      "media": {
+        "icon": "data:image/png;base64,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",
+        "cover": "",
+        "screenshots": [
+          {
+            "url": "/uploads/screenshots/1774887658888-cd49f8e6.png",
+            "caption": ""
+          }
+        ]
+      },
+      "dataSources": {
+        "kpis": "auto",
+        "charts": "auto",
+        "financials": "auto"
+      }
+    },
+    {
+      "id": "dummy_rider_waite",
+      "updatedAt": "2026-04-30T10:00:00.000Z",
+      "status": "published",
+      "featured": false,
+      "ndaRequired": false,
+      "meta": {
+        "name": "Rider Waite",
+        "tagline": "Learn Tarot cards",
+        "description": "A beautifully designed Tarot learning app with 130K MRR and a passionate user base.",
+        "category": "Lifestyle",
+        "platforms": "iOS",
+        "model": "Subscription",
+        "badge": "",
+        "askingPrice": "",
+        "tags": [
+          "iOS",
+          "Profitable"
+        ],
+        "appStoreUrl": "",
+        "developerCountry": "United States",
+        "developerFlag": "🇺🇸"
+      },
+      "kpis": [],
+      "financials": {
+        "mrr": "$130,000",
+        "arr": ".56M",
+        "ltvCac": "5x",
+        "netMargin": "45%",
+        "yoyGrowth": "18%",
+        "askingMultiple": "3x ARR",
+        "plRows": []
+      },
+      "charts": [],
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [],
+        "keywords": []
+      },
+      "opportunities": [],
+      "contact": {
+        "name": "Evelin Herrera",
+        "title": "M&A Advisor",
+        "email": "hi@evelinherrera.com",
+        "phone": "+1 415 798 1766",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "image": "/images/evelin.png",
+        "processSteps": []
+      },
+      "media": {
+        "icon": "",
+        "cover": "",
+        "screenshots": []
+      },
+      "dataSources": {
+        "kpis": "auto",
+        "charts": "auto",
+        "financials": "auto"
+      }
+    },
+    {
+      "id": "dummy_osho_zen",
+      "updatedAt": "2026-04-30T10:00:00.000Z",
+      "status": "published",
+      "featured": false,
+      "ndaRequired": false,
+      "meta": {
+        "name": "Osho Zen",
+        "tagline": "Meditation and Tarot",
+        "description": "A meditation and Tarot app generating 50K MRR on Android with a loyal spiritual community.",
+        "category": "Health & Fitness",
+        "platforms": "Android",
+        "model": "Subscription",
+        "badge": "",
+        "askingPrice": "",
+        "tags": [
+          "Android",
+          "Profitable"
+        ],
+        "appStoreUrl": "",
+        "developerCountry": "Germany",
+        "developerFlag": "🇩🇪"
+      },
+      "kpis": [],
+      "financials": {
+        "mrr": "$50,000",
+        "arr": "K",
+        "ltvCac": "3.8x",
+        "netMargin": "38%",
+        "yoyGrowth": "25%",
+        "askingMultiple": "3.5x ARR",
+        "plRows": []
+      },
+      "charts": [],
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [],
+        "keywords": []
+      },
+      "opportunities": [],
+      "contact": {
+        "name": "Evelin Herrera",
+        "title": "M&A Advisor",
+        "email": "hi@evelinherrera.com",
+        "phone": "+1 415 798 1766",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "image": "/images/evelin.png",
+        "processSteps": []
+      },
+      "media": {
+        "icon": "",
+        "cover": "",
+        "screenshots": []
+      },
+      "dataSources": {
+        "kpis": "auto",
+        "charts": "auto",
+        "financials": "auto"
+      }
+    },
+    {
+      "id": "dummy_morgan_greer",
+      "updatedAt": "2026-04-30T10:00:00.000Z",
+      "status": "published",
+      "featured": false,
+      "ndaRequired": false,
+      "meta": {
+        "name": "Morgan Greer",
+        "tagline": "Tarot for Beginners",
+        "description": "A beginner-friendly Tarot web app with 4.5K MRR and strong organic SEO growth.",
+        "category": "Education",
+        "platforms": "Web",
+        "model": "Freemium",
+        "badge": "",
+        "askingPrice": "",
+        "tags": [
+          "Web",
+          "Profitable"
+        ],
+        "appStoreUrl": "",
+        "developerCountry": "Canada",
+        "developerFlag": "🇨🇦"
+      },
+      "kpis": [],
+      "financials": {
+        "mrr": "$4,500",
+        "arr": "K",
+        "ltvCac": "2.5x",
+        "netMargin": "55%",
+        "yoyGrowth": "40%",
+        "askingMultiple": "4x ARR",
+        "plRows": []
+      },
+      "charts": [],
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [],
+        "keywords": []
+      },
+      "opportunities": [],
+      "contact": {
+        "name": "Evelin Herrera",
+        "title": "M&A Advisor",
+        "email": "hi@evelinherrera.com",
+        "phone": "+1 415 798 1766",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "image": "/images/evelin.png",
+        "processSteps": []
+      },
+      "media": {
+        "icon": "",
+        "cover": "",
+        "screenshots": []
+      },
+      "dataSources": {
+        "kpis": "auto",
+        "charts": "auto",
+        "financials": "auto"
+      }
+    },
+    {
+      "id": "dummy_focusflow",
+      "updatedAt": "2026-04-30T10:00:00.000Z",
+      "status": "published",
+      "featured": false,
+      "ndaRequired": false,
+      "meta": {
+        "name": "FocusFlow",
+        "tagline": "Deep work timer",
+        "description": "A Pomodoro-based productivity app with 22K MRR and top App Store rankings in Productivity.",
+        "category": "Productivity",
+        "platforms": "iOS + Android",
+        "model": "Subscription",
+        "badge": "",
+        "askingPrice": "",
+        "tags": [
+          "iOS + Android",
+          "Profitable"
+        ],
+        "appStoreUrl": "",
+        "developerCountry": "United Kingdom",
+        "developerFlag": "🇬🇧"
+      },
+      "kpis": [],
+      "financials": {
+        "mrr": "$22,000",
+        "arr": "K",
+        "ltvCac": "4.1x",
+        "netMargin": "50%",
+        "yoyGrowth": "32%",
+        "askingMultiple": "3.8x ARR",
+        "plRows": []
+      },
+      "charts": [],
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [],
+        "keywords": []
+      },
+      "opportunities": [],
+      "contact": {
+        "name": "Evelin Herrera",
+        "title": "M&A Advisor",
+        "email": "hi@evelinherrera.com",
+        "phone": "+1 415 798 1766",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "image": "/images/evelin.png",
+        "processSteps": []
+      },
+      "media": {
+        "icon": "",
+        "cover": "",
+        "screenshots": []
+      },
+      "dataSources": {
+        "kpis": "auto",
+        "charts": "auto",
+        "financials": "auto"
+      }
+    },
+    {
+      "id": "dummy_snaplens",
+      "updatedAt": "2026-04-30T10:00:00.000Z",
+      "status": "published",
+      "featured": false,
+      "ndaRequired": false,
+      "meta": {
+        "name": "SnapLens",
+        "tagline": "AI photo enhancer",
+        "description": "An AI-powered photo enhancement app with viral TikTok growth and 85K MRR.",
+        "category": "Photo & Video",
+        "platforms": "iOS",
+        "model": "Subscription",
+        "badge": "",
+        "askingPrice": "",
+        "tags": [
+          "iOS",
+          "AI",
+          "Profitable"
+        ],
+        "appStoreUrl": "",
+        "developerCountry": "France",
+        "developerFlag": "🇫🇷"
+      },
+      "kpis": [],
+      "financials": {
+        "mrr": "$85,000",
+        "arr": ".02M",
+        "ltvCac": "6x",
+        "netMargin": "41%",
+        "yoyGrowth": "55%",
+        "askingMultiple": "4x ARR",
+        "plRows": []
+      },
+      "charts": [],
+      "market": {
+        "tam": "",
+        "sam": "",
+        "som": "",
+        "tamLabel": "",
+        "samLabel": "",
+        "year": "",
+        "competitors": [],
+        "keywords": []
+      },
+      "opportunities": [],
+      "contact": {
+        "name": "Evelin Herrera",
+        "title": "M&A Advisor",
+        "email": "hi@evelinherrera.com",
+        "phone": "+1 415 798 1766",
+        "calendarUrl": "",
+        "ndaUrl": "",
+        "image": "/images/evelin.png",
+        "processSteps": []
       },
       "media": {
         "icon": "",

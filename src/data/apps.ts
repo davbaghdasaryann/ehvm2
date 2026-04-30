@@ -86,6 +86,7 @@ export type App = {
     }[];
   };
   featured?: boolean;
+  ndaRequired?: boolean;
   kpis?: {
     label: string;
     value: string;

@@ -148,7 +148,7 @@ function toNotionDetailBlocks(blocks: NotionPageBlock[]): NonNullable<App["notio
 function buildPageBlocks(record: AppRecord): NotionPageBlock[] {
   const blocks: NotionPageBlock[] = [];
 
-  if (clean(record.product.vision)) {
+  if (clean(record.product?.vision)) {
     blocks.push({ type: "heading_2", value: "Product vision" });
     blocks.push({ type: "paragraph", value: clean(record.product.vision) });
   }
@@ -168,7 +168,7 @@ function buildPageBlocks(record: AppRecord): NotionPageBlock[] {
     });
   }
 
-  if (record.market.competitors.length > 0 || record.market.keywords.length > 0) {
+  if ((record.market?.competitors?.length ?? 0) > 0 || (record.market?.keywords?.length ?? 0) > 0) {
     blocks.push({ type: "heading_2", value: "Market context" });
 
     record.market.competitors.forEach((item) => {
@@ -342,6 +342,7 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
       })),
     },
     featured: record.featured,
+    ndaRequired: record.ndaRequired,
     kpis: record.kpis.map((item) => ({
       label: clean(item.label),
       value: clean(item.value),
@@ -364,7 +365,7 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
         highlight: Boolean(row.highlight),
       })),
     },
-    charts: record.charts.map((chart) => ({
+    charts: (record.charts ?? []).map((chart) => ({
       type: clean(chart.type),
       title: clean(chart.title),
       subtitle: clean(chart.subtitle),
@@ -376,27 +377,27 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
         colors: (dataset as any).colors ? clean((dataset as any).colors) : undefined,
       })),
     })),
-    funnel: record.funnel.map((step) => ({
+    funnel: (record.funnel ?? []).map((step) => ({
       label: clean(step.label),
       value: clean(step.value),
       pct: clean(step.pct),
     })),
     product: {
-      vision: clean(record.product.vision),
-      roadmap: record.product.roadmap.map((item) => ({
+      vision: clean(record.product?.vision),
+      roadmap: (record.product?.roadmap ?? []).map((item) => ({
         status: item.status,
         title: clean(item.title),
         description: clean(item.description),
       })),
     },
     market: {
-      tam: clean(record.market.tam),
-      sam: clean(record.market.sam),
-      som: clean(record.market.som),
-      tamLabel: clean(record.market.tamLabel),
-      samLabel: clean(record.market.samLabel),
-      year: clean(record.market.year),
-      competitors: record.market.competitors.map((item) => ({
+      tam: clean(record.market?.tam),
+      sam: clean(record.market?.sam),
+      som: clean(record.market?.som),
+      tamLabel: clean(record.market?.tamLabel),
+      samLabel: clean(record.market?.samLabel),
+      year: clean(record.market?.year),
+      competitors: (record.market?.competitors ?? []).map((item) => ({
         icon: clean(item.icon),
         name: clean(item.name),
         description: clean(item.description),
@@ -407,7 +408,7 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
         link: clean(item.link),
         isThisApp: Boolean(item.isThisApp),
       })),
-      keywords: record.market.keywords.map((item) => ({
+      keywords: (record.market?.keywords ?? []).map((item) => ({
         keyword: clean(item.keyword),
         store: clean(item.store),
         country: clean(item.country),

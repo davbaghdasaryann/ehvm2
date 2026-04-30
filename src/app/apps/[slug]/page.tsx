@@ -217,7 +217,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             {(app.appStoreLink || app.playStoreLink) && (
               <div className="flex flex-wrap gap-[10px] items-start">
                 {app.appStoreLink && (
-                  <a href={app.appStoreLink} className="flex gap-[8px] items-center justify-center px-[18px] py-[10px] rounded-pill text-[15px] font-medium no-underline leading-normal transition-opacity duration-200 hover:opacity-70" style={{ background: 'var(--color-button)', color: 'var(--color-button-text)' }}>
+                  <a href={app.appStoreLink} target="_blank" rel="noopener noreferrer" className="flex gap-[8px] items-center justify-center px-[18px] py-[10px] rounded-pill text-[15px] font-medium no-underline leading-normal transition-opacity duration-200 hover:opacity-70" style={{ background: 'var(--color-button)', color: 'var(--color-button-text)' }}>
                     App Store
                     <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
                       <path d="M2 9L9 2M9 2H4.5M9 2V6.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -225,7 +225,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                   </a>
                 )}
                 {app.playStoreLink && (
-                  <a href={app.playStoreLink} className="flex gap-[8px] items-center justify-center px-[18px] py-[10px] rounded-pill text-[15px] font-medium no-underline leading-normal transition-opacity duration-200 hover:opacity-70" style={{ background: 'var(--color-button)', color: 'var(--color-button-text)' }}>
+                  <a href={app.playStoreLink} target="_blank" rel="noopener noreferrer" className="flex gap-[8px] items-center justify-center px-[18px] py-[10px] rounded-pill text-[15px] font-medium no-underline leading-normal transition-opacity duration-200 hover:opacity-70" style={{ background: 'var(--color-button)', color: 'var(--color-button-text)' }}>
                     Play Store
                     <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
                       <path d="M2 9L9 2M9 2H4.5M9 2V6.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -310,7 +310,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
         {/* ── LOCKED CONTENT: blurred NDA gate ── */}
         <div className="relative w-full">
-          <div className="flex flex-col gap-[20px] w-full" /* pointer-events-none select-none style={{ filter: "blur(5px)", opacity: 0.7 }} */>
+          <div className="flex flex-col gap-[20px] w-full" style={app.ndaRequired ? { filter: "blur(5px)", opacity: 0.7, pointerEvents: "none", userSelect: "none" } : {}}>
 
         {/* ── KPI + FUNNEL: 2-col on PC ── */}
         {(kpis.length > 0 || funnel.length > 0) && (
@@ -794,7 +794,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           </div>{/* end blurred content */}
 
           {/* NDA overlay — rendered via portal to escape transform stacking context */}
-          {/* <NdaGatePortal ndaUrl={siteLinks.ndaUrl || siteLinks.seeAllAppsUrl} /> */}
+          {app.ndaRequired && <NdaGatePortal ndaUrl={siteLinks.ndaUrl || siteLinks.seeAllAppsUrl} />}
 
         </div>{/* end relative locked container */}
 
