@@ -73,6 +73,7 @@ interface FormState {
   metaAppStoreUrl: string; metaPlayStoreUrl: string; metaWebsiteUrl: string
   metaDeveloperCountry: string; metaDeveloperFlag: string
   featured: boolean; ndaRequired: boolean
+  lockedFields: string[]
   appfiguresDefaultCountry: string
   appfiguresAppleProductId: string
   appfiguresAppleAppId: string
@@ -130,6 +131,7 @@ interface AdminStore extends FormState {
   // actions
   setPanel: (p: PanelName) => void
   setField: <K extends keyof FormState>(key: K, val: FormState[K]) => void
+  toggleLockedField: (field: string) => void
   markDirty: () => void
   markClean: () => void
   showToast: (msg: string, icon?: string) => void
@@ -234,7 +236,7 @@ const emptyForm: FormState = {
   metaBadge: '', metaAsking: '', tags: [],
   metaAppStoreUrl: '', metaPlayStoreUrl: '', metaWebsiteUrl: '',
   metaDeveloperCountry: '', metaDeveloperFlag: '',
-  featured: false, ndaRequired: true,
+  featured: false, ndaRequired: true, lockedFields: [],
   appfiguresDefaultCountry: 'US',
   appfiguresAppleProductId: '', appfiguresAppleAppId: '',
   appfiguresGoogleProductId: '', appfiguresGooglePackageName: '',
@@ -267,6 +269,12 @@ export const useAdminStore = create<AdminStore>()(
 
       setPanel: (p) => set({ activePanel: p }),
       setField: (key, val) => { set({ [key]: val } as Partial<AdminStore>); get().markDirty() },
+      toggleLockedField: (field) => set(s => ({
+        lockedFields: s.lockedFields.includes(field)
+          ? s.lockedFields.filter((item) => item !== field)
+          : [...s.lockedFields, field],
+        isDirty: true,
+      })),
       markDirty: () => set({ isDirty: true }),
       markClean: () => set({ isDirty: false }),
 
@@ -354,6 +362,7 @@ export const useAdminStore = create<AdminStore>()(
           status: existing?.status || 'draft',
           featured: s.featured,
           ndaRequired: s.ndaRequired,
+          lockedFields: s.lockedFields,
           meta: {
             name: s.metaName, tagline: s.metaTagline, description: s.metaDescription,
             category: s.metaCategory, platforms: s.metaPlatforms, model: s.metaModel,
@@ -461,7 +470,7 @@ export const useAdminStore = create<AdminStore>()(
           metaDeveloperCountry: app.meta.developerCountry || '',
           metaDeveloperFlag: app.meta.developerFlag || '',
           tags: [...app.meta.tags],
-          featured: app.featured, ndaRequired: app.ndaRequired,
+          featured: app.featured, ndaRequired: app.ndaRequired, lockedFields: app.lockedFields || [],
           appfiguresDefaultCountry: app.appfigures?.defaultCountry || 'US',
           appfiguresAppleProductId: appleProduct?.productId || '',
           appfiguresAppleAppId: appleProduct?.storeProductId || '',
@@ -780,12 +789,12 @@ export const useAdminStore = create<AdminStore>()(
       updateFunnelStep: (id, key, val) => set(s => ({ funnelSteps: s.funnelSteps.map(f => f.id === id ? { ...f, [key]: val } : f), isDirty: true })),
 
       // Roadmap
-      addRoadmapItem: (d = {}) => set(s => ({ roadmapItems: [...s.roadmapItems, { id: uid(), status: 'done', title: '', description: '', ...d }], isDirty: true })),
+      addRoadmapItem: (d = {}) => set(s => ({ roadmapItems: [...s.roadmapItems, { id: uid(), status: 'done', icon: '', title: '', description: '', ...d }], isDirty: true })),
       removeRoadmapItem: (id) => set(s => ({ roadmapItems: s.roadmapItems.filter(r => r.id !== id), isDirty: true })),
       updateRoadmap: (id, key, val) => set(s => ({ roadmapItems: s.roadmapItems.map(r => r.id === id ? { ...r, [key]: val } : r), isDirty: true })),
 
       // Competitors
-      addCompetitor: (d = {}) => set(s => ({ competitors: [...s.competitors, { id: uid(), icon: '💪', name: '', description: '', appStoreRating: '', googleStoreRating: '', link: '', isThisApp: false, ...d }], isDirty: true })),
+      addCompetitor: (d = {}) => set(s => ({ competitors: [...s.competitors, { id: uid(), icon: '💪', logoUrl: '', name: '', description: '', metricValue: '', metricLabel: '', appStoreRating: '', googleStoreRating: '', link: '', isThisApp: false, ...d }], isDirty: true })),
       removeCompetitor: (id) => set(s => ({ competitors: s.competitors.filter(c => c.id !== id), isDirty: true })),
       updateCompetitor: (id, key, val) => set(s => ({ competitors: s.competitors.map(c => c.id === id ? { ...c, [key]: val } : c), isDirty: true })),
 
@@ -795,7 +804,7 @@ export const useAdminStore = create<AdminStore>()(
       updateKeyword: (id, key, val) => set(s => ({ keywords: s.keywords.map(k => k.id === id ? { ...k, [key]: val } : k), isDirty: true })),
 
       // Opportunities
-      addOpportunity: (d = {}) => set(s => ({ opportunities: [...s.opportunities, { id: uid(), icon: '🚀', title: '', description: '', ...d }], isDirty: true })),
+      addOpportunity: (d = {}) => set(s => ({ opportunities: [...s.opportunities, { id: uid(), icon: '🚀', title: '', description: '', impactLabel: 'Impact', impactValue: '', impactSubtext: '', impactColor: '', ...d }], isDirty: true })),
       removeOpportunity: (id) => set(s => ({ opportunities: s.opportunities.filter(o => o.id !== id), isDirty: true })),
       updateOpportunity: (id, key, val) => set(s => ({ opportunities: s.opportunities.map(o => o.id === id ? { ...o, [key]: val } : o), isDirty: true })),
 
@@ -883,17 +892,17 @@ export const useAdminStore = create<AdminStore>()(
           ],
           productVision: 'Coachify is building the AI personal trainer for the 80% of gym-goers who train without a coach — delivering professional-grade programming, nutrition guidance, and real-time feedback at a fraction of the cost of a human trainer.',
           roadmapItems: [
-            { id: 40, status: 'done', title: 'AI Personalized Workout Plans', description: 'Dynamic plan generation based on goals, fitness level, and available equipment.' },
-            { id: 41, status: 'done', title: 'Calorie & Macro Tracking', description: 'Integrated diet monitoring with food database and AI-generated meal suggestions.' },
-            { id: 42, status: 'progress', title: 'Paywall A/B Testing Framework', description: 'Systematic testing of pricing, trial lengths, and offer structures.' },
-            { id: 43, status: 'planned', title: 'Apple Watch & Wearables Integration', description: 'Real-time heart rate, HRV, and recovery data feeding into adaptive programming engine.' },
+            { id: 40, status: 'done', icon: '🧬', title: 'AI Personalized Workout Plans', description: 'Dynamic plan generator based on goals, experience, and available equipment.' },
+            { id: 41, status: 'done', icon: '🍏', title: 'Calorie & Macro Tracking', description: 'Integrated diet monitoring with food database and AI-generated meal suggestions.' },
+            { id: 42, status: 'progress', icon: '🧪', title: 'Paywall A/B Testing Framework', description: 'Systematic testing of pricing, trial lengths, and offer structures.' },
+            { id: 43, status: 'planned', icon: '⌚', title: 'Apple Watch & Wearables Integration', description: 'Real-time heart rate, HRV, and recovery data feeding into adaptive programming engine.' },
           ],
           marketTam: '$15.3B', marketSam: '$2.1B', marketSom: '$210M',
           marketTamLabel: 'Global fitness apps', marketSamLabel: 'AI fitness apps', marketYear: '2025',
           competitors: [
-            { id: 50, icon: '🏋️', name: 'Coachify', description: 'AI-personalized workouts + nutrition · Profitable · $70K MRR', appStoreRating: '4.7', googleStoreRating: '', link: '', isThisApp: true },
-            { id: 51, icon: '💪', name: 'Fitbod', description: 'Adaptive strength training · $30M+ ARR · VC-backed', appStoreRating: '4.8', googleStoreRating: '', link: '', isThisApp: false },
-            { id: 52, icon: '📊', name: 'MyFitnessPal', description: 'Nutrition tracking · 200M+ users · Acquired by Francisco Partners', appStoreRating: '4.7', googleStoreRating: '', link: '', isThisApp: false },
+            { id: 50, icon: '🏋️', name: 'Coachify', description: 'AI-personalized workouts + nutrition', metricValue: '$70K', metricLabel: 'Monthly Recurring Revenue', appStoreRating: '4.7', googleStoreRating: '', link: '', isThisApp: true },
+            { id: 51, icon: '💪', name: 'Fitbod', description: 'Adaptive strength training', metricValue: '$30M+', metricLabel: 'Monthly Recurring Revenue', appStoreRating: '4.8', googleStoreRating: '', link: '', isThisApp: false },
+            { id: 52, icon: '📊', name: 'MyFitnessPal', description: 'Nutrition tracking', metricValue: '200M+', metricLabel: 'Users', appStoreRating: '4.7', googleStoreRating: '', link: '', isThisApp: false },
           ],
           keywords: [
             { id: 60, keyword: 'ai workout planner', store: 'App Store', country: 'US', rank: '#2' },
@@ -902,10 +911,10 @@ export const useAdminStore = create<AdminStore>()(
             { id: 63, keyword: 'workout tracker app', store: 'App Store', country: 'US', rank: '#9' },
           ],
           opportunities: [
-            { id: 70, icon: '💳', title: 'Paywall A/B Testing', description: 'Systematic testing of pricing tiers, trial lengths, and offer structures. Conservative 15–20% improvement in trial-to-paid conversion is achievable within 90 days.' },
-            { id: 71, icon: '🔥', title: 'TikTok Organic + Paid UA', description: 'With 99.7K TikTok followers and zero paid spend on the platform, there is a clear path to a new high-volume acquisition channel.' },
-            { id: 72, icon: '🍎', title: 'Apple Search Ads', description: 'The app ranks for 1,249 keywords but runs zero Apple Search Ads. Launching campaigns could deliver the lowest-CAC installs available.' },
-            { id: 73, icon: '🌍', title: 'International Expansion', description: 'App is predominantly English-language. Localization into Spanish, Portuguese, and German markets represents a near-zero COGS growth lever.' },
+            { id: 70, icon: '💳', title: 'Paywall A/B Testing', description: 'Test variations of pricing tiers, trial lengths, and offer structures. Estimated 30-60% improvement in early-signal conversion. 1-2 developer weeks for MVP.', impactLabel: 'Impact', impactValue: '15-20%', impactSubtext: 'conversion uplift', impactColor: '#B000FF' },
+            { id: 71, icon: '🔥', title: 'TikTok Organic + Paid UA', description: 'Short-form transformation content and paid ads on the platform. Creator-led UGC demos net 200K+ views per post. Targeting 18-34, US English, gym and nutrition interests.', impactLabel: 'Impact', impactValue: 'High', impactSubtext: '~10K installs/month at $1.50 CPI', impactColor: '#FF170D' },
+            { id: 72, icon: '🍎', title: 'Apple Search Ads', description: 'The app ranks for 1,249 keywords but runs zero paid Apple Search Ads. Conservatively, allocating 5-10K/month to the lowest CAC installs. Discovery campaigns recommended.', impactLabel: 'Opportunity', impactValue: 'Lowest CAC', impactSubtext: 'channel in App Store', impactColor: '#00C853' },
+            { id: 73, icon: '🌍', title: 'International Expansion', description: 'App is predominantly English-language. Localization into Spanish, Portuguese, French, German. Targeting LATAM and Europe. Translations + locale-aware CTAs. Expect new revenue CAC to mirror US performance.', impactLabel: 'Growth Stat', impactValue: 'Near-zero COGS', impactSubtext: 'due to pure digital delivery', impactColor: '#2F00FF' },
           ],
           contactName: 'Evelin Herrera', contactTitle: 'M&A Advisor · EHVM Mobile',
           contactEmail: 'hi@evelinherrera.com', contactPhone: '+1 415 798 1766',

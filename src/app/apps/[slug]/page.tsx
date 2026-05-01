@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { getAppBySlug, getAppSlugs, getSiteLinks } from "@/lib/data";
 import { getAppfiguresSnapshot } from "@/lib/appfigures";
@@ -91,6 +92,138 @@ function formatReviewStars(value: number): string {
   return `${"★".repeat(rounded)}${"☆".repeat(5 - rounded)}`;
 }
 
+function splitCompetitorDescription(description: string): { summary: string; metric: string; metricLabel: string } {
+  const parts = description.split("·").map((part) => part.trim()).filter(Boolean);
+  const metricIndex = parts.findIndex((part) => /(\$|mrr|arr|users|downloads|\d+\s*[km]\+?)/i.test(part));
+  const metricRaw = metricIndex >= 0 ? parts[metricIndex] : "";
+  const summary = parts.find((_, index) => index !== metricIndex) || description;
+  const metric = metricRaw
+    .replace(/\b(monthly recurring revenue|mrr|arr|users|downloads)\b/gi, "")
+    .trim();
+  const metricLabel = /user/i.test(metricRaw)
+    ? "USERS"
+    : /download/i.test(metricRaw)
+      ? "DOWNLOADS"
+      : "MONTHLY RECURRING REVENUE";
+
+  return {
+    summary,
+    metric,
+    metricLabel,
+  };
+}
+
+function processColor(index: number): string {
+  return ["#00B050", "#3716E8", "#C400F5", "#FF1200"][index % 4];
+}
+
+const OPPORTUNITY_COLORS = ["#B000FF", "#FF170D", "#00C853", "#2F00FF"];
+
+function opportunityColor(color: string | undefined, index: number): string {
+  return color || OPPORTUNITY_COLORS[index % OPPORTUNITY_COLORS.length];
+}
+
+const ROADMAP_COLUMNS = [
+  { status: "done", label: "Shipped", color: "#00C853", fallbackIcon: "🧬" },
+  { status: "progress", label: "In Progress", color: "#FFC400", fallbackIcon: "🧪" },
+  { status: "planned", label: "Planned", color: "#C400F5", fallbackIcon: "⌚" },
+] as const;
+
+function isSvgMarkup(value?: string): boolean {
+  return Boolean(value?.trim().startsWith("<svg"));
+}
+
+function RoadmapStatusIcon({ status }: { status: (typeof ROADMAP_COLUMNS)[number]["status"] }) {
+  if (status === "done") {
+    return (
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+        <path d="M3 6.7 5.3 9 10 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    );
+  }
+  if (status === "progress") {
+    return (
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+        <circle cx="6.5" cy="6.5" r="2.2" fill="currentColor"/>
+      </svg>
+    );
+  }
+  return (
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+      <circle cx="6.5" cy="6.5" r="4.6" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M6.5 3.7v3l1.8 1.3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.8"/>
+      <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
+function LockedLayer() {
+  return (
+    <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+      <div className="size-[32px] rounded-full bg-card/80 backdrop-blur-[2px] flex items-center justify-center text-foreground shadow-[0_6px_20px_rgba(0,0,0,0.12)]">
+        <LockIcon />
+      </div>
+    </div>
+  );
+}
+
+function Lockable({ locked, children }: { locked: boolean; children: ReactNode }) {
+  if (!locked) return <>{children}</>;
+  return (
+    <div className="relative overflow-hidden">
+      <div className="blur-[5px] opacity-65 select-none pointer-events-none">
+        {children}
+      </div>
+      <LockedLayer />
+    </div>
+  );
+}
+
+function ProcessIcon({ index, color }: { index: number; color: string }) {
+  if (index === 1) {
+    return (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3.5 7.5h6.4l1.9 2h8.7v7.9a2.1 2.1 0 0 1-2.1 2.1H5.6a2.1 2.1 0 0 1-2.1-2.1V7.5Z" stroke={color} strokeWidth="1.8" strokeLinejoin="round"/>
+        <path d="M3.5 7.5V5.9c0-.8.6-1.4 1.4-1.4h4.3l2 2" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    );
+  }
+  if (index === 2) {
+    return (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M20.2 4.2 3.8 11.5l7.1 2 2 7.1 7.3-16.4Z" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="m10.9 13.5 4.2-4.2" stroke={color} strokeWidth="1.8" strokeLinecap="round"/>
+      </svg>
+    );
+  }
+  if (index === 3) {
+    return (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M8.2 12.7 5.7 10.2a2.5 2.5 0 0 1 0-3.5l.5-.5a2.5 2.5 0 0 1 3.5 0l1.1 1.1" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="m12.9 16.8 1.3 1.3a2.5 2.5 0 0 0 3.5 0l.5-.5a2.5 2.5 0 0 0 0-3.5l-2.7-2.7" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="m8.9 15.1 3.8 3.8a2.3 2.3 0 0 0 3.2 0l.7-.7" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="m15.4 8.6-2.8-2.8a2.3 2.3 0 0 0-3.2 0l-.8.8" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="m8.8 12.8 3.7-3.7 2.7 2.7-3.7 3.7" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    );
+  }
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M8 4.5h6l4 4v11H8a2 2 0 0 1-2-2v-11a2 2 0 0 1 2-2Z" stroke={color} strokeWidth="1.8" strokeLinejoin="round"/>
+      <path d="M14 4.5v4h4" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M9.5 12h5M9.5 15.5h5M9.5 8.5h1.6" stroke={color} strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
 export const revalidate = 300;
 
 export async function generateStaticParams() {
@@ -143,6 +276,9 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
   if (!app) notFound();
   const appfiguresSnapshot = await getAppfiguresSnapshot(app.appfigures);
   const appfiguresDerived = deriveAppfiguresData(appfiguresSnapshot);
+  const lockedFields = new Set(app.lockedFields || []);
+  const isLocked = (field: string) => lockedFields.has(field);
+  const hasFieldLocks = lockedFields.size > 0;
   const topRating = app.rating > 0 ? String(app.rating) : app.highlights.rating !== "—" ? app.highlights.rating : "";
   const topFollowers = app.followers || (app.highlights.followers !== "—" ? app.highlights.followers : "");
   const highlightItems: Array<{ key: string; emoji: string; value: string; label: string }> = [];
@@ -236,7 +372,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
   ].filter((item) => item.value);
   const competitors = (app.market?.competitors || []).filter((item) => item.name || item.description || item.appStoreRating || item.googleStoreRating);
   const keywords = (app.market?.keywords || []).filter((item) => item.keyword || item.store || item.rank);
-  const hasMarketSection = marketStats.length > 0 || competitors.length > 0 || keywords.length > 0;
+  const hasMarketSection = marketStats.length > 0 || keywords.length > 0;
   const hasStoreIntelligence =
     appfiguresDerived.storeSignals.length > 0 ||
     appfiguresDerived.featuredPlacements.length > 0 ||
@@ -377,7 +513,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
         {/* ── LOCKED CONTENT: blurred NDA gate ── */}
         <div className="relative w-full">
-          <div className="flex flex-col gap-[20px] w-full" style={app.ndaRequired ? { filter: "blur(5px)", opacity: 0.7, pointerEvents: "none", userSelect: "none" } : {}}>
+          <div className="flex flex-col gap-[20px] w-full" style={app.ndaRequired && !hasFieldLocks ? { filter: "blur(5px)", opacity: 0.7, pointerEvents: "none", userSelect: "none" } : {}}>
 
         {/* ── KPI + FUNNEL: 2-col on PC ── */}
         {(kpis.length > 0 || funnel.length > 0) && (
@@ -390,7 +526,8 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     const isRating = /star|rating/i.test(item.icon || "") || /rating/i.test(item.label);
                     const cleanValue = (item.value || "—").replace(/\s*[⭐★]\s*/g, "").trim();
                     return (
-                    <div key={`${item.label}-${index}`} className="rounded-[24px] flex flex-col" style={{ background: "#F5F5F7", padding: "18px 20px 20px", gap: 0, boxShadow: "0px 1.01px 2.02px -1.01px #0000001A, 0px 1.01px 3.03px 0px #0000001A" }}>
+                    <div key={`${item.label}-${index}`} className="rounded-[24px] flex flex-col relative overflow-hidden" style={{ background: "#F5F5F7", padding: "18px 20px 20px", gap: 0, boxShadow: "0px 1.01px 2.02px -1.01px #0000001A, 0px 1.01px 3.03px 0px #0000001A" }}>
+                      <Lockable locked={isLocked(`kpis.${index}`)}>
                       {/* Icon + label row */}
                       <div className="flex items-start gap-[8px]" style={{ marginBottom: 12 }}>
                         {isRating ? (
@@ -452,6 +589,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                         )
                       ) : null}
                       </div>{/* end bottom group */}
+                      </Lockable>
                     </div>
                     );
                   })}
@@ -465,9 +603,11 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             {financialSummary.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-[10px] w-full">
                 {financialSummary.map((item) => (
-                  <div key={item.key} className="rounded-[16px] p-[12px]" style={{ background: "#F5F5F7" }}>
-                    <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
-                    <p className="font-bold text-[20px] leading-[1.1] mt-[4px] break-words">{item.value}</p>
+                  <div key={item.key} className="rounded-[16px] p-[12px] relative overflow-hidden" style={{ background: "#F5F5F7" }}>
+                    <Lockable locked={isLocked(`financials.${item.key}`)}>
+                      <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
+                      <p className="font-bold text-[20px] leading-[1.1] mt-[4px] break-words">{item.value}</p>
+                    </Lockable>
                   </div>
                 ))}
               </div>
@@ -477,9 +617,11 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                 <p className="text-[11px] uppercase tracking-[0.08em] text-caption">Appfigures</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-[10px] w-full">
                   {appfiguresFinancialSummary.map((item) => (
-                    <div key={item.key} className="rounded-[16px] p-[12px]" style={{ background: "#F5F5F7" }}>
-                      <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
-                      <p className="font-bold text-[20px] leading-[1.1] mt-[4px] break-words">{item.value}</p>
+                    <div key={item.key} className="rounded-[16px] p-[12px] relative overflow-hidden" style={{ background: "#F5F5F7" }}>
+                      <Lockable locked={isLocked(`appfigures.${item.key}`)}>
+                        <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
+                        <p className="font-bold text-[20px] leading-[1.1] mt-[4px] break-words">{item.value}</p>
+                      </Lockable>
                     </div>
                   ))}
                 </div>
@@ -487,6 +629,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             )}
             {plRows.length > 0 && (
               <div className="rounded-[20px] overflow-hidden w-full" style={{ background: "#F5F5F7", boxShadow: "0px 1.01px 2.02px -1.01px #0000001A, 0px 1.01px 3.03px 0px #0000001A" }}>
+                <Lockable locked={isLocked("financials.plRows")}>
                 {/* Header */}
                 <div className="grid px-[20px] py-[12px]" style={{ gridTemplateColumns: "1fr auto auto auto", gap: "0 16px" }}>
                   <span className="text-[11px] uppercase tracking-[0.08em] font-semibold" style={{ color: "#999" }}>Metric</span>
@@ -514,6 +657,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     <span className="text-[13px]" style={{ color: "#999" }}>{row.notes || ""}</span>
                   </div>
                 ))}
+                </Lockable>
               </div>
             )}
           </div>
@@ -546,32 +690,159 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           </div>
         )}{/* end KPI + Funnel 2-col grid */}
 
-        {charts.length > 0 && <AppChartsClient charts={charts} />}
+        {charts.length > 0 && <AppChartsClient charts={charts} lockedFields={app.lockedFields || []} />}
 
         {hasProductSection && (
-          <div className="flex flex-col gap-[12px] w-full">
-            <p className="font-bold text-[20px] leading-[1.2]">Product Roadmap</p>
-            {app.product?.vision ? (
-              <div className="bg-tag rounded-[16px] p-[12px] text-[14px] leading-[1.5] text-body">
-                {app.product.vision}
-              </div>
-            ) : null}
+          <div className="flex flex-col gap-[36px] w-full rounded-[32px] px-[28px] sm:px-[56px] py-[36px] sm:py-[38px]" style={{ background: "#F5F5F7" }}>
+            <div className="flex flex-col gap-[16px] max-w-[920px]">
+              <p className="font-bold text-[22px] leading-[1.2]">Product Roadmap</p>
+              {app.product?.vision ? (
+                <p className="text-[15px] leading-[1.45] text-foreground">
+                  {app.product.vision}
+                </p>
+              ) : null}
+            </div>
             {roadmap.length > 0 && (
-              <div className="bg-tag rounded-[16px] p-[12px] flex flex-col">
-                {roadmap.map((item, index) => (
-                  <div
-                    key={`${item.title}-${index}`}
-                    className={`py-[10px] ${index > 0 ? "border-t border-divider" : ""}`}
-                  >
-                    <p className="text-[10px] uppercase tracking-[0.08em] text-caption">
-                      {item.status === "done" ? "Shipped" : item.status === "progress" ? "In Progress" : "Planned"}
-                    </p>
-                    <p className="font-bold text-[14px] mt-[4px]">{item.title || "Untitled"}</p>
-                    {item.description ? (
-                      <p className="text-[12px] text-body mt-[3px]">{item.description}</p>
-                    ) : null}
-                  </div>
-                ))}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-[34px] w-full">
+                {ROADMAP_COLUMNS.map((column) => {
+                  const items = roadmap.filter((item) => item.status === column.status);
+                  if (items.length === 0) return null;
+
+                  return (
+                    <div key={column.status} className="flex flex-col gap-[28px] min-w-0">
+                      <div className="flex items-center gap-[12px]">
+                        <span className="size-[26px] rounded-full flex items-center justify-center text-white text-[13px] font-bold shrink-0" style={{ background: column.color }}>
+                          <RoadmapStatusIcon status={column.status} />
+                        </span>
+                        <span className="text-[14px] uppercase tracking-[0.03em] whitespace-nowrap" style={{ color: column.color }}>
+                          {column.label}
+                        </span>
+                        <span className="h-px flex-1 min-w-[44px]" style={{ background: column.color }} />
+                      </div>
+                      <div className="flex flex-col gap-[28px]">
+                        {items.map((item, index) => (
+                          <div key={`${item.title}-${index}`} className="flex items-start gap-[12px]">
+                            <div className="w-[30px] shrink-0 text-[20px] leading-none text-center" style={{ color: column.color }}>
+                              {isSvgMarkup(item.icon) ? (
+                                <span className="inline-flex size-[22px] items-center justify-center [&_svg]:size-[22px]" dangerouslySetInnerHTML={{ __html: item.icon || "" }} />
+                              ) : (
+                                item.icon || column.fallbackIcon
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-bold text-[15px] leading-[1.2]">{item.title || "Untitled"}</p>
+                              {item.description ? (
+                                <p className="mt-[8px] text-[13px] leading-[1.3] text-foreground">{item.description}</p>
+                              ) : null}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {(competitors.length > 0 || processSteps.length > 0) && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[12px] w-full items-stretch">
+            {competitors.length > 0 && (
+              <div className="flex flex-col gap-[18px] w-full">
+                <p className="font-bold text-[20px] leading-[1.2]">Competitive Landscape</p>
+                <div className="flex flex-col gap-[22px]">
+                  {competitors.map((item, index) => {
+                    const parsed = splitCompetitorDescription(item.description || "");
+                    const metric = item.metricValue || parsed.metric || item.appStoreRating || item.googleStoreRating || "";
+                    const metricLabel = item.metricLabel || parsed.metricLabel;
+                    return (
+                      <div
+                        key={`${item.name}-${index}`}
+                        className="min-h-[120px] px-[18px] sm:px-[22px] rounded-[10px] relative overflow-hidden"
+                        style={{ background: "#F5F5F7" }}
+                      >
+                        <Lockable locked={isLocked(`competitors.${index}`)}>
+                        <div className="flex items-center justify-between gap-[18px] min-h-[120px]">
+                        <div className="flex items-center gap-[16px] min-w-0">
+                          <div className="size-[30px] rounded-[7px] bg-black flex items-center justify-center text-[17px] shrink-0 overflow-hidden" style={{ boxShadow: "0 16px 26px rgba(0,0,0,0.18)" }}>
+                            {item.logoUrl ? (
+                              <Image
+                                src={item.logoUrl}
+                                alt={`${item.name || "Competitor"} logo`}
+                                width={30}
+                                height={30}
+                                unoptimized
+                                className="size-full object-cover"
+                              />
+                            ) : (
+                              item.icon || "📱"
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-[16px] leading-[1.2] font-bold truncate">
+                              {item.link ? (
+                                <a href={item.link} target="_blank" rel="noopener noreferrer" className="no-underline hover:underline">{item.name || "Unnamed"}</a>
+                              ) : (item.name || "Unnamed")}
+                            </p>
+                            {parsed.summary ? (
+                              <p className="text-[14px] leading-[1.35] mt-[8px] truncate">{parsed.summary}</p>
+                            ) : null}
+                          </div>
+                        </div>
+                        {metric ? (
+                          <div className="text-right shrink-0">
+                            <p className="text-[24px] leading-[1] font-medium" style={{ color: "#00C853" }}>{metric}</p>
+                            <p className="text-[12px] leading-[1.2] mt-[10px] uppercase whitespace-nowrap">{metricLabel}</p>
+                          </div>
+                        ) : null}
+                        </div>
+                        </Lockable>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {processSteps.length > 0 && (
+              <div className="flex flex-col gap-[20px] w-full rounded-[34px] px-[28px] sm:px-[32px] py-[28px]" style={{ border: "5px solid #F3F3F6" }}>
+                <p className="font-bold text-[20px] leading-[1.2]">Acquisition Process</p>
+                <div className="flex flex-col">
+                  {processSteps.map((step, index) => {
+                    const color = processColor(index);
+                    return (
+                      <div key={`${step.title}-${index}`} className="relative flex gap-[16px] pb-[24px] last:pb-0">
+                        <div className="flex flex-col items-center shrink-0">
+                          <div className="size-[32px] rounded-full flex items-center justify-center text-white text-[14px] font-bold" style={{ background: color }}>
+                            {index + 1}
+                          </div>
+                          {index < processSteps.length - 1 ? (
+                            <div className="flex-1 flex items-center justify-center pt-[42px]">
+                              <span className="text-[20px] leading-none" style={{ color: "#A7A7AD" }}>↓</span>
+                            </div>
+                          ) : null}
+                        </div>
+                        <div className="size-[40px] rounded-[8px] flex items-center justify-center shrink-0" style={{ background: "#F5F5F7", marginTop: 0 }}>
+                          <ProcessIcon index={index} color={color} />
+                        </div>
+                        <div className="min-w-0 flex-1 pt-[2px]">
+                          <div className="flex items-center gap-[10px] flex-wrap">
+                            <p className="text-[16px] leading-[1.2] font-bold">{step.title || "Step"}</p>
+                            {step.note ? (
+                              <span className="rounded-[4px] px-[9px] py-[5px] text-[11px] leading-none" style={{ background: "#F5F5F7", color }}>
+                                {step.note}
+                              </span>
+                            ) : null}
+                          </div>
+                          {step.description ? (
+                            <p className="text-[12px] leading-[1.75] mt-[10px]">{step.description}</p>
+                          ) : null}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
@@ -587,37 +858,6 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
                     <p className="font-bold text-[18px] mt-[4px]">{item.value}</p>
                     {item.sub ? <p className="text-[11px] text-caption mt-[2px]">{item.sub}</p> : null}
-                  </div>
-                ))}
-              </div>
-            )}
-            {competitors.length > 0 && (
-              <div className="bg-tag rounded-[16px] p-[12px] flex flex-col">
-                <p className="font-bold text-[14px]">Competitive Landscape</p>
-                {competitors.map((item, index) => (
-                  <div key={`${item.name}-${index}`} className={`py-[10px] ${index > 0 ? "border-t border-divider" : ""} flex items-center gap-[10px]`}>
-                    <div className="size-[32px] rounded-[10px] bg-card flex items-center justify-center text-[16px] shrink-0">
-                      {item.icon || "📱"}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[13px] font-bold truncate">
-                        {item.link ? (
-                          <a href={item.link} target="_blank" rel="noopener noreferrer" className="no-underline hover:underline">{item.name || "Unnamed"}</a>
-                        ) : (item.name || "Unnamed")}
-                        {item.isThisApp ? (
-                          <span className="ml-[6px] text-[10px] text-[#2d7a4f] bg-[#e8f5ee] px-[6px] py-[2px] rounded-pill">This app</span>
-                        ) : null}
-                      </p>
-                      {item.description ? <p className="text-[11px] text-caption">{item.description}</p> : null}
-                    </div>
-                    <div className="flex flex-col items-end gap-[3px] shrink-0">
-                      {item.appStoreRating ? (
-                        <span className="bg-card px-[8px] py-[2px] rounded-pill text-[11px]">{item.appStoreIcon || '🍎'} {item.appStoreRating}</span>
-                      ) : null}
-                      {item.googleStoreRating ? (
-                        <span className="bg-card px-[8px] py-[2px] rounded-pill text-[11px]">{item.googleStoreIcon || '▶'} {item.googleStoreRating}</span>
-                      ) : null}
-                    </div>
                   </div>
                 ))}
               </div>
@@ -840,55 +1080,43 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
         {/* Opportunities */}
         {app.opportunities.length > 0 && (
-          <div className="flex flex-col gap-[10px] w-full">
+          <div className="flex flex-col gap-[22px] w-full lg:col-span-2">
             <p className="font-bold text-[20px] leading-[1.2]">Opportunities</p>
-            <div className="bg-tag rounded-[16px] p-[12px] flex flex-col">
-              {app.opportunities.map((opp, i) => (
-                <div key={i} className={`py-[10px] ${i > 0 ? "border-t border-divider" : ""} flex items-center gap-[10px]`}>
-                  <div className="size-[32px] rounded-[10px] bg-card flex items-center justify-center text-[16px] shrink-0">
-                    {opp.icon || "🚀"}
+            <div className="flex flex-col gap-[16px]">
+              {app.opportunities.map((opp, i) => {
+                const impactColor = opportunityColor(opp.impactColor, i);
+
+                return (
+                <div key={i} className="min-h-[116px] rounded-[8px] px-[28px] py-[20px] relative overflow-hidden" style={{ background: "#F5F5F7" }}>
+                  <Lockable locked={isLocked(`opportunities.${i}`)}>
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-[18px]">
+                  <div className="flex items-start gap-[12px] min-w-0">
+                    <div className="w-[28px] pt-[1px] text-center text-[20px] leading-none shrink-0">
+                      {opp.icon || "🚀"}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-bold text-[16px] leading-[1.2]">{opp.title}</p>
+                      {opp.description ? <p className="mt-[10px] text-[13px] leading-[1.45] text-foreground">{opp.description}</p> : null}
+                    </div>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[13px] font-bold">{opp.title}</p>
-                    {opp.description ? <p className="text-[11px] text-caption">{opp.description}</p> : null}
+                  {(opp.impactLabel || opp.impactValue || opp.impactSubtext) && (
+                    <div className="md:w-[210px] shrink-0 text-left md:text-right">
+                      {opp.impactLabel ? <p className="text-[12px] uppercase leading-[1.2]">{opp.impactLabel}</p> : null}
+                      {opp.impactValue ? <p className="mt-[7px] text-[20px] leading-[1.1]" style={{ color: impactColor }}>{opp.impactValue}</p> : null}
+                      {opp.impactSubtext ? <p className="mt-[6px] text-[12px] leading-[1.25]">{opp.impactSubtext}</p> : null}
+                    </div>
+                  )}
                   </div>
+                  </Lockable>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
 
         </div>
         )}{/* end User Acquisition + Opportunities 2-col grid */}
-
-        {/* Acquisition Process */}
-        {processSteps.length > 0 && (
-          <div className="flex flex-col gap-[10px] w-full">
-            <p className="font-bold text-[20px] leading-[1.2]">Acquisition Process</p>
-            <div className="bg-tag rounded-icon px-[14px] py-[8px] flex flex-col">
-              {processSteps.map((step, index) => (
-                <div
-                  key={`${step.title}-${index}`}
-                  className={`py-[10px] ${index > 0 ? "border-t border-divider" : ""}`}
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[16px] font-bold leading-[1.25]">
-                      <span className="text-caption font-normal mr-[6px]">{index + 1}.</span>
-                      {step.title || "Step"}
-                      {step.note ? (
-                        <span className="ml-[6px] text-[11px] font-normal text-caption">{step.note}</span>
-                      ) : null}
-                    </p>
-                    {step.description ? (
-                      <p className="text-[13px] text-body mt-[3px] leading-[1.35]">{step.description}</p>
-                    ) : null}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
 
         {/* FAQs */}
         {visibleFaqs.length > 0 && (
@@ -956,7 +1184,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           </div>{/* end blurred content */}
 
           {/* NDA overlay — rendered via portal to escape transform stacking context */}
-          {app.ndaRequired && <NdaGatePortal ndaUrl={siteLinks.ndaUrl || siteLinks.seeAllAppsUrl} />}
+          {app.ndaRequired && !hasFieldLocks && <NdaGatePortal ndaUrl={siteLinks.ndaUrl || siteLinks.seeAllAppsUrl} />}
 
         </div>{/* end relative locked container */}
 

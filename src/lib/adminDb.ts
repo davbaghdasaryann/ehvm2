@@ -90,6 +90,7 @@ export async function readAdminDb(): Promise<AdminDatabase> {
             contact: normalized.contact,
             media: normalized.media,
             ...(normalized.seo ? { seo: normalized.seo } : {}),
+            ...(normalized.lockedFields ? { lockedFields: normalized.lockedFields } : {}),
             ...(normalized.appfigures ? { appfigures: normalized.appfigures } : {}),
             ...(normalized.dataSources ? { dataSources: normalized.dataSources } : {}),
           };

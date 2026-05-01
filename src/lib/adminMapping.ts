@@ -294,7 +294,15 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
     clean(record.media.screenshots[0]?.url);
   const opportunities = record.opportunities
     .filter((item) => clean(item.title))
-    .map((item) => ({ icon: clean(item.icon) || "🚀", title: clean(item.title)!, description: clean(item.description) || "" }));
+    .map((item) => ({
+      icon: clean(item.icon) || "🚀",
+      title: clean(item.title)!,
+      description: clean(item.description) || "",
+      impactLabel: clean(item.impactLabel) || "",
+      impactValue: clean(item.impactValue) || "",
+      impactSubtext: clean(item.impactSubtext) || "",
+      impactColor: clean(item.impactColor) || "",
+    }));
 
   const pageBlocks = buildPageBlocks(record);
   const detailBlocks = toNotionDetailBlocks(pageBlocks);
@@ -359,6 +367,7 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
     },
     featured: record.featured,
     ndaRequired: record.ndaRequired,
+    lockedFields: record.lockedFields || [],
     kpis: record.kpis.map((item) => ({
       label: clean(item.label),
       value: clean(item.value),
@@ -403,6 +412,7 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
       vision: clean(record.product?.vision),
       roadmap: (record.product?.roadmap ?? []).map((item) => ({
         status: item.status,
+        icon: clean(item.icon),
         title: clean(item.title),
         description: clean(item.description),
       })),
@@ -416,8 +426,11 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
       year: clean(record.market?.year),
       competitors: (record.market?.competitors ?? []).map((item) => ({
         icon: clean(item.icon),
+        logoUrl: item.logoUrl ? clean(item.logoUrl) : undefined,
         name: clean(item.name),
         description: clean(item.description),
+        metricValue: item.metricValue ? clean(item.metricValue) : undefined,
+        metricLabel: item.metricLabel ? clean(item.metricLabel) : undefined,
         appStoreRating: clean(item.appStoreRating),
         appStoreIcon: item.appStoreIcon ? clean(item.appStoreIcon) : undefined,
         googleStoreRating: clean(item.googleStoreRating),

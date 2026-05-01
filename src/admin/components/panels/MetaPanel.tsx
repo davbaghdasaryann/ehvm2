@@ -6,6 +6,35 @@ import AiGenerateButton from '@/admin/components/AiGenerateButton'
 
 const ADMIN_APPFIGURES_PRODUCTS_API = '/api/admin/appfigures/products'
 
+function LockOption({ field, label }: { field: string; label: string }) {
+  const lockedFields = useAdminStore((s) => s.lockedFields)
+  const toggleLockedField = useAdminStore((s) => s.toggleLockedField)
+  const locked = lockedFields.includes(field)
+
+  return (
+    <button
+      type="button"
+      onClick={() => toggleLockedField(field)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        padding: '7px 11px',
+        borderRadius: 999,
+        border: locked ? '1px solid #111' : '1px solid rgba(0,0,0,0.12)',
+        background: locked ? '#111' : 'rgba(255,255,255,0.46)',
+        color: locked ? '#fff' : '#444',
+        fontSize: 12,
+        fontWeight: 600,
+        cursor: 'pointer',
+      }}
+    >
+      <span>{locked ? '🔒' : '○'}</span>
+      {label}
+    </button>
+  )
+}
+
 function findMatchingProduct(
   products: AppfiguresAdminProduct[],
   store: 'apple' | 'google_play',
@@ -446,6 +475,54 @@ export default function MetaPanel() {
               <input ref={tagInputRef} type="text" className="tag-input-field" placeholder="Type tag + Enter…" onKeyDown={handleTagKey} />
             </div>
             <div className="field-hint">Press Enter or comma to add. Click × to remove.</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Locked public fields */}
+      <div className="card">
+        <div className="card-header"><div className="card-title">Locked Public Fields</div></div>
+        <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div className="field-hint">Selected items are displayed as blurred cards with a lock icon on the public app page.</div>
+          <div>
+            <div className="field-label">Financial Snapshot</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              <LockOption field="financials.mrr" label="MRR" />
+              <LockOption field="financials.arr" label="ARR" />
+              <LockOption field="financials.ltvcac" label="LTV:CAC" />
+              <LockOption field="financials.margin" label="Net Margin" />
+              <LockOption field="financials.yoy" label="YoY Growth" />
+              <LockOption field="financials.multiple" label="Asking Multiple" />
+              <LockOption field="financials.plRows" label="P&L Table" />
+            </div>
+          </div>
+          <div>
+            <div className="field-label">KPI Cards</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {s.kpiItems.length > 0 ? s.kpiItems.map((item, index) => (
+                <LockOption key={item.id} field={`kpis.${index}`} label={item.label || `KPI ${index + 1}`} />
+              )) : <span className="field-hint">Add KPI cards first.</span>}
+            </div>
+          </div>
+          <div>
+            <div className="field-label">Charts</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {s.charts.length > 0 ? s.charts.map((item, index) => (
+                <LockOption key={item.id} field={`charts.${index}`} label={item.title || `Chart ${index + 1}`} />
+              )) : <span className="field-hint">Add charts first.</span>}
+            </div>
+          </div>
+          <div>
+            <div className="field-label">Market & Upside</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {s.competitors.map((item, index) => (
+                <LockOption key={item.id} field={`competitors.${index}`} label={item.name || `Competitor ${index + 1}`} />
+              ))}
+              {s.opportunities.map((item, index) => (
+                <LockOption key={item.id} field={`opportunities.${index}`} label={item.title || `Opportunity ${index + 1}`} />
+              ))}
+              {s.competitors.length === 0 && s.opportunities.length === 0 ? <span className="field-hint">Add competitors or opportunities first.</span> : null}
+            </div>
           </div>
         </div>
       </div>

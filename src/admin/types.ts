@@ -48,6 +48,7 @@ export interface FunnelStep {
 export interface RoadmapItem {
   id: number
   status: 'done' | 'progress' | 'planned'
+  icon?: string
   title: string
   description: string
 }
@@ -55,8 +56,11 @@ export interface RoadmapItem {
 export interface Competitor {
   id: number
   icon: string
+  logoUrl?: string
   name: string
   description: string
+  metricValue?: string
+  metricLabel?: string
   appStoreRating: string
   appStoreIcon?: string
   googleStoreRating: string
@@ -78,6 +82,10 @@ export interface Opportunity {
   icon: string
   title: string
   description: string
+  impactLabel?: string
+  impactValue?: string
+  impactSubtext?: string
+  impactColor?: string
 }
 
 export interface ProcessStep {
@@ -133,6 +141,7 @@ export interface AppRecord {
   status: 'draft' | 'published'
   featured: boolean
   ndaRequired: boolean
+  lockedFields?: string[]
   dataSources?: DataSources
   seo?: SeoFields
   meta: {

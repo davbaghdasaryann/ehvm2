@@ -231,21 +231,25 @@
         "roadmap": [
           {
             "status": "done",
+            "icon": "🧬",
             "title": "AI Personalized Workout Plans",
-            "description": "Dynamic plan generation based on goals, fitness level, and available equipment."
+            "description": "Dynamic plan generator based on goals, experience, and available equipment."
           },
           {
             "status": "done",
+            "icon": "🍏",
             "title": "Calorie & Macro Tracking",
             "description": "Integrated diet monitoring with food database and AI-generated meal suggestions."
           },
           {
             "status": "progress",
+            "icon": "🧪",
             "title": "Paywall A/B Testing Framework",
             "description": "Systematic testing of pricing, trial lengths, and offer structures."
           },
           {
             "status": "planned",
+            "icon": "⌚",
             "title": "Apple Watch & Wearables Integration",
             "description": "Real-time heart rate, HRV, and recovery data feeding into adaptive programming engine."
           }
@@ -309,22 +313,38 @@
         {
           "icon": "💳",
           "title": "Paywall A/B Testing",
-          "description": "Systematic testing of pricing tiers, trial lengths, and offer structures. Conservative 15–20% improvement in trial-to-paid conversion is achievable within 90 days."
+          "description": "Test variations of pricing tiers, trial lengths, and offer structures. Estimated 30-60% improvement in early-signal conversion. 1-2 developer weeks for MVP.",
+          "impactLabel": "Impact",
+          "impactValue": "15-20%",
+          "impactSubtext": "conversion uplift",
+          "impactColor": "#B000FF"
         },
         {
           "icon": "🔥",
           "title": "TikTok Organic + Paid UA",
-          "description": "With 99.7K TikTok followers and zero paid spend on the platform, there is a clear path to a new high-volume acquisition channel."
+          "description": "Short-form transformation content and paid ads on the platform. Creator-led UGC demos net 200K+ views per post. Targeting 18-34, US English, gym and nutrition interests.",
+          "impactLabel": "Impact",
+          "impactValue": "High",
+          "impactSubtext": "~10K installs/month at $1.50 CPI",
+          "impactColor": "#FF170D"
         },
         {
           "icon": "🍎",
           "title": "Apple Search Ads",
-          "description": "The app ranks for 1,249 keywords but runs zero Apple Search Ads. Launching campaigns could deliver the lowest-CAC installs available."
+          "description": "The app ranks for 1,249 keywords but runs zero paid Apple Search Ads. Conservatively, allocating 5-10K/month to the lowest CAC installs. Discovery campaigns recommended.",
+          "impactLabel": "Opportunity",
+          "impactValue": "Lowest CAC",
+          "impactSubtext": "channel in App Store",
+          "impactColor": "#00C853"
         },
         {
           "icon": "🌍",
           "title": "International Expansion",
-          "description": "App is predominantly English-language. Localization into Spanish, Portuguese, and German markets represents a near-zero COGS growth lever."
+          "description": "App is predominantly English-language. Localization into Spanish, Portuguese, French, German. Targeting LATAM and Europe. Translations + locale-aware CTAs. Expect new revenue CAC to mirror US performance.",
+          "impactLabel": "Growth Stat",
+          "impactValue": "Near-zero COGS",
+          "impactSubtext": "due to pure digital delivery",
+          "impactColor": "#2F00FF"
         }
       ],
       "storeSignals": [

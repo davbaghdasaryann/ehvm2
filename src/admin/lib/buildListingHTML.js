@@ -5,6 +5,20 @@ function h(strings) {
   return strings || ''
 }
 
+function isSvgMarkup(value) {
+  return !!(value || '').trim().match(/^<svg[\s>]/i)
+}
+
+function roadmapStatusSvg(status) {
+  if (status === 'done') {
+    return '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M3 6.7 5.3 9 10 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  }
+  if (status === 'progress') {
+    return '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="2.2" fill="currentColor"/></svg>'
+  }
+  return '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.6" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 3.7v3l1.8 1.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+}
+
 function section(condition, label, title, content) {
   if (!condition) return ''
   return [
@@ -73,17 +87,29 @@ function buildListingHTMLHelper(app) {
       '</div>'
   }).join('')
 
-  var dotColors = { done: '#2d7a4f', progress: '#f0a020', planned: '#ccc' }
-  var dotBg = { done: '#e8f5ee', progress: '#fff3e0', planned: 'rgba(0,0,0,0.06)' }
-  var dotLabel = { done: 'Shipped', progress: 'In Progress', planned: 'Planned' }
-  var roadmapHTML = (prod.roadmap || []).map(function(item) {
-    var s = item.status || 'done'
-    return '<div style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid rgba(0,0,0,0.06);">' +
-      '<div style="display:flex;flex-direction:column;align-items:center;padding-top:3px;"><div style="width:12px;height:12px;border-radius:50%;background:' + (dotColors[s] || '#ccc') + ';flex-shrink:0;"></div></div>' +
-      '<div><div style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:2px 8px;border-radius:50px;margin-bottom:4px;background:' + (dotBg[s] || 'rgba(0,0,0,0.06)') + ';color:' + (dotColors[s] || '#888') + ';">' + (dotLabel[s] || s) + '</div>' +
-      '<div style="font-size:13px;font-weight:700;color:#111;">' + h(item.title) + '</div>' +
-      '<div style="font-size:11px;color:#888;margin-top:2px;line-height:1.5;">' + h(item.description) + '</div></div></div>'
-  }).join('')
+  var roadmapColumns = [
+    { status: 'done', label: 'Shipped', color: '#00C853', icon: '🧬' },
+    { status: 'progress', label: 'In Progress', color: '#FFC400', icon: '🧪' },
+    { status: 'planned', label: 'Planned', color: '#C400F5', icon: '⌚' }
+  ]
+  var roadmapHTML = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:28px;">' + roadmapColumns.map(function(col) {
+    var items = (prod.roadmap || []).filter(function(item) { return (item.status || 'done') === col.status })
+    if (!items.length) return ''
+    return '<div>' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">' +
+      '<div style="width:26px;height:26px;border-radius:50%;background:' + col.color + ';color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">' + roadmapStatusSvg(col.status) + '</div>' +
+      '<div style="font-size:12px;text-transform:uppercase;color:' + col.color + ';white-space:nowrap;">' + col.label + '</div>' +
+      '<div style="height:1px;flex:1;background:' + col.color + ';"></div>' +
+      '</div>' +
+      items.map(function(item) {
+        var icon = item.icon || col.icon
+        return '<div style="display:flex;gap:12px;margin-bottom:22px;">' +
+          '<div style="width:28px;text-align:center;font-size:18px;color:' + col.color + ';flex-shrink:0;">' + (isSvgMarkup(icon) ? icon : h(icon)) + '</div>' +
+          '<div><div style="font-size:13px;font-weight:700;color:#111;">' + h(item.title) + '</div>' +
+          '<div style="font-size:11px;color:#111;margin-top:7px;line-height:1.35;">' + h(item.description) + '</div></div></div>'
+      }).join('') +
+      '</div>'
+  }).join('') + '</div>'
 
   var competitorsHTML = (mkt.competitors || []).map(function(c) {
     var bg = c.isThisApp ? 'rgba(45,122,79,0.15)' : 'rgba(255,255,255,0.5)'
@@ -107,10 +133,21 @@ function buildListingHTMLHelper(app) {
   }).join('')
 
   var oppsHTML = (app.opportunities || []).map(function(o) {
-    return '<div style="display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid rgba(0,0,0,0.05);">' +
-      '<div style="font-size:18px;flex-shrink:0;margin-top:1px;">' + h(o.icon) + '</div>' +
+    var color = o.impactColor || '#B000FF'
+    var impactHTML = (o.impactLabel || o.impactValue || o.impactSubtext)
+      ? '<div style="width:150px;text-align:right;flex-shrink:0;">' +
+          (o.impactLabel ? '<div style="font-size:10px;text-transform:uppercase;color:#111;">' + h(o.impactLabel) + '</div>' : '') +
+          (o.impactValue ? '<div style="font-size:17px;line-height:1.1;margin-top:5px;color:' + h(color) + ';">' + h(o.impactValue) + '</div>' : '') +
+          (o.impactSubtext ? '<div style="font-size:10px;line-height:1.25;margin-top:5px;color:#111;">' + h(o.impactSubtext) + '</div>' : '') +
+        '</div>'
+      : ''
+    return '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:16px 18px;margin-bottom:10px;background:#f5f5f7;border-radius:8px;">' +
+      '<div style="display:flex;align-items:flex-start;gap:12px;min-width:0;">' +
+      '<div style="font-size:18px;flex-shrink:0;margin-top:1px;width:24px;text-align:center;">' + h(o.icon) + '</div>' +
       '<div><div style="font-size:13px;font-weight:700;color:#111;">' + h(o.title) + '</div>' +
-      '<div style="font-size:11px;color:#777;margin-top:2px;line-height:1.5;">' + h(o.description) + '</div></div></div>'
+      '<div style="font-size:11px;color:#111;margin-top:8px;line-height:1.5;">' + h(o.description) + '</div></div></div>' +
+      impactHTML +
+      '</div>'
   }).join('')
 
   var stepsHTML = (con.processSteps || []).map(function(s, i) {

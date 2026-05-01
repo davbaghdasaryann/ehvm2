@@ -68,7 +68,15 @@ export type App = {
       link?: string;
     }[];
   };
-  opportunities: { icon: string; title: string; description: string }[];
+  opportunities: {
+    icon: string;
+    title: string;
+    description: string;
+    impactLabel?: string;
+    impactValue?: string;
+    impactSubtext?: string;
+    impactColor?: string;
+  }[];
   developerCountry: string;
   developerFlag: string;
   faqs: { question: string; answer?: string }[];
@@ -88,6 +96,7 @@ export type App = {
   };
   featured?: boolean;
   ndaRequired?: boolean;
+  lockedFields?: string[];
   kpis?: {
     label: string;
     value: string;
@@ -131,6 +140,7 @@ export type App = {
     vision: string;
     roadmap: {
       status: "done" | "progress" | "planned";
+      icon?: string;
       title: string;
       description: string;
     }[];
@@ -144,8 +154,11 @@ export type App = {
     year: string;
     competitors: {
       icon: string;
+      logoUrl?: string;
       name: string;
       description: string;
+      metricValue?: string;
+      metricLabel?: string;
       appStoreRating: string;
       appStoreIcon?: string;
       googleStoreRating: string;

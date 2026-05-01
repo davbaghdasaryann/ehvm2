@@ -77,7 +77,7 @@ export function ProductPanel() {
                     <option value="planned">⬜ Planned</option>
                   </select>
                 </div>
-                <div className="field" style={{ gridColumn: 'span 2' }}>
+                <div className="field">
                   <label className="field-label">Feature Title</label>
                   <input type="text" value={r.title} onChange={e => s.updateRoadmap(r.id, 'title', e.target.value)} placeholder="AI Personalized Workout Plans" />
                   <AiGenerateButton
@@ -87,6 +87,26 @@ export function ProductPanel() {
                     instruction={`Roadmap status is ${r.status}.`}
                     onGenerated={(text) => s.updateRoadmap(r.id, 'title', text)}
                   />
+                </div>
+                <div className="field" style={{ gridColumn: 'span 3' }}>
+                  <label className="field-label">Icon SVG / Emoji <span style={{ fontWeight: 400, color: '#888' }}>(paste full &lt;svg&gt;…&lt;/svg&gt; code, or use an emoji)</span></label>
+                  <textarea
+                    value={r.icon || ''}
+                    onChange={e => s.updateRoadmap(r.id, 'icon', e.target.value)}
+                    placeholder='<svg width="22" height="22" viewBox="0 0 22 22" fill="none">…</svg>'
+                    rows={3}
+                    style={{ fontFamily: 'monospace', fontSize: 11, resize: 'vertical' }}
+                  />
+                  {r.icon && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+                      <span style={{ fontSize: 11, color: '#888' }}>Preview:</span>
+                      {r.icon.trim().startsWith('<svg') ? (
+                        <span dangerouslySetInnerHTML={{ __html: r.icon }} />
+                      ) : (
+                        <span style={{ fontSize: 18 }}>{r.icon}</span>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="field" style={{ gridColumn: 'span 3' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 8 }}>
@@ -145,7 +165,21 @@ export function MarketPanel() {
                 <button className="remove-btn" onClick={() => s.removeCompetitor(c.id)}>×</button>
               </div>
               <div className="form-grid form-grid-3">
-                <div className="field"><label className="field-label">Emoji Icon</label><input type="text" value={c.icon} onChange={e => s.updateCompetitor(c.id, 'icon', e.target.value)} placeholder="💪" /></div>
+                <div className="field">
+                  <label className="field-label">Logo Image URL</label>
+                  <div className="url-upload-row">
+                    <input type="url" value={c.logoUrl || ''} onChange={e => s.updateCompetitor(c.id, 'logoUrl', e.target.value)} placeholder="https://..." />
+                    <ImageUploadButton
+                      folder="competitors"
+                      onUploaded={(url) => s.updateCompetitor(c.id, 'logoUrl', url)}
+                      onSuccess={(message) => s.showToast(message, '🖼')}
+                      onError={(message) => s.showToast(message, '⚠️')}
+                      label="Upload"
+                    />
+                  </div>
+                  <div className="field-hint">Logo is used first. Emoji is fallback.</div>
+                </div>
+                <div className="field"><label className="field-label">Fallback Emoji</label><input type="text" value={c.icon} onChange={e => s.updateCompetitor(c.id, 'icon', e.target.value)} placeholder="💪" /></div>
                 <div className="field"><label className="field-label">App Name</label><input type="text" value={c.name} onChange={e => s.updateCompetitor(c.id, 'name', e.target.value)} placeholder="Fitbod" /></div>
                 <div className="field">
                   <label className="field-label">This App?</label>
@@ -156,7 +190,7 @@ export function MarketPanel() {
                 </div>
                 <div className="field" style={{ gridColumn: 'span 3' }}>
                   <label className="field-label">Description</label>
-                  <input type="text" value={c.description} onChange={e => s.updateCompetitor(c.id, 'description', e.target.value)} placeholder="Adaptive strength training · $30M+ ARR" />
+                  <input type="text" value={c.description} onChange={e => s.updateCompetitor(c.id, 'description', e.target.value)} placeholder="Adaptive strength training" />
                   <AiGenerateButton
                     fieldLabel="Competitor Description"
                     fieldPath={`market.competitors.${i}.description`}
@@ -164,6 +198,15 @@ export function MarketPanel() {
                     instruction={`Competitor name: ${c.name || 'empty'}. This app: ${c.isThisApp ? 'yes' : 'no'}.`}
                     onGenerated={(text) => s.updateCompetitor(c.id, 'description', text)}
                   />
+                </div>
+                <div className="field">
+                  <label className="field-label">Display Metric</label>
+                  <input type="text" value={c.metricValue || ''} onChange={e => s.updateCompetitor(c.id, 'metricValue', e.target.value)} placeholder="$30M+" />
+                  <div className="field-hint">Large green value shown on the competitor card.</div>
+                </div>
+                <div className="field" style={{ gridColumn: 'span 2' }}>
+                  <label className="field-label">Metric Label</label>
+                  <input type="text" value={c.metricLabel || ''} onChange={e => s.updateCompetitor(c.id, 'metricLabel', e.target.value)} placeholder="Monthly Recurring Revenue" />
                 </div>
                 <div className="field"><label className="field-label">App Store Rating</label><input type="text" value={c.appStoreRating} onChange={e => s.updateCompetitor(c.id, 'appStoreRating', e.target.value)} placeholder="4.8" /></div>
                 <div className="field"><label className="field-label">App Store Icon</label><input type="text" value={c.appStoreIcon || ''} onChange={e => s.updateCompetitor(c.id, 'appStoreIcon', e.target.value)} placeholder="🍎 (optional)" /></div>
@@ -220,7 +263,7 @@ export function OpportunitiesPanel() {
                 <button className="remove-btn" onClick={() => s.removeOpportunity(o.id)}>×</button>
               </div>
               <div className="form-grid form-grid-3">
-                <div className="field"><label className="field-label">Emoji</label><input type="text" value={o.icon} onChange={e => s.updateOpportunity(o.id, 'icon', e.target.value)} placeholder="💳" /></div>
+                <div className="field"><label className="field-label">Icon / Emoji</label><input type="text" value={o.icon} onChange={e => s.updateOpportunity(o.id, 'icon', e.target.value)} placeholder="💳" /></div>
                 <div className="field" style={{ gridColumn: 'span 2' }}>
                   <label className="field-label">Title</label>
                   <input type="text" value={o.title} onChange={e => s.updateOpportunity(o.id, 'title', e.target.value)} placeholder="Paywall A/B Testing" />
@@ -229,6 +272,36 @@ export function OpportunitiesPanel() {
                     fieldPath={`opportunities.${i}.title`}
                     currentValue={o.title}
                     onGenerated={(text) => s.updateOpportunity(o.id, 'title', text)}
+                  />
+                </div>
+                <div className="field">
+                  <label className="field-label">Right Label</label>
+                  <input type="text" value={o.impactLabel || ''} onChange={e => s.updateOpportunity(o.id, 'impactLabel', e.target.value)} placeholder="Impact" />
+                </div>
+                <div className="field">
+                  <label className="field-label">Impact Value</label>
+                  <input type="text" value={o.impactValue || ''} onChange={e => s.updateOpportunity(o.id, 'impactValue', e.target.value)} placeholder="15-20%" />
+                  <AiGenerateButton
+                    fieldLabel="Opportunity Impact Value"
+                    fieldPath={`opportunities.${i}.impactValue`}
+                    currentValue={o.impactValue || ''}
+                    instruction={`Opportunity title: ${o.title || 'empty'}. Description: ${o.description || 'empty'}. Return only a short impact value like "15-20%", "High", "Lowest CAC", or "Near-zero COGS".`}
+                    onGenerated={(text) => s.updateOpportunity(o.id, 'impactValue', text)}
+                  />
+                </div>
+                <div className="field">
+                  <label className="field-label">Impact Color</label>
+                  <input type="text" value={o.impactColor || ''} onChange={e => s.updateOpportunity(o.id, 'impactColor', e.target.value)} placeholder="#B000FF" />
+                </div>
+                <div className="field" style={{ gridColumn: 'span 3' }}>
+                  <label className="field-label">Impact Subtext</label>
+                  <input type="text" value={o.impactSubtext || ''} onChange={e => s.updateOpportunity(o.id, 'impactSubtext', e.target.value)} placeholder="conversion uplift" />
+                  <AiGenerateButton
+                    fieldLabel="Opportunity Impact Subtext"
+                    fieldPath={`opportunities.${i}.impactSubtext`}
+                    currentValue={o.impactSubtext || ''}
+                    instruction={`Opportunity title: ${o.title || 'empty'}. Impact value: ${o.impactValue || 'empty'}. Return one concise supporting line for the right-side impact column.`}
+                    onGenerated={(text) => s.updateOpportunity(o.id, 'impactSubtext', text)}
                   />
                 </div>
                 <div className="field" style={{ gridColumn: 'span 3' }}>

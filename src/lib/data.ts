@@ -138,7 +138,13 @@ export async function getAppSlugs(): Promise<string[]> {
 export async function getFeaturedApps(): Promise<App[]> {
   const allApps = await getApps();
   const featured = allApps.filter((app) => app.featured);
-  return featured.length > 0 ? featured : allApps.slice(0, 6);
+  if (featured.length === 0) {
+    return allApps.slice(0, 6);
+  }
+
+  const featuredSlugs = new Set(featured.map((app) => app.slug));
+  const remainder = allApps.filter((app) => !featuredSlugs.has(app.slug));
+  return [...featured, ...remainder].slice(0, 6);
 }
 
 export async function getAppCategories(): Promise<string[]> {

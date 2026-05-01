@@ -63,7 +63,16 @@ function normalizeChartType(type: string): {
 
 type PieLegendItem = { color: string; label: string; pct: string };
 
-export default function AppChartsClient({ charts }: { charts: AppChart[] }) {
+function LockIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.8"/>
+      <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
+export default function AppChartsClient({ charts, lockedFields = [] }: { charts: AppChart[]; lockedFields?: string[] }) {
   const canvasRefs = useRef<Array<HTMLCanvasElement | null>>([]);
   const [pieLegends, setPieLegends] = useState<Array<PieLegendItem[] | null>>(
     () => charts.map(() => null),
@@ -227,40 +236,49 @@ export default function AppChartsClient({ charts }: { charts: AppChart[] }) {
           const legend = pieLegends[chartIndex];
 
           return (
-            <div key={`${chart.title}-${chartIndex}`} className="rounded-[16px] p-[16px]" style={{ background: "#F5F5F7" }}>
-              <p className="font-bold text-[22px] leading-[1.2]">{chart.title || `Chart ${chartIndex + 1}`}</p>
-              {chart.subtitle ? (
-                <p className="text-[12px] text-caption mt-[2px]">{chart.subtitle}</p>
-              ) : null}
-              {isPie ? (
-                <div className="flex flex-row items-center gap-[24px] mt-[14px]">
-                  <div className="relative h-[200px] w-[200px] shrink-0">
+            <div key={`${chart.title}-${chartIndex}`} className="rounded-[16px] p-[16px] relative overflow-hidden" style={{ background: "#F5F5F7" }}>
+              <div className={lockedFields.includes(`charts.${chartIndex}`) ? "blur-[5px] opacity-65 select-none pointer-events-none" : ""}>
+                <p className="font-bold text-[22px] leading-[1.2]">{chart.title || `Chart ${chartIndex + 1}`}</p>
+                {chart.subtitle ? (
+                  <p className="text-[12px] text-caption mt-[2px]">{chart.subtitle}</p>
+                ) : null}
+                {isPie ? (
+                  <div className="flex flex-row items-center gap-[24px] mt-[14px]">
+                    <div className="relative h-[200px] w-[200px] shrink-0">
+                      <canvas
+                        ref={(node) => { canvasRefs.current[chartIndex] = node; }}
+                      />
+                    </div>
+                    {legend && (
+                      <div className="flex flex-col gap-[10px] flex-1">
+                        {legend.map((item, i) => (
+                          <div key={i} className="flex items-center gap-[8px]">
+                            <span
+                              className="size-[10px] rounded-full shrink-0"
+                              style={{ backgroundColor: item.color }}
+                            />
+                            <span className="text-[14px] flex-1 leading-[1.2]">{item.label}</span>
+                            <span className="text-[14px] text-caption tabular-nums">{item.pct}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="relative h-[220px] mt-[10px]">
                     <canvas
                       ref={(node) => { canvasRefs.current[chartIndex] = node; }}
                     />
                   </div>
-                  {legend && (
-                    <div className="flex flex-col gap-[10px] flex-1">
-                      {legend.map((item, i) => (
-                        <div key={i} className="flex items-center gap-[8px]">
-                          <span
-                            className="size-[10px] rounded-full shrink-0"
-                            style={{ backgroundColor: item.color }}
-                          />
-                          <span className="text-[14px] flex-1 leading-[1.2]">{item.label}</span>
-                          <span className="text-[14px] text-caption tabular-nums">{item.pct}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                )}
+              </div>
+              {lockedFields.includes(`charts.${chartIndex}`) ? (
+                <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                  <div className="size-[32px] rounded-full bg-card/80 backdrop-blur-[2px] flex items-center justify-center text-foreground shadow-[0_6px_20px_rgba(0,0,0,0.12)]">
+                    <LockIcon />
+                  </div>
                 </div>
-              ) : (
-                <div className="relative h-[220px] mt-[10px]">
-                  <canvas
-                    ref={(node) => { canvasRefs.current[chartIndex] = node; }}
-                  />
-                </div>
-              )}
+              ) : null}
             </div>
           );
         })}
