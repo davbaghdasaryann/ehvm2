@@ -1,8 +1,5 @@
 import { MongoClient, type Db } from "mongodb";
 
-const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB || "ehvm";
-
 type MongoGlobal = {
   mongoClientPromise?: Promise<MongoClient>;
 };
@@ -10,6 +7,8 @@ type MongoGlobal = {
 const globalForMongo = globalThis as unknown as MongoGlobal;
 
 async function getMongoClient(): Promise<MongoClient | null> {
+  const uri = process.env.MONGODB_URI;
+  const dbName = process.env.MONGODB_DB || "ehvm";
   if (!uri) return null;
 
   if (!globalForMongo.mongoClientPromise) {
@@ -29,5 +28,5 @@ async function getMongoClient(): Promise<MongoClient | null> {
 export async function getMongoDb(): Promise<Db | null> {
   const client = await getMongoClient();
   if (!client) return null;
-  return client.db(dbName);
+  return client.db(process.env.MONGODB_DB || "ehvm");
 }
