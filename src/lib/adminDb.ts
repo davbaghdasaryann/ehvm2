@@ -13,7 +13,6 @@ const PAGE_SUBTITLES_COLLECTION = "page_subtitles";
 const PAGE_SUBTITLES_DOC_ID = "page_subtitles";
 const LEGACY_STATE_COLLECTION = "admin_state";
 const LEGACY_APPS_DOC_ID = "apps";
-const hasMongoConfigured = Boolean(process.env.MONGODB_URI?.trim());
 let lastKnownDb: AdminDatabase | null = null;
 
 function normalizeDatabase(parsed: unknown): AdminDatabase {
@@ -161,13 +160,13 @@ export async function readAdminDb(): Promise<AdminDatabase> {
     }
   }
 
-  if (hasMongoConfigured && lastKnownDb) {
+  if (Boolean(process.env.MONGODB_URI?.trim()) && lastKnownDb) {
     console.warn("Using last known in-memory admin DB snapshot after MongoDB read failure.");
     return cloneDatabase(lastKnownDb);
   }
 
   const fileDb = await readAdminDbFromFile();
-  if (hasMongoConfigured && (fileDb.apps.length > 0 || fileDb.news.length > 0)) {
+  if (Boolean(process.env.MONGODB_URI?.trim()) && (fileDb.apps.length > 0 || fileDb.news.length > 0)) {
     console.warn("Using local file backup because MongoDB is currently unavailable.");
   }
   rememberDatabase(fileDb);
@@ -233,7 +232,7 @@ export async function writeStories(stories: PersonStory[]): Promise<void> {
       return;
     } catch (error) {
       console.error("Failed to write stories to MongoDB.", error);
-      if (hasMongoConfigured) throw error;
+      if (Boolean(process.env.MONGODB_URI?.trim())) throw error;
     }
   }
   try {
@@ -292,7 +291,7 @@ export async function writeSiteLinks(links: SiteLinks): Promise<void> {
       return;
     } catch (error) {
       console.error("Failed to write site links to MongoDB.", error);
-      if (hasMongoConfigured) throw error;
+      if (Boolean(process.env.MONGODB_URI?.trim())) throw error;
     }
   }
   const raw = await readFile(DB_PATH, "utf8").catch(() => "{}");
@@ -362,7 +361,7 @@ export async function writeAdminDb(db: AdminDatabase): Promise<void> {
       return;
     } catch (error) {
       console.error("Failed to write admin data to MongoDB.", error);
-      if (hasMongoConfigured) {
+      if (Boolean(process.env.MONGODB_URI?.trim())) {
         throw error;
       }
     }
@@ -418,7 +417,7 @@ export async function writePageSubtitles(subtitles: PageSubtitles): Promise<void
       return;
     } catch (error) {
       console.error("Failed to write page subtitles to MongoDB.", error);
-      if (hasMongoConfigured) {
+      if (Boolean(process.env.MONGODB_URI?.trim())) {
         throw error;
       }
     }

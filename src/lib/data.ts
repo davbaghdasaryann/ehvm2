@@ -18,7 +18,6 @@ type AppsPayload = {
 type NewsPayload = {
   articles: Article[];
 };
-const hasMongoConfigured = Boolean(process.env.MONGODB_URI?.trim());
 let lastNonEmptyAppsPayload: AppsPayload | null = null;
 let lastNonEmptyNewsPayload: NewsPayload | null = null;
 
@@ -48,7 +47,7 @@ const getCachedAppsPayload = unstable_cache(
       return payload;
     }
 
-    if (hasMongoConfigured && lastNonEmptyAppsPayload) {
+    if (Boolean(process.env.MONGODB_URI?.trim()) && lastNonEmptyAppsPayload) {
       console.warn("Using last non-empty apps payload to avoid transient empty MongoDB response.");
       return lastNonEmptyAppsPayload;
     }
@@ -65,7 +64,7 @@ const getCachedNewsPayload = unstable_cache(
     const records = source.length > 0 ? source : db.news;
 
     if (records.length === 0) {
-      if (hasMongoConfigured && lastNonEmptyNewsPayload) {
+      if (Boolean(process.env.MONGODB_URI?.trim()) && lastNonEmptyNewsPayload) {
         console.warn("Using last non-empty news payload to avoid transient empty MongoDB response.");
         return lastNonEmptyNewsPayload;
       }
