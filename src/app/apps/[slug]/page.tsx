@@ -513,7 +513,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
         {/* ── LOCKED CONTENT: blurred NDA gate ── */}
         <div className="relative w-full">
-          <div className="flex flex-col gap-[20px] w-full" style={app.ndaRequired && !hasFieldLocks ? { filter: "blur(5px)", opacity: 0.7, pointerEvents: "none", userSelect: "none" } : {}}>
+          <div className="flex flex-col gap-[20px] w-full" style={app.ndaRequired ? { filter: "blur(5px)", opacity: 0.7, pointerEvents: "none", userSelect: "none" } : {}}>
 
         {/* ── KPI + FUNNEL: 2-col on PC ── */}
         {(kpis.length > 0 || funnel.length > 0) && (
@@ -1156,19 +1156,6 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                   <span className="text-[15px] text-foreground leading-normal">{app.contact.phone}</span>
                 </a>
               )}
-              {app.contact.ndaUrl && (
-                <a
-                  href={app.contact.ndaUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-[14px] bg-tag rounded-[16px] px-[20px] py-[18px] no-underline transition-opacity hover:opacity-70"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 text-foreground">
-                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span className="text-[15px] text-foreground leading-normal">Sign NDA</span>
-                </a>
-              )}
             </div>
           </div>
 
@@ -1184,7 +1171,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           </div>{/* end blurred content */}
 
           {/* NDA overlay — rendered via portal to escape transform stacking context */}
-          {app.ndaRequired && !hasFieldLocks && <NdaGatePortal ndaUrl={siteLinks.ndaUrl || siteLinks.seeAllAppsUrl} />}
+          {app.ndaRequired && <NdaGatePortal ndaUrl={siteLinks.ndaUrl || siteLinks.seeAllAppsUrl} />}
 
         </div>{/* end relative locked container */}
 

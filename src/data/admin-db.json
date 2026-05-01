@@ -2,10 +2,16 @@
   "apps": [
     {
       "id": "sample_coachify",
-      "updatedAt": "2026-05-01T13:54:51.083Z",
+      "updatedAt": "2026-05-01T15:32:50.171Z",
       "status": "published",
-      "featured": true,
+      "featured": false,
       "ndaRequired": false,
+      "lockedFields": [
+        "financials.mrr",
+        "financials.ltvcac",
+        "financials.arr",
+        "kpis.1"
+      ],
       "meta": {
         "name": "Coachify",
         "tagline": "AI Workouts",
@@ -13,16 +19,18 @@
         "category": "Health & Fitness",
         "platforms": "iOS + Android",
         "model": "AI / Subscription",
-        "badge": "where is this",
-        "askingPrice": "where is this",
+        "badge": "Acquisition Opportunity · Health & Fitness",
+        "askingPrice": "Asking ~3.5× ARR",
         "tags": [
           "iOS + Android",
+          "AI / Subscription",
           "Profitable",
-          "AI",
-          "Photo & Video",
-          "🔥 Trendy"
+          "Health & Fitness",
+          "Asking ~3.5× ARR"
         ],
-        "appStoreUrl": "https://apps.apple.com/us/app/ai-dance-generator-art-maker/id6475566752",
+        "appStoreUrl": "https://apps.apple.com",
+        "playStoreUrl": "https://play.google.com/store",
+        "websiteUrl": "https://ehvm.com",
         "developerCountry": "United States",
         "developerFlag": "🇺🇸"
       },
@@ -40,6 +48,13 @@
           "trend": "Top 5% category",
           "sub": "1,249 ranked keywords",
           "icon": "⭐"
+        },
+        {
+          "label": "Social Following",
+          "value": "110K",
+          "trend": "99.7K TikTok",
+          "sub": "Combined channels",
+          "icon": "📱"
         }
       ],
       "financials": {
@@ -55,72 +70,43 @@
             "amount": "$756,000",
             "trend": "↑ 22%",
             "notes": "App Store + Play Store gross",
-            "highlight": true,
-            "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<g clip-path=\"url(#clip0_23_3480)\">\n<path d=\"M8.89648 1.48291V16.3123\" stroke=\"#00A63E\" stroke-width=\"1.48294\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n<path d=\"M12.6054 3.7074H7.04436C6.35608 3.7074 5.696 3.98081 5.20932 4.4675C4.72263 4.95418 4.44922 5.61426 4.44922 6.30253C4.44922 6.99081 4.72263 7.65089 5.20932 8.13757C5.696 8.62426 6.35608 8.89767 7.04436 8.89767H10.7517C11.44 8.89767 12.1001 9.17109 12.5867 9.65777C13.0734 10.1445 13.3468 10.8045 13.3468 11.4928C13.3468 12.1811 13.0734 12.8412 12.5867 13.3278C12.1001 13.8145 11.44 14.0879 10.7517 14.0879H4.44922\" stroke=\"#00A63E\" stroke-width=\"1.48294\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_23_3480\">\n<rect width=\"17.7952\" height=\"17.7952\" fill=\"white\"/>\n</clipPath>\n</defs>\n</svg>"
+            "highlight": true
           },
           {
             "label": "Store Fees (30%)",
             "amount": "−$226,800",
             "trend": "—",
             "notes": "Apple + Google platform fees",
-            "highlight": false,
-            "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M3.70703 8.89758H14.0876\" stroke=\"#E60076\" stroke-width=\"1.48294\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</svg>\n"
+            "highlight": false
           },
           {
             "label": "Paid UA Spend",
             "amount": "−$168,000",
             "trend": "—",
             "notes": "Meta ads (profitable)",
-            "highlight": false,
-            "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<g clip-path=\"url(#clip0_23_3509)\">\n<path d=\"M16.3118 5.19019L10.0093 11.4927L6.30196 7.78532L1.48242 12.6049\" stroke=\"#9810FA\" stroke-width=\"1.48294\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n<path d=\"M11.8633 5.19019H16.3121V9.63899\" stroke=\"#9810FA\" stroke-width=\"1.48294\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_23_3509\">\n<rect width=\"17.7952\" height=\"17.7952\" fill=\"white\"/>\n</clipPath>\n</defs>\n</svg>\n"
+            "highlight": false
           },
           {
             "label": "Infrastructure & Tools",
             "amount": "−$36,000",
             "trend": "—",
             "notes": "OpenAI API, Firebase, hosting",
-            "highlight": false,
-            "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M9.06031 1.48303H8.73406C8.34076 1.48303 7.96357 1.63927 7.68547 1.91737C7.40736 2.19548 7.25112 2.57267 7.25112 2.96597V3.09943C7.25086 3.35948 7.18221 3.61489 7.05207 3.84004C6.92193 4.06518 6.73487 4.25215 6.50966 4.38217L6.19083 4.56754C5.96539 4.69769 5.70967 4.76621 5.44936 4.76621C5.18905 4.76621 4.93332 4.69769 4.70789 4.56754L4.59667 4.50822C4.25638 4.31193 3.85212 4.25868 3.47261 4.36016C3.0931 4.46164 2.76936 4.70956 2.57246 5.04949L2.40934 5.33125C2.21305 5.67154 2.15979 6.07581 2.26127 6.45531C2.36275 6.83482 2.61067 7.15856 2.95061 7.35546L3.06183 7.4296C3.28596 7.559 3.47232 7.74479 3.6024 7.96853C3.73248 8.19226 3.80174 8.44614 3.8033 8.70493V9.08308C3.80434 9.34439 3.73631 9.60133 3.6061 9.82789C3.47589 10.0544 3.28813 10.2426 3.06183 10.3732L2.95061 10.44C2.61067 10.6369 2.36275 10.9606 2.26127 11.3401C2.15979 11.7196 2.21305 12.1239 2.40934 12.4642L2.57246 12.7459C2.76936 13.0859 3.0931 13.3338 3.47261 13.4353C3.85212 13.5367 4.25638 13.4835 4.59667 13.2872L4.70789 13.2279C4.93332 13.0977 5.18905 13.0292 5.44936 13.0292C5.70967 13.0292 5.96539 13.0977 6.19083 13.2279L6.50966 13.4132C6.73487 13.5433 6.92193 13.7302 7.05207 13.9554C7.18221 14.1805 7.25086 14.4359 7.25112 14.696V14.8295C7.25112 15.2228 7.40736 15.5999 7.68547 15.878C7.96357 16.1562 8.34076 16.3124 8.73406 16.3124H9.06031C9.45361 16.3124 9.8308 16.1562 10.1089 15.878C10.387 15.5999 10.5432 15.2228 10.5432 14.8295V14.696C10.5435 14.4359 10.6122 14.1805 10.7423 13.9554C10.8724 13.7302 11.0595 13.5433 11.2847 13.4132L11.6035 13.2279C11.829 13.0977 12.0847 13.0292 12.345 13.0292C12.6053 13.0292 12.861 13.0977 13.0865 13.2279L13.1977 13.2872C13.538 13.4835 13.9423 13.5367 14.3218 13.4353C14.7013 13.3338 15.025 13.0859 15.2219 12.7459L15.385 12.4568C15.5813 12.1165 15.6346 11.7122 15.5331 11.3327C15.4316 10.9532 15.1837 10.6294 14.8438 10.4325L14.7325 10.3732C14.5062 10.2426 14.3185 10.0544 14.1883 9.82789C14.0581 9.60133 13.99 9.34439 13.9911 9.08308V8.71234C13.99 8.45104 14.0581 8.19409 14.1883 7.96753C14.3185 7.74097 14.5062 7.55284 14.7325 7.42219L14.8438 7.35546C15.1837 7.15856 15.4316 6.83482 15.5331 6.45531C15.6346 6.07581 15.5813 5.67154 15.385 5.33125L15.2219 5.04949C15.025 4.70956 14.7013 4.46164 14.3218 4.36016C13.9423 4.25868 13.538 4.31193 13.1977 4.50822L13.0865 4.56754C12.861 4.69769 12.6053 4.76621 12.345 4.76621C12.0847 4.76621 11.829 4.69769 11.6035 4.56754L11.2847 4.38217C11.0595 4.25215 10.8724 4.06518 10.7423 3.84004C10.6122 3.61489 10.5435 3.35948 10.5432 3.09943V2.96597C10.5432 2.57267 10.387 2.19548 10.1089 1.91737C9.8308 1.63927 9.45361 1.48303 9.06031 1.48303Z\" stroke=\"#1447E6\" stroke-width=\"1.48294\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n<path d=\"M8.89823 11.122C10.1267 11.122 11.1226 10.1261 11.1226 8.89762C11.1226 7.66912 10.1267 6.67322 8.89823 6.67322C7.66973 6.67322 6.67383 7.66912 6.67383 8.89762C6.67383 10.1261 7.66973 11.122 8.89823 11.122Z\" stroke=\"#1447E6\" stroke-width=\"1.48294\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</svg>\n"
+            "highlight": false
           },
           {
             "label": "Net Revenue / Profit",
             "amount": "$325,200",
             "trend": "↑ 18%",
             "notes": "~43% net margin",
-            "highlight": true,
-            "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M2.22461 2.22437V14.0879C2.22461 14.4811 2.38085 14.8583 2.65895 15.1364C2.93706 15.4145 3.31425 15.5708 3.70755 15.5708H15.571\" stroke=\"#00A63E\" stroke-width=\"1.48294\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n<path d=\"M13.3457 12.605V6.67322\" stroke=\"#00A63E\" stroke-width=\"1.48294\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n<path d=\"M9.63867 12.6049V3.70728\" stroke=\"#00A63E\" stroke-width=\"1.48294\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n<path d=\"M5.93164 12.6049V10.3805\" stroke=\"#00A63E\" stroke-width=\"1.48294\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</svg>\n"
+            "highlight": true
           }
         ]
       },
       "charts": [
         {
-          "type": "bar",
-          "title": "",
-          "subtitle": "",
-          "labels": [
-            "Instagram EN",
-            "Instagram ES",
-            "Facebook ES",
-            "Tiktok ES"
-          ],
-          "datasets": [
-            {
-              "label": "",
-              "data": [
-                240000,
-                100000,
-                40000,
-                200000,
-                250000
-              ],
-              "color": "#3b82f6"
-            }
-          ]
-        },
-        {
           "type": "line",
-          "title": "",
-          "subtitle": "",
+          "title": "Monthly Revenue Growth",
+          "subtitle": "MRR since launch · Feb 2024 – Mar 2025",
           "labels": [
             "Feb",
             "Mar",
@@ -139,7 +125,7 @@
           ],
           "datasets": [
             {
-              "label": "",
+              "label": "MRR ($)",
               "data": [
                 12000,
                 16500,
@@ -156,100 +142,104 @@
                 68000,
                 70000
               ],
-              "color": "#f97316"
+              "color": "#1a1a1a"
             }
           ]
         },
         {
           "type": "bar",
-          "title": "",
-          "subtitle": "",
+          "title": "Revenue by Platform",
+          "subtitle": "iOS vs Android split",
           "labels": [
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "1",
-            "2",
-            "3",
-            "4"
+            "iOS",
+            "Android"
           ],
           "datasets": [
             {
-              "label": "",
+              "label": "Share %",
               "data": [
-                -2,
-                5,
-                0,
-                0,
-                8,
-                -3,
-                4,
-                5,
-                -2,
-                5,
-                0,
-                0,
-                8,
-                -3,
-                4,
-                5
+                71,
+                29
               ],
-              "color": "#06b6d4"
+              "color": "#2d7a4f"
             }
           ]
         },
         {
-          "type": "pie",
-          "title": "",
-          "subtitle": "test",
+          "type": "doughnut",
+          "title": "Revenue by Geography",
+          "subtitle": "Top markets by revenue share",
           "labels": [
-            "A",
-            "B",
-            "C"
+            "United States",
+            "United Kingdom",
+            "Canada",
+            "Australia",
+            "Germany",
+            "Other"
           ],
           "datasets": [
             {
-              "label": "",
+              "label": "% Revenue",
               "data": [
-                1,
-                2,
-                3
+                52,
+                14,
+                10,
+                8,
+                6,
+                10
               ],
-              "color": "#eab308"
+              "color": "#1a1a1a"
             }
           ]
         }
       ],
-      "funnel": [],
+      "funnel": [
+        {
+          "label": "Impressions",
+          "value": "2.4M / mo",
+          "pct": "100%"
+        },
+        {
+          "label": "App Page Views",
+          "value": "912K",
+          "pct": "38%"
+        },
+        {
+          "label": "Installs",
+          "value": "528K",
+          "pct": "22%"
+        },
+        {
+          "label": "Trial Started",
+          "value": "336K",
+          "pct": "14%"
+        },
+        {
+          "label": "Paid Subscriber",
+          "value": "84K",
+          "pct": "6%"
+        }
+      ],
       "product": {
         "vision": "Coachify is building the AI personal trainer for the 80% of gym-goers who train without a coach — delivering professional-grade programming, nutrition guidance, and real-time feedback at a fraction of the cost of a human trainer.",
         "roadmap": [
           {
             "status": "done",
-            "icon": "🧬",
             "title": "AI Personalized Workout Plans",
-            "description": "Dynamic plan generator based on goals, experience, and available equipment."
+            "description": "Dynamic plan generation based on goals, fitness level, and available equipment."
           },
           {
             "status": "done",
-            "icon": "🍏",
             "title": "Calorie & Macro Tracking",
             "description": "Integrated diet monitoring with food database and AI-generated meal suggestions."
           },
           {
             "status": "progress",
-            "icon": "🧪",
             "title": "Paywall A/B Testing Framework",
             "description": "Systematic testing of pricing, trial lengths, and offer structures."
           },
           {
             "status": "planned",
-            "icon": "⌚",
             "title": "Apple Watch & Wearables Integration",
             "description": "Real-time heart rate, HRV, and recovery data feeding into adaptive programming engine."
           }
@@ -267,44 +257,53 @@
             "icon": "🏋️",
             "name": "Coachify",
             "description": "AI-personalized workouts + nutrition · Profitable · $70K MRR",
-            "rating": "4.7 ⭐",
+            "appStoreRating": "4.7",
+            "googleStoreRating": "",
+            "link": "",
             "isThisApp": true
           },
           {
             "icon": "💪",
             "name": "Fitbod",
             "description": "Adaptive strength training · $30M+ ARR · VC-backed",
-            "rating": "4.8 ⭐",
-            "isThisApp": false,
-            "link": "https://www.apple.com/app-store/"
+            "appStoreRating": "4.8",
+            "googleStoreRating": "",
+            "link": "",
+            "isThisApp": false
           },
           {
             "icon": "📊",
             "name": "MyFitnessPal",
             "description": "Nutrition tracking · 200M+ users · Acquired by Francisco Partners",
-            "rating": "4.7 ⭐",
+            "appStoreRating": "4.7",
+            "googleStoreRating": "",
+            "link": "",
             "isThisApp": false
           }
         ],
         "keywords": [
           {
             "keyword": "ai workout planner",
-            "volume": "52K",
+            "store": "App Store",
+            "country": "US",
             "rank": "#2"
           },
           {
             "keyword": "gym workout plan",
-            "volume": "48K",
+            "store": "App Store",
+            "country": "US",
             "rank": "#4"
           },
           {
             "keyword": "ai personal trainer",
-            "volume": "41K",
+            "store": "App Store",
+            "country": "US",
             "rank": "#3"
           },
           {
             "keyword": "workout tracker app",
-            "volume": "38K",
+            "store": "App Store",
+            "country": "US",
             "rank": "#9"
           }
         ]
@@ -313,59 +312,26 @@
         {
           "icon": "💳",
           "title": "Paywall A/B Testing",
-          "description": "Test variations of pricing tiers, trial lengths, and offer structures. Estimated 30-60% improvement in early-signal conversion. 1-2 developer weeks for MVP.",
-          "impactLabel": "Impact",
-          "impactValue": "15-20%",
-          "impactSubtext": "conversion uplift",
-          "impactColor": "#B000FF"
+          "description": "Systematic testing of pricing tiers, trial lengths, and offer structures. Conservative 15–20% improvement in trial-to-paid conversion is achievable within 90 days."
         },
         {
           "icon": "🔥",
           "title": "TikTok Organic + Paid UA",
-          "description": "Short-form transformation content and paid ads on the platform. Creator-led UGC demos net 200K+ views per post. Targeting 18-34, US English, gym and nutrition interests.",
-          "impactLabel": "Impact",
-          "impactValue": "High",
-          "impactSubtext": "~10K installs/month at $1.50 CPI",
-          "impactColor": "#FF170D"
+          "description": "With 99.7K TikTok followers and zero paid spend on the platform, there is a clear path to a new high-volume acquisition channel."
         },
         {
           "icon": "🍎",
           "title": "Apple Search Ads",
-          "description": "The app ranks for 1,249 keywords but runs zero paid Apple Search Ads. Conservatively, allocating 5-10K/month to the lowest CAC installs. Discovery campaigns recommended.",
-          "impactLabel": "Opportunity",
-          "impactValue": "Lowest CAC",
-          "impactSubtext": "channel in App Store",
-          "impactColor": "#00C853"
+          "description": "The app ranks for 1,249 keywords but runs zero Apple Search Ads. Launching campaigns could deliver the lowest-CAC installs available."
         },
         {
           "icon": "🌍",
           "title": "International Expansion",
-          "description": "App is predominantly English-language. Localization into Spanish, Portuguese, French, German. Targeting LATAM and Europe. Translations + locale-aware CTAs. Expect new revenue CAC to mirror US performance.",
-          "impactLabel": "Growth Stat",
-          "impactValue": "Near-zero COGS",
-          "impactSubtext": "due to pure digital delivery",
-          "impactColor": "#2F00FF"
+          "description": "App is predominantly English-language. Localization into Spanish, Portuguese, and German markets represents a near-zero COGS growth lever."
         }
       ],
-      "storeSignals": [
-        {
-          "label": "Featured Countries",
-          "value": "88",
-          "sub": "AF,AG,ES"
-        }
-      ],
-      "manualReviews": [
-        {
-          "title": "Great App!",
-          "author": "user123",
-          "productName": "Coachify",
-          "stars": 5,
-          "store": "apple",
-          "review": "Test Test Test",
-          "date": "2026-05-01",
-          "version": ""
-        }
-      ],
+      "storeSignals": [],
+      "manualReviews": [],
       "contact": {
         "name": "Evelin Herrera",
         "title": "M&A Advisor · EHVM Mobile",
@@ -398,14 +364,9 @@
         ]
       },
       "media": {
-        "icon": "data:image/png;base64,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",
+        "icon": "",
         "cover": "",
-        "screenshots": [
-          {
-            "url": "/uploads/screenshots/1774887658888-cd49f8e6.png",
-            "caption": ""
-          }
-        ]
+        "screenshots": []
       },
       "dataSources": {
         "kpis": "auto",
