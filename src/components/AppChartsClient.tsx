@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { App } from "@/data/apps";
 
 type AppChart = NonNullable<App["charts"]>[number];
+const SECTION_TITLE_CLASS = "font-bold text-[20px] leading-[1.2]";
 
 const PIE_PALETTE = [
   "#4361ee", "#f72585", "#4cc9f0", "#f4a261", "#2ec4b6",
@@ -228,7 +229,7 @@ export default function AppChartsClient({ charts, lockedFields = [] }: { charts:
 
   return (
     <div className="flex flex-col gap-[12px] w-full">
-      <p className="font-bold text-[20px] leading-[1.2]">Business Charts</p>
+      <p className={SECTION_TITLE_CLASS}>Business Charts</p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-[10px] w-full">
         {charts.map((chart, chartIndex) => {
           const { resolvedType } = normalizeChartType(chart.type);

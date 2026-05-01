@@ -13,6 +13,7 @@ import FaqAccordion from "@/components/FaqAccordion";
 import HistoryBackLink from "@/components/HistoryBackLink";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://ehvmcapital.com";
+const SECTION_TITLE_CLASS = "font-bold text-[20px] leading-[1.2]";
 
 function absoluteUrl(value?: string): string | undefined {
   if (!value) return undefined;
@@ -527,12 +528,14 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
         <div className="relative w-full">
           <div className="flex flex-col gap-[20px] w-full" style={app.ndaRequired ? { filter: "blur(5px)", opacity: 0.7, pointerEvents: "none", userSelect: "none" } : {}}>
 
-        {/* ── KPI + FUNNEL: 2-col on PC ── */}
-        {(kpis.length > 0 || funnel.length > 0) && (
+        {/* ── KPI / FINANCIALS + METRICS: 2-col on PC ── */}
+        {(kpis.length > 0 || funnel.length > 0 || financialSummary.length > 0 || appfiguresFinancialSummary.length > 0 || plRows.length > 0 || highlightItems.length > 0) && (
           <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[20px] items-start">
+            {(kpis.length > 0 || funnel.length > 0 || financialSummary.length > 0 || appfiguresFinancialSummary.length > 0 || plRows.length > 0) && (
+              <div className="flex flex-col gap-[20px] w-full">
             {kpis.length > 0 && (
               <div className="flex flex-col gap-[12px] w-full">
-                <p className="font-bold text-[20px] leading-[1.2]">KPI Cards</p>
+                <p className={SECTION_TITLE_CLASS}>KPI Cards</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-[10px] w-full">
                   {kpis.map((item, index) => {
                     const isRating = /star|rating/i.test(item.icon || "") || /rating/i.test(item.label);
@@ -611,7 +614,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
         {(financialSummary.length > 0 || appfiguresFinancialSummary.length > 0 || plRows.length > 0) && (
           <div className="flex flex-col gap-[12px] w-full">
-            <p className="font-bold text-[20px] leading-[1.2]">Financial Snapshot</p>
+            <p className={SECTION_TITLE_CLASS}>Financial Snapshot</p>
             {financialSummary.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-[10px] w-full">
                 {financialSummary.map((item) => (
@@ -640,35 +643,39 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
               </div>
             )}
             {plRows.length > 0 && (
-              <div className="rounded-[20px] overflow-hidden w-full" style={{ background: "#F5F5F7", boxShadow: "0px 1.01px 2.02px -1.01px #0000001A, 0px 1.01px 3.03px 0px #0000001A" }}>
+              <div className="rounded-[32px] overflow-hidden w-full px-[18px] sm:px-[24px] py-[18px] sm:py-[22px]" style={{ background: "#F5F5F7" }}>
                 <Lockable locked={isLocked("financials.plRows")}>
+                <div className="overflow-x-auto">
                 {/* Header */}
-                <div className="grid px-[20px] py-[12px]" style={{ gridTemplateColumns: "1fr auto auto auto", gap: "0 16px" }}>
-                  <span className="text-[11px] uppercase tracking-[0.08em] font-semibold" style={{ color: "#999" }}>Metric</span>
-                  <span className="text-[11px] uppercase tracking-[0.08em] font-semibold" style={{ color: "#999" }}>Amount</span>
-                  <span className="text-[11px] uppercase tracking-[0.08em] font-semibold" style={{ color: "#999" }}>Trend</span>
-                  <span className="text-[11px] uppercase tracking-[0.08em] font-semibold" style={{ color: "#999" }}>Notes</span>
+                <div className="grid px-[8px] sm:px-[14px] pb-[14px] items-center min-w-[640px]" style={{ gridTemplateColumns: "minmax(170px,1.35fr) minmax(84px,.65fr) minmax(56px,.45fr) minmax(150px,1fr)", gap: "0 18px", borderBottom: "1.5px solid #000" }}>
+                  <span className="text-[12px] uppercase font-medium text-foreground">Metric</span>
+                  <span className="text-[12px] uppercase font-medium text-foreground">Amount</span>
+                  <span className="text-[12px] uppercase font-medium text-foreground">Trend</span>
+                  <span className="text-[12px] uppercase font-medium text-foreground">Notes</span>
                 </div>
                 {/* Rows */}
                 {plRows.map((row, index) => (
-                  <div key={`${row.label}-${index}`} className="grid px-[20px] py-[20px] items-center" style={{ gridTemplateColumns: "1fr auto auto auto", gap: "0 16px", borderTop: "1px solid #000" }}>
+                  <div key={`${row.label}-${index}`} className="grid px-[8px] sm:px-[14px] py-[26px] items-center min-w-[640px]" style={{ gridTemplateColumns: "minmax(170px,1.35fr) minmax(84px,.65fr) minmax(56px,.45fr) minmax(150px,1fr)", gap: "0 18px", borderBottom: index < plRows.length - 1 ? "1.5px solid #000" : "none" }}>
                     {/* Metric: icon + label */}
-                    <div className="flex items-center gap-[10px] min-w-0">
+                    <div className="flex items-center gap-[22px] min-w-0">
                       {row.icon && (
-                        <span className="shrink-0" dangerouslySetInnerHTML={{ __html: row.icon }} />
+                        <span className="shrink-0 w-[22px] text-[20px] leading-none flex items-center justify-center" style={{ color: index === 0 || row.highlight ? "#00C853" : index === 1 ? "#FF1493" : index === 2 ? "#C400F5" : "#3716E8" }}>
+                          {row.icon.trim().startsWith("<svg") ? <span dangerouslySetInnerHTML={{ __html: row.icon }} /> : row.icon}
+                        </span>
                       )}
-                      <span className="text-[14px] truncate" style={{ fontWeight: row.highlight ? 700 : 400 }}>{row.label || "—"}</span>
+                      <span className="text-[14px] truncate font-bold">{row.label || "—"}</span>
                     </div>
                     {/* Amount */}
-                    <span className="text-[14px] font-bold whitespace-nowrap" style={{ fontWeight: row.highlight ? 700 : 600 }}>{row.amount || "—"}</span>
+                    <span className="text-[14px] whitespace-nowrap">{row.amount || "—"}</span>
                     {/* Trend */}
                     <span className="text-[13px] whitespace-nowrap" style={{ color: /^↑/.test(row.trend || "") ? "#00A63E" : "#999", fontWeight: /^↑/.test(row.trend || "") ? 500 : 400 }}>
                       {row.trend || "—"}
                     </span>
                     {/* Notes */}
-                    <span className="text-[13px]" style={{ color: "#999" }}>{row.notes || ""}</span>
+                    <span className="text-[13px] text-foreground">{row.notes || ""}</span>
                   </div>
                 ))}
+                </div>
                 </Lockable>
               </div>
             )}
@@ -677,7 +684,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
             {funnel.length > 0 && (
               <div className="flex flex-col gap-[12px] w-full">
-                <p className="font-bold text-[20px] leading-[1.2]">Conversion Funnel</p>
+                <p className={SECTION_TITLE_CLASS}>Conversion Funnel</p>
                 <div className="bg-tag rounded-[16px] p-[12px] flex flex-col gap-[8px]">
                   {funnel.map((step, index) => {
                     const percent = parsePercent(step.pct, Math.max(20, 100 - index * 14));
@@ -699,15 +706,33 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                 </div>
               </div>
             )}
+              </div>
+            )}
+            {highlightItems.length > 0 && (
+              <div className="flex flex-col gap-[12px] w-full">
+                <p className={SECTION_TITLE_CLASS}>Metrics</p>
+                <div className="grid grid-cols-2 gap-[10px] w-full">
+                  {highlightItems.map((item) => (
+                    <div key={item.key} className="rounded-[16px] p-[14px] min-h-[86px] flex flex-col justify-between" style={{ background: "#F5F5F7" }}>
+                      <div className="flex items-center justify-between gap-[8px]">
+                        <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
+                        {item.emoji ? <span className="text-[16px] leading-none">{item.emoji}</span> : null}
+                      </div>
+                      <p className="font-bold text-[24px] leading-[1.1] mt-[10px] break-words">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        )}{/* end KPI + Funnel 2-col grid */}
+        )}{/* end KPI / FINANCIALS + METRICS 2-col grid */}
 
         {charts.length > 0 && <AppChartsClient charts={charts} lockedFields={app.lockedFields || []} />}
 
         {hasProductSection && (
           <div className="flex flex-col gap-[36px] w-full rounded-[32px] px-[28px] sm:px-[56px] py-[36px] sm:py-[38px]" style={{ background: "#F5F5F7" }}>
             <div className="flex flex-col gap-[16px] max-w-[920px]">
-              <p className="font-bold text-[22px] leading-[1.2]">Product Roadmap</p>
+              <p className={SECTION_TITLE_CLASS}>Product Roadmap</p>
               {app.product?.vision ? (
                 <p className="text-[15px] leading-[1.45] text-foreground">
                   {app.product.vision}
@@ -762,7 +787,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-[12px] w-full items-stretch">
             {competitors.length > 0 && (
               <div className="flex flex-col gap-[18px] w-full">
-                <p className="font-bold text-[20px] leading-[1.2]">Competitive Landscape</p>
+                <p className={SECTION_TITLE_CLASS}>Competitive Landscape</p>
                 <div className="flex flex-col gap-[22px]">
                   {competitors.map((item, index) => {
                     const parsed = splitCompetitorDescription(item.description || "");
@@ -819,7 +844,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
             {processSteps.length > 0 && (
               <div className="flex flex-col gap-[20px] w-full rounded-[34px] px-[28px] sm:px-[32px] py-[28px]" style={{ border: "5px solid #F3F3F6" }}>
-                <p className="font-bold text-[20px] leading-[1.2]">Acquisition Process</p>
+                <p className={SECTION_TITLE_CLASS}>Acquisition Process</p>
                 <div className="flex flex-col">
                   {processSteps.map((step, index) => {
                     const color = processColor(index);
@@ -862,7 +887,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
         {hasMarketSection && (
           <div className="flex flex-col gap-[12px] w-full">
-            <p className="font-bold text-[20px] leading-[1.2]">Market Overview</p>
+            <p className={SECTION_TITLE_CLASS}>Market Overview</p>
             {marketStats.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] w-full">
                 {marketStats.map((item) => (
@@ -898,7 +923,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             {/* Left: Store Intelligence */}
             {dsStoreIntelligence !== 'off' && (hasStoreIntelligence || manualStoreSignals.length > 0) && (
               <div className="flex flex-col gap-[12px]">
-                <p className="font-bold text-[20px] leading-[1.2]">Store Intelligence</p>
+                <p className={SECTION_TITLE_CLASS}>Store Intelligence</p>
                 {manualStoreSignals.length > 0 && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-[10px] w-full">
                     {manualStoreSignals.map((item, i) => (
@@ -961,7 +986,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
         {/* Recent Store Reviews — full width */}
         {(manualReviews.length > 0 || appfiguresReviews.length > 0) && (
           <div className="flex flex-col gap-[12px] w-full">
-            <p className="font-bold text-[20px] leading-[1.2]">Recent Store Reviews</p>
+            <p className={SECTION_TITLE_CLASS}>Recent Store Reviews</p>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[10px] w-full">
               {manualReviews.map((review, i) => (
                 <div key={`manual-${i}`} className="rounded-[16px] p-[12px] flex flex-col gap-[8px]" style={{ background: "#F5F5F7" }}>
@@ -1014,7 +1039,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
         {/* User Acquisition */}
         {(app.userAcquisition.paid.length > 0 || app.userAcquisition.organic.length > 0) && (
           <div className="flex flex-col gap-[10px] w-full">
-            <p className="font-bold text-[20px] leading-[1.2]">User Acquisition</p>
+            <p className={SECTION_TITLE_CLASS}>User Acquisition</p>
 
             {app.userAcquisition.paid.length > 0 && (
               <>
@@ -1089,7 +1114,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
         {/* Opportunities */}
         {app.opportunities.length > 0 && (
           <div className="flex flex-col gap-[22px] w-full lg:col-span-2">
-            <p className="font-bold text-[20px] leading-[1.2]">Opportunities</p>
+            <p className={SECTION_TITLE_CLASS}>Opportunities</p>
             <div className="flex flex-col gap-[16px]">
               {app.opportunities.map((opp, i) => {
                 const impactColor = opportunityColor(opp.impactColor, i);
@@ -1136,7 +1161,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
           <div className="flex flex-col gap-[24px]">
             <div className="flex flex-col gap-[12px]">
-              <p className="font-bold text-[28px] leading-[1.2]">Interested?</p>
+              <p className={SECTION_TITLE_CLASS}>Interested?</p>
               <p className="text-[16px] text-body leading-[1.5]">If you have more questions, reach out or book a call with your POC</p>
             </div>
 
