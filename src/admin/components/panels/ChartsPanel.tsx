@@ -15,7 +15,10 @@ export default function ChartsPanel() {
     <div>
       <div className="panel-header">
         <div><div className="panel-title">Charts & Graphs</div><div className="panel-subtitle">Define chart data — rendered as Chart.js on the app page</div></div>
-        <button className="btn btn-primary btn-sm" onClick={() => s.addChart()}>+ Add Chart</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-ghost btn-sm" onClick={() => s.loadAppfiguresData()}>📊 Load from Appfigures</button>
+          <button className="btn btn-primary btn-sm" onClick={() => s.addChart()}>+ Add Chart</button>
+        </div>
       </div>
       <div className="card" style={{ marginBottom: 16 }}>
         <div className="card-header"><div className="card-title">Data Source</div></div>

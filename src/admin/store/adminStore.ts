@@ -171,6 +171,9 @@ interface AdminStore extends FormState {
   updatePersonStoryBlock: (storyId: string, blockId: string, key: keyof StoryBlock, val: string) => void
   movePersonStoryBlock: (storyId: string, blockId: string, direction: 'up' | 'down') => void
 
+  // appfigures actions
+  loadAppfiguresData: () => Promise<void>
+
   // array actions
   addKpi: (data?: Partial<KpiItem>) => void
   removeKpi: (id: number) => void
@@ -763,6 +766,108 @@ export const useAdminStore = create<AdminStore>()(
           }),
           isDirty: true,
         }))
+      },
+
+      loadAppfiguresData: async () => {
+        const s = get()
+        const defaultCountry = s.appfiguresDefaultCountry.trim().toUpperCase() || 'US'
+        const products: AppfiguresProductConfig[] = []
+
+        if (s.appfiguresAppleProductId.trim() || s.appfiguresAppleAppId.trim()) {
+          products.push({
+            id: 'apple',
+            label: 'iOS',
+            store: 'apple',
+            productId: s.appfiguresAppleProductId.trim() || undefined,
+            storeProductId: s.appfiguresAppleAppId.trim() || undefined,
+            country: defaultCountry,
+          })
+        }
+
+        if (s.appfiguresGoogleProductId.trim() || s.appfiguresGooglePackageName.trim()) {
+          products.push({
+            id: 'google_play',
+            label: 'Android',
+            store: 'google_play',
+            productId: s.appfiguresGoogleProductId.trim() || undefined,
+            storeProductId: s.appfiguresGooglePackageName.trim() || undefined,
+            country: defaultCountry,
+          })
+        }
+
+        if (products.length === 0) {
+          s.showToast('Configure Appfigures products first', '⚠️')
+          return
+        }
+
+        try {
+          const response = await fetch('/api/admin/appfigures/preview', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ config: { defaultCountry, products } }),
+          })
+
+          if (response.status === 401) {
+            window.location.href = '/admin/login'
+            return
+          }
+
+          if (!response.ok) {
+            const error = await response.json()
+            s.showToast(error.error || 'Failed to load Appfigures data', '⚠️')
+            return
+          }
+
+          const result = await response.json()
+          const data = result.data
+
+          // Populate KPIs
+          if (data.kpis && data.kpis.length > 0) {
+            const kpis = data.kpis.map((kpi: any) => ({
+              id: uid(),
+              label: kpi.label || '',
+              value: kpi.value || '',
+              trend: kpi.trend || '',
+              sub: kpi.sub || '',
+              icon: kpi.icon || '',
+            }))
+            set({ kpiItems: kpis, isDirty: true })
+          }
+
+          // Populate Financial Cards
+          if (data.financialCards && data.financialCards.length > 0) {
+            data.financialCards.forEach((card: any) => {
+              const key = card.key.toLowerCase()
+              if (key === 'mrr') set({ finMrr: card.value })
+              else if (key === 'arr') set({ finArr: card.value })
+              else if (key.includes('ltv')) set({ finLtvCac: card.value })
+              else if (key.includes('margin')) set({ finMargin: card.value })
+            })
+            set({ isDirty: true })
+          }
+
+          // Populate Charts
+          if (data.charts && data.charts.length > 0) {
+            const charts = data.charts.map((chart: any) => ({
+              id: uid(),
+              type: chart.type || 'line',
+              title: chart.title || '',
+              subtitle: chart.subtitle || '',
+              labels: Array.isArray(chart.labels) ? chart.labels.join(',') : '',
+              datasets: (chart.datasets || []).map((ds: any) => ({
+                label: ds.label || '',
+                data: Array.isArray(ds.data) ? ds.data.join(',') : '',
+                color: ds.color || '#1a1a1a',
+              })),
+            }))
+            set({ charts, isDirty: true })
+          }
+
+          s.showToast('Loaded data from Appfigures!', '📊')
+        } catch (error) {
+          s.showToast('Failed to load Appfigures data', '⚠️')
+          console.error('Appfigures load error:', error)
+        }
       },
 
       // KPIs

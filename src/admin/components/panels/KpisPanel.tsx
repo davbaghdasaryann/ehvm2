@@ -36,7 +36,7 @@ function cardTypeFromIcon(icon: string): CardType {
 }
 
 export default function KpisPanel() {
-  const { kpiItems, addKpi, removeKpi, updateKpi, dataSourceKpis, setField } = useAdminStore()
+  const { kpiItems, addKpi, removeKpi, updateKpi, dataSourceKpis, setField, loadAppfiguresData } = useAdminStore()
 
   function handleTypeChange(id: number, type: CardType) {
     updateKpi(id, 'icon', CARD_TYPES.find(t => t.value === type)!.icon)
@@ -49,7 +49,10 @@ export default function KpisPanel() {
           <div className="panel-title">KPI Cards</div>
           <div className="panel-subtitle">Up to 6 headline metrics displayed prominently</div>
         </div>
-        <button className="btn btn-primary btn-sm" onClick={() => addKpi()}>+ Add KPI</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-ghost btn-sm" onClick={() => loadAppfiguresData()}>📊 Load from Appfigures</button>
+          <button className="btn btn-primary btn-sm" onClick={() => addKpi()}>+ Add KPI</button>
+        </div>
       </div>
 
       <div className="card" style={{ marginBottom: 16 }}>

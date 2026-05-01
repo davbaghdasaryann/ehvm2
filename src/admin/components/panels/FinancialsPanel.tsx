@@ -15,7 +15,10 @@ export default function FinancialsPanel() {
     <div>
       <div className="panel-header">
         <div><div className="panel-title">Financial Table</div><div className="panel-subtitle">TTM P&L rows shown in the Financial Snapshot</div></div>
-        <button className="btn btn-primary btn-sm" onClick={() => s.addFinRow()}>+ Add Row</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-ghost btn-sm" onClick={() => s.loadAppfiguresData()}>📊 Load from Appfigures</button>
+          <button className="btn btn-primary btn-sm" onClick={() => s.addFinRow()}>+ Add Row</button>
+        </div>
       </div>
       <div className="card" style={{ marginBottom: 16 }}>
         <div className="card-header"><div className="card-title">Data Source</div></div>
