@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { isAdminRequestAuthorized } from "@/lib/adminAuth";
 import { getAppfiguresSnapshot } from "@/lib/appfigures";
 import { deriveAppfiguresData } from "@/lib/appfiguresDerived";
 import type { AppfiguresConfig } from "@/lib/appfigures-types";
@@ -8,8 +8,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getSession();
-    if (!session?.isAuthenticated) {
+    if (!isAdminRequestAuthorized(request)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

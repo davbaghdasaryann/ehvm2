@@ -76,9 +76,9 @@
 .upload-btn { flex-shrink: 0; }
 .field-label { font-size: 10px; font-weight: 700; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; }
 .field-hint { font-size: 10px; color: var(--text3); margin-top: 3px; }
-.admin-page input[type="text"], .admin-page input[type="number"], .admin-page input[type="email"], .admin-page input[type="url"], .admin-page input[type="tel"], .admin-page textarea, .admin-page select { background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.7); box-shadow: inset 0 1px 3px rgba(0,0,0,0.06), 0 1px 0 rgba(255,255,255,0.8); border-radius: var(--radius-sm); padding: 9px 13px; color: var(--text); font-family: var(--sans); font-size: 13px; width: 100%; transition: all 0.15s; outline: none; -webkit-appearance: none; }
-.admin-page input::placeholder, .admin-page textarea::placeholder { color: var(--text3); }
-.admin-page input:focus, .admin-page textarea:focus, .admin-page select:focus { border-color: rgba(0,0,0,0.25); background: rgba(255,255,255,0.7); box-shadow: inset 0 1px 3px rgba(0,0,0,0.06), 0 0 0 3px rgba(0,0,0,0.06); }
+.admin-page input[type="text"], .admin-page input[type="number"], .admin-page input[type="email"], .admin-page input[type="url"], .admin-page input[type="tel"], .admin-page input[type="password"], .admin-page input[type="date"], .admin-page textarea, .admin-page select { background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.7); box-shadow: inset 0 1px 3px rgba(0,0,0,0.06), 0 1px 0 rgba(255,255,255,0.8); border-radius: var(--radius-sm); padding: 9px 13px; color: var(--text); font-family: var(--sans); font-size: 13px; width: 100%; transition: all 0.15s; outline: none; -webkit-appearance: none; }
+.admin-page input::placeholder, .admin-page input[type="password"]::placeholder, .admin-page textarea::placeholder { color: var(--text3); }
+.admin-page input:focus, .admin-page input[type="password"]:focus, .admin-page textarea:focus, .admin-page select:focus { border-color: rgba(0,0,0,0.25); background: rgba(255,255,255,0.7); box-shadow: inset 0 1px 3px rgba(0,0,0,0.06), 0 0 0 3px rgba(0,0,0,0.06); }
 .admin-page textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
  .admin-page select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
  .admin-page select option { background: #e0e0e0; color: #111; }

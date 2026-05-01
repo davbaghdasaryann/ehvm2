@@ -29,7 +29,7 @@ export default function AppCard({ app }: { app: App }) {
       onTouchStart={handleWarm}
       onMouseDown={handleWarm}
       className="flex flex-[1_0_0] items-center max-w-[382px] min-w-[300px] sm:min-w-[335px] p-[15px] rounded-card no-underline text-foreground overflow-hidden"
-      style={{ background: "#F5F5F7" }}
+      style={{ background: "#E8E8EF" }}
     >
       <div className="flex flex-[1_0_0] gap-[10px] items-center min-w-0">
         {app.icon ? (
