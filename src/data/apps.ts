@@ -1,4 +1,5 @@
 import type { AppfiguresConfig } from "@/lib/appfigures-types";
+import type { SeoFields } from "@/admin/types";
 
 export type NotionPageBlock = {
   type:
@@ -171,4 +172,5 @@ export type App = {
   notionPageBlocks?: NotionPageBlock[];
   appfigures?: AppfiguresConfig;
   dataSources?: { kpis?: 'auto' | 'manual' | 'live'; charts?: 'auto' | 'manual' | 'live'; financials?: 'auto' | 'manual' | 'live' };
+  seo?: SeoFields;
 };

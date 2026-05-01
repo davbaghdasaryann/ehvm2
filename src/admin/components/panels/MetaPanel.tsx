@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAdminStore } from '@/admin/store/adminStore'
 import type { AppfiguresAdminProduct } from '@/lib/appfigures-types'
+import AiGenerateButton from '@/admin/components/AiGenerateButton'
 
 const ADMIN_APPFIGURES_PRODUCTS_API = '/api/admin/appfigures/products'
 
@@ -138,10 +139,26 @@ export default function MetaPanel() {
             <div className="field">
               <label className="field-label">Tagline</label>
               <input type="text" value={s.metaTagline} onChange={e => s.setField('metaTagline', e.target.value)} placeholder="e.g. AI Workouts" />
+              <AiGenerateButton
+                fieldLabel="Tagline"
+                fieldPath="meta.tagline"
+                currentValue={s.metaTagline}
+                instruction="Use the app name, category, and model. Keep it sharp enough for a marketplace card."
+                onGenerated={(text) => s.setField('metaTagline', text)}
+              />
             </div>
           </div>
           <div className="field" style={{ marginBottom: 14 }}>
-            <label className="field-label">Hero Description</label>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 8 }}>
+              <label className="field-label" style={{ marginBottom: 0 }}>Hero Description</label>
+              <AiGenerateButton
+                fieldLabel="Hero Description"
+                fieldPath="meta.description"
+                currentValue={s.metaDescription}
+                instruction="Write buyer-facing acquisition listing copy in the same style as Coachify."
+                onGenerated={(text) => s.setField('metaDescription', text)}
+              />
+            </div>
             <textarea value={s.metaDescription} onChange={e => s.setField('metaDescription', e.target.value)} rows={3} placeholder="Compelling one-paragraph description for acquirers..." />
           </div>
           <div className="form-grid form-grid-3">
@@ -175,10 +192,22 @@ export default function MetaPanel() {
             <div className="field">
               <label className="field-label">Badge Label</label>
               <input type="text" value={s.metaBadge} onChange={e => s.setField('metaBadge', e.target.value)} placeholder="e.g. Acquisition Opportunity · Health & Fitness" />
+              <AiGenerateButton
+                fieldLabel="Badge Label"
+                fieldPath="meta.badge"
+                currentValue={s.metaBadge}
+                onGenerated={(text) => s.setField('metaBadge', text)}
+              />
             </div>
             <div className="field">
               <label className="field-label">Asking Price Label</label>
               <input type="text" value={s.metaAsking} onChange={e => s.setField('metaAsking', e.target.value)} placeholder="e.g. Asking ~3.5× ARR" />
+              <AiGenerateButton
+                fieldLabel="Asking Price Label"
+                fieldPath="meta.askingPrice"
+                currentValue={s.metaAsking}
+                onGenerated={(text) => s.setField('metaAsking', text)}
+              />
             </div>
           </div>
         </div>
@@ -199,6 +228,65 @@ export default function MetaPanel() {
             <div className="field">
               <label className="field-label">Website URL</label>
               <input type="url" value={s.metaWebsiteUrl} onChange={e => s.setField('metaWebsiteUrl', e.target.value)} placeholder="https://..." />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-header"><div className="card-title">SEO Metadata</div></div>
+        <div className="card-body">
+          <div className="field" style={{ marginBottom: 14 }}>
+            <label className="field-label">SEO Title</label>
+            <input
+              type="text"
+              value={s.seoTitle}
+              onChange={e => s.setField('seoTitle', e.target.value)}
+              placeholder={`${s.metaName || 'App Name'} - ${s.metaTagline || 'App Acquisition'} | EHVM`}
+            />
+            <AiGenerateButton
+              fieldLabel="SEO Title"
+              fieldPath="seo.title"
+              currentValue={s.seoTitle}
+              instruction="Write a search-friendly app page title under 60 characters when possible."
+              onGenerated={(text) => s.setField('seoTitle', text)}
+            />
+          </div>
+          <div className="field" style={{ marginBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 8 }}>
+              <label className="field-label" style={{ marginBottom: 0 }}>SEO Description</label>
+              <AiGenerateButton
+                fieldLabel="SEO Description"
+                fieldPath="seo.description"
+                currentValue={s.seoDescription}
+                instruction="Write a search snippet under 155 characters. Use verified traction from the app draft or Appfigures when present."
+                onGenerated={(text) => s.setField('seoDescription', text)}
+              />
+            </div>
+            <textarea
+              value={s.seoDescription}
+              onChange={e => s.setField('seoDescription', e.target.value)}
+              rows={2}
+              placeholder="Search result and social preview description..."
+            />
+          </div>
+          <div className="form-grid form-grid-2">
+            <div className="field">
+              <label className="field-label">SEO / Social Image URL</label>
+              <input
+                type="url"
+                value={s.seoImage}
+                onChange={e => s.setField('seoImage', e.target.value)}
+                placeholder="Defaults to cover image or app icon"
+              />
+              <div className="field-hint">Used for OpenGraph and Twitter cards. Leave blank to use the cover image.</div>
+            </div>
+            <div className="toggle-field">
+              <div>
+                <div className="toggle-label">Noindex App Page</div>
+                <div className="toggle-desc">Hide this app page from search engines.</div>
+              </div>
+              <button type="button" className={`toggle${s.seoNoIndex ? ' on' : ''}`} onClick={() => s.setField('seoNoIndex', !s.seoNoIndex)} />
             </div>
           </div>
         </div>

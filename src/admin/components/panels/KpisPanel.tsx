@@ -1,6 +1,7 @@
 'use client'
 import { useAdminStore } from '@/admin/store/adminStore'
 import type { DataSourceMode } from '@/admin/types'
+import AiGenerateButton from '@/admin/components/AiGenerateButton'
 
 const SOURCE_OPTIONS: { value: DataSourceMode; label: string }[] = [
   { value: 'auto', label: 'Auto' },
@@ -42,10 +43,26 @@ export default function KpisPanel() {
             <button className="remove-btn" onClick={() => removeKpi(k.id)}>×</button>
           </div>
           <div className="form-grid form-grid-3">
-            <div className="field"><label className="field-label">Label</label><input type="text" value={k.label} onChange={e => updateKpi(k.id, 'label', e.target.value)} placeholder="Monthly Recurring Revenue" /></div>
-            <div className="field"><label className="field-label">Value</label><input type="text" value={k.value} onChange={e => updateKpi(k.id, 'value', e.target.value)} placeholder="$70K" /></div>
-            <div className="field"><label className="field-label">Trend Badge</label><input type="text" value={k.trend} onChange={e => updateKpi(k.id, 'trend', e.target.value)} placeholder="↑ 22% YoY" /></div>
-            <div className="field"><label className="field-label">Sub-text</label><input type="text" value={k.sub} onChange={e => updateKpi(k.id, 'sub', e.target.value)} placeholder="$840K ARR" /></div>
+            <div className="field">
+              <label className="field-label">Label</label>
+              <input type="text" value={k.label} onChange={e => updateKpi(k.id, 'label', e.target.value)} placeholder="Monthly Recurring Revenue" />
+              <AiGenerateButton fieldLabel="KPI Label" fieldPath={`kpis.${i}.label`} currentValue={k.label} onGenerated={(text) => updateKpi(k.id, 'label', text)} />
+            </div>
+            <div className="field">
+              <label className="field-label">Value</label>
+              <input type="text" value={k.value} onChange={e => updateKpi(k.id, 'value', e.target.value)} placeholder="$70K" />
+              <AiGenerateButton fieldLabel="KPI Value" fieldPath={`kpis.${i}.value`} currentValue={k.value} instruction={`KPI label: ${k.label || 'empty'}. Use only known numbers from context.`} onGenerated={(text) => updateKpi(k.id, 'value', text)} />
+            </div>
+            <div className="field">
+              <label className="field-label">Trend Badge</label>
+              <input type="text" value={k.trend} onChange={e => updateKpi(k.id, 'trend', e.target.value)} placeholder="↑ 22% YoY" />
+              <AiGenerateButton fieldLabel="KPI Trend Badge" fieldPath={`kpis.${i}.trend`} currentValue={k.trend} instruction={`KPI label: ${k.label || 'empty'}. Use only known numbers from context.`} onGenerated={(text) => updateKpi(k.id, 'trend', text)} />
+            </div>
+            <div className="field">
+              <label className="field-label">Sub-text</label>
+              <input type="text" value={k.sub} onChange={e => updateKpi(k.id, 'sub', e.target.value)} placeholder="$840K ARR" />
+              <AiGenerateButton fieldLabel="KPI Sub-text" fieldPath={`kpis.${i}.sub`} currentValue={k.sub} instruction={`KPI label: ${k.label || 'empty'}. Use only known context.`} onGenerated={(text) => updateKpi(k.id, 'sub', text)} />
+            </div>
             <div className="field"><label className="field-label">Icon / Emoji</label><input type="text" value={k.icon} onChange={e => updateKpi(k.id, 'icon', e.target.value)} placeholder="📊" /></div>
           </div>
         </div>

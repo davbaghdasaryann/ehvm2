@@ -77,6 +77,10 @@ interface FormState {
   appfiguresAppleAppId: string
   appfiguresGoogleProductId: string
   appfiguresGooglePackageName: string
+  seoTitle: string
+  seoDescription: string
+  seoImage: string
+  seoNoIndex: boolean
   // data sources
   dataSourceKpis: DataSourceMode
   dataSourceCharts: DataSourceMode
@@ -223,6 +227,7 @@ const emptyForm: FormState = {
   appfiguresDefaultCountry: 'US',
   appfiguresAppleProductId: '', appfiguresAppleAppId: '',
   appfiguresGoogleProductId: '', appfiguresGooglePackageName: '',
+  seoTitle: '', seoDescription: '', seoImage: '', seoNoIndex: false,
   dataSourceKpis: 'auto', dataSourceCharts: 'auto', dataSourceFinancials: 'auto',
   finMrr: '', finArr: '', finLtvCac: '', finMargin: '', finYoy: '', finMultiple: '',
   productVision: '',
@@ -323,6 +328,14 @@ export const useAdminStore = create<AdminStore>()(
           appfiguresProducts.length > 0 || defaultCountry !== 'US'
             ? { defaultCountry, products: appfiguresProducts }
             : undefined
+        const seo = s.seoTitle.trim() || s.seoDescription.trim() || s.seoImage.trim() || s.seoNoIndex
+          ? {
+              title: s.seoTitle.trim(),
+              description: s.seoDescription.trim(),
+              image: s.seoImage.trim() || undefined,
+              noIndex: s.seoNoIndex,
+            }
+          : undefined
 
         return {
           id: s.currentAppId || ('app_' + Date.now()),
@@ -374,6 +387,7 @@ export const useAdminStore = create<AdminStore>()(
             screenshots: s.screenshots.map(({ id: _id, ...rest }) => rest)
           },
           appfigures,
+          seo,
           dataSources: {
             kpis: s.dataSourceKpis,
             charts: s.dataSourceCharts,
@@ -440,6 +454,10 @@ export const useAdminStore = create<AdminStore>()(
           appfiguresAppleAppId: appleProduct?.storeProductId || '',
           appfiguresGoogleProductId: googleProduct?.productId || '',
           appfiguresGooglePackageName: googleProduct?.storeProductId || '',
+          seoTitle: app.seo?.title || '',
+          seoDescription: app.seo?.description || '',
+          seoImage: app.seo?.image || '',
+          seoNoIndex: Boolean(app.seo?.noIndex),
           dataSourceKpis: app.dataSources?.kpis || 'auto',
           dataSourceCharts: app.dataSources?.charts || 'auto',
           dataSourceFinancials: app.dataSources?.financials || 'auto',
@@ -809,6 +827,10 @@ export const useAdminStore = create<AdminStore>()(
           metaDeveloperFlag: '🇺🇸',
           tags: ['iOS + Android', 'AI / Subscription', 'Profitable', 'Health & Fitness', 'Asking ~3.5× ARR'],
           ndaRequired: true, featured: false,
+          seoTitle: 'Coachify - AI Workouts App Acquisition | EHVM',
+          seoDescription: 'Profitable AI fitness coaching app with $70K MRR, top-rated store presence, proven paid acquisition, and clear growth upside for a strategic buyer.',
+          seoImage: '',
+          seoNoIndex: false,
           finMrr: '$70,000', finArr: '$840K', finLtvCac: '4.2×', finMargin: '~43%', finYoy: '22%', finMultiple: '3.5× ARR',
           finRows: [
             { id: 1, label: 'Gross Revenue', amount: '$756,000', trend: '↑ 22%', notes: 'App Store + Play Store gross', highlight: true },

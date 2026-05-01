@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAppBySlug, getAppSlugs, getSiteLinks } from "@/lib/data";
 import { getAppfiguresSnapshot } from "@/lib/appfigures";
@@ -9,6 +10,33 @@ import CalendarEmbed from "@/components/CalendarEmbed";
 import NdaGatePortal from "@/components/NdaGatePortal";
 import FaqAccordion from "@/components/FaqAccordion";
 import HistoryBackLink from "@/components/HistoryBackLink";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://ehvmcapital.com";
+
+function absoluteUrl(value?: string): string | undefined {
+  if (!value) return undefined;
+  if (value.startsWith("http://") || value.startsWith("https://")) return value;
+  if (value.startsWith("/")) return `${SITE_URL}${value}`;
+  return undefined;
+}
+
+function truncateMeta(value: string, maxLength: number): string {
+  const cleaned = value.replace(/\s+/g, " ").trim();
+  return cleaned.length > maxLength ? `${cleaned.slice(0, maxLength - 1).trim()}…` : cleaned;
+}
+
+function appSeoTitle(app: NonNullable<Awaited<ReturnType<typeof getAppBySlug>>>): string {
+  const configured = app.seo?.title?.trim();
+  if (configured) return configured;
+  const pieces = [app.name, app.subtitle || app.category].filter(Boolean);
+  return `${pieces.join(" - ")} | EHVM`;
+}
+
+function appSeoDescription(app: NonNullable<Awaited<ReturnType<typeof getAppBySlug>>>): string {
+  const configured = app.seo?.description?.trim();
+  if (configured) return configured;
+  return truncateMeta(app.about || `${app.name} is listed for acquisition on EHVM.`, 155);
+}
 
 function followersEmoji(label: string): string {
   const lower = label.toLowerCase();
@@ -68,6 +96,45 @@ export const revalidate = 300;
 export async function generateStaticParams() {
   const slugs = await getAppSlugs();
   return slugs.map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const app = await getAppBySlug(slug);
+  if (!app) return {};
+
+  const title = appSeoTitle(app);
+  const description = appSeoDescription(app);
+  const canonical = `${SITE_URL}/apps/${app.slug}`;
+  const image = absoluteUrl(app.seo?.image || app.screenshotsImage || app.icon);
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: "EHVM Apps Capital",
+      type: "website",
+      images: image ? [{ url: image, alt: `${app.name} app acquisition listing` }] : undefined,
+    },
+    twitter: {
+      card: image ? "summary_large_image" : "summary",
+      title,
+      description,
+      images: image ? [image] : undefined,
+    },
+    robots: app.seo?.noIndex
+      ? {
+          index: false,
+          follow: false,
+        }
+      : undefined,
+  };
 }
 
 export default async function AppDetail({ params }: { params: Promise<{ slug: string }> }) {

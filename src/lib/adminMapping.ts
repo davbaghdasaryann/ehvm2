@@ -264,6 +264,21 @@ function buildAppfiguresConfig(record: AppRecord): AppfiguresConfig | undefined 
   };
 }
 
+function buildSeoFields(record: AppRecord, appName: string): App["seo"] {
+  const title = clean(record.seo?.title);
+  const description = clean(record.seo?.description);
+  const image = clean(record.seo?.image) || clean(record.media.cover) || clean(record.media.icon);
+  const fallbackTitle = [appName, clean(record.meta.tagline)].filter(Boolean).join(" - ");
+  const fallbackDescription = clean(record.meta.description);
+
+  return {
+    title: title || (fallbackTitle ? `${fallbackTitle} | EHVM` : `${appName} | EHVM`),
+    description: description || fallbackDescription,
+    image: image || undefined,
+    noIndex: Boolean(record.seo?.noIndex),
+  };
+}
+
 export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
   const appName = clean(record.meta.name) || "Untitled App";
   const slug = toSlug(clean(record.meta.name) || record.id);
@@ -284,6 +299,7 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
   const pageBlocks = buildPageBlocks(record);
   const detailBlocks = toNotionDetailBlocks(pageBlocks);
   const appfigures = buildAppfiguresConfig(record);
+  const seo = buildSeoFields(record, appName);
 
   const app: App = {
     notionPageId: record.id,
@@ -420,6 +436,7 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
     notionPageBlocks: pageBlocks.length > 0 ? pageBlocks : undefined,
     appfigures,
     dataSources: record.dataSources,
+    seo,
   };
 
   return {

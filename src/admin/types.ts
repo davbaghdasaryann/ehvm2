@@ -100,6 +100,13 @@ export interface DataSources {
   financials?: DataSourceMode
 }
 
+export interface SeoFields {
+  title: string
+  description: string
+  image?: string
+  noIndex?: boolean
+}
+
 export interface AppRecord {
   id: string
   updatedAt: string
@@ -107,6 +114,7 @@ export interface AppRecord {
   featured: boolean
   ndaRequired: boolean
   dataSources?: DataSources
+  seo?: SeoFields
   meta: {
     name: string
     tagline: string

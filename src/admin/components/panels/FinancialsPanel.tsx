@@ -1,6 +1,7 @@
 'use client'
 import { useAdminStore } from '@/admin/store/adminStore'
 import type { DataSourceMode } from '@/admin/types'
+import AiGenerateButton from '@/admin/components/AiGenerateButton'
 
 const SOURCE_OPTIONS: { value: DataSourceMode; label: string }[] = [
   { value: 'auto', label: 'Auto' },
@@ -43,6 +44,13 @@ export default function FinancialsPanel() {
               <div key={key} className="field">
                 <label className="field-label">{label}</label>
                 <input type="text" value={s[key] as string} onChange={e => s.setField(key, e.target.value)} placeholder={ph} />
+                <AiGenerateButton
+                  fieldLabel={label}
+                  fieldPath={`financials.${key}`}
+                  currentValue={s[key] as string}
+                  instruction="Use only known numbers from the current app context. If unknown, produce a conservative NDA-safe label."
+                  onGenerated={(text) => s.setField(key, text)}
+                />
               </div>
             ))}
           </div>
@@ -67,10 +75,26 @@ export default function FinancialsPanel() {
                 </div>
               </div>
               <div className="form-grid form-grid-3">
-                <div className="field"><label className="field-label">Metric Label</label><input type="text" value={r.label} onChange={e => s.updateFinRow(r.id, 'label', e.target.value)} placeholder="Gross Revenue" /></div>
-                <div className="field"><label className="field-label">TTM Amount</label><input type="text" value={r.amount} onChange={e => s.updateFinRow(r.id, 'amount', e.target.value)} placeholder="$756,000" /></div>
-                <div className="field"><label className="field-label">MoM Trend</label><input type="text" value={r.trend} onChange={e => s.updateFinRow(r.id, 'trend', e.target.value)} placeholder="↑ 22%" /></div>
-                <div className="field" style={{ gridColumn: 'span 3' }}><label className="field-label">Notes</label><input type="text" value={r.notes} onChange={e => s.updateFinRow(r.id, 'notes', e.target.value)} placeholder="App Store + Play Store gross" /></div>
+                <div className="field">
+                  <label className="field-label">Metric Label</label>
+                  <input type="text" value={r.label} onChange={e => s.updateFinRow(r.id, 'label', e.target.value)} placeholder="Gross Revenue" />
+                  <AiGenerateButton fieldLabel="P&L Metric Label" fieldPath={`financials.plRows.${i}.label`} currentValue={r.label} onGenerated={(text) => s.updateFinRow(r.id, 'label', text)} />
+                </div>
+                <div className="field">
+                  <label className="field-label">TTM Amount</label>
+                  <input type="text" value={r.amount} onChange={e => s.updateFinRow(r.id, 'amount', e.target.value)} placeholder="$756,000" />
+                  <AiGenerateButton fieldLabel="P&L TTM Amount" fieldPath={`financials.plRows.${i}.amount`} currentValue={r.amount} instruction={`Metric label: ${r.label || 'empty'}. Use only known numbers from context.`} onGenerated={(text) => s.updateFinRow(r.id, 'amount', text)} />
+                </div>
+                <div className="field">
+                  <label className="field-label">MoM Trend</label>
+                  <input type="text" value={r.trend} onChange={e => s.updateFinRow(r.id, 'trend', e.target.value)} placeholder="↑ 22%" />
+                  <AiGenerateButton fieldLabel="P&L Trend" fieldPath={`financials.plRows.${i}.trend`} currentValue={r.trend} instruction={`Metric label: ${r.label || 'empty'}. Use only known numbers from context.`} onGenerated={(text) => s.updateFinRow(r.id, 'trend', text)} />
+                </div>
+                <div className="field" style={{ gridColumn: 'span 3' }}>
+                  <label className="field-label">Notes</label>
+                  <input type="text" value={r.notes} onChange={e => s.updateFinRow(r.id, 'notes', e.target.value)} placeholder="App Store + Play Store gross" />
+                  <AiGenerateButton fieldLabel="P&L Notes" fieldPath={`financials.plRows.${i}.notes`} currentValue={r.notes} instruction={`Metric label: ${r.label || 'empty'}. Amount: ${r.amount || 'empty'}.`} onGenerated={(text) => s.updateFinRow(r.id, 'notes', text)} />
+                </div>
               </div>
             </div>
           ))}

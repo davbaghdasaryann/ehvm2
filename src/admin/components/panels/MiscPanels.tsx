@@ -1,6 +1,7 @@
 'use client'
 import ImageUploadButton from '@/admin/components/ImageUploadButton'
 import { useAdminStore } from '@/admin/store/adminStore'
+import AiGenerateButton from '@/admin/components/AiGenerateButton'
 
 export function FunnelPanel() {
   const s = useAdminStore()
@@ -41,7 +42,16 @@ export function ProductPanel() {
         <button className="btn btn-primary btn-sm" onClick={() => s.addRoadmapItem()}>+ Add Item</button>
       </div>
       <div className="card" style={{ marginBottom: 16 }}>
-        <div className="card-header"><div className="card-title">Product Vision</div></div>
+        <div className="card-header">
+          <div className="card-title">Product Vision</div>
+          <AiGenerateButton
+            fieldLabel="Product Vision"
+            fieldPath="product.vision"
+            currentValue={s.productVision}
+            instruction="Use the current app category, model, KPIs, and market context. Make it strategic but credible."
+            onGenerated={(text) => s.setField('productVision', text)}
+          />
+        </div>
         <div className="card-body">
           <textarea value={s.productVision} onChange={e => s.setField('productVision', e.target.value)} rows={4} placeholder="Describe the product vision..." />
         </div>
@@ -67,8 +77,30 @@ export function ProductPanel() {
                     <option value="planned">⬜ Planned</option>
                   </select>
                 </div>
-                <div className="field" style={{ gridColumn: 'span 2' }}><label className="field-label">Feature Title</label><input type="text" value={r.title} onChange={e => s.updateRoadmap(r.id, 'title', e.target.value)} placeholder="AI Personalized Workout Plans" /></div>
-                <div className="field" style={{ gridColumn: 'span 3' }}><label className="field-label">Description</label><textarea rows={2} value={r.description} onChange={e => s.updateRoadmap(r.id, 'description', e.target.value)} /></div>
+                <div className="field" style={{ gridColumn: 'span 2' }}>
+                  <label className="field-label">Feature Title</label>
+                  <input type="text" value={r.title} onChange={e => s.updateRoadmap(r.id, 'title', e.target.value)} placeholder="AI Personalized Workout Plans" />
+                  <AiGenerateButton
+                    fieldLabel="Feature Title"
+                    fieldPath={`product.roadmap.${i}.title`}
+                    currentValue={r.title}
+                    instruction={`Roadmap status is ${r.status}.`}
+                    onGenerated={(text) => s.updateRoadmap(r.id, 'title', text)}
+                  />
+                </div>
+                <div className="field" style={{ gridColumn: 'span 3' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 8 }}>
+                    <label className="field-label" style={{ marginBottom: 0 }}>Description</label>
+                    <AiGenerateButton
+                      fieldLabel="Roadmap Description"
+                      fieldPath={`product.roadmap.${i}.description`}
+                      currentValue={r.description}
+                      instruction={`Feature title: ${r.title || 'empty'}. Roadmap status: ${r.status}.`}
+                      onGenerated={(text) => s.updateRoadmap(r.id, 'description', text)}
+                    />
+                  </div>
+                  <textarea rows={2} value={r.description} onChange={e => s.updateRoadmap(r.id, 'description', e.target.value)} />
+                </div>
               </div>
             </div>
           ))}
@@ -122,7 +154,17 @@ export function MarketPanel() {
                     <option value="true">Yes ← This App</option>
                   </select>
                 </div>
-                <div className="field" style={{ gridColumn: 'span 3' }}><label className="field-label">Description</label><input type="text" value={c.description} onChange={e => s.updateCompetitor(c.id, 'description', e.target.value)} placeholder="Adaptive strength training · $30M+ ARR" /></div>
+                <div className="field" style={{ gridColumn: 'span 3' }}>
+                  <label className="field-label">Description</label>
+                  <input type="text" value={c.description} onChange={e => s.updateCompetitor(c.id, 'description', e.target.value)} placeholder="Adaptive strength training · $30M+ ARR" />
+                  <AiGenerateButton
+                    fieldLabel="Competitor Description"
+                    fieldPath={`market.competitors.${i}.description`}
+                    currentValue={c.description}
+                    instruction={`Competitor name: ${c.name || 'empty'}. This app: ${c.isThisApp ? 'yes' : 'no'}.`}
+                    onGenerated={(text) => s.updateCompetitor(c.id, 'description', text)}
+                  />
+                </div>
                 <div className="field"><label className="field-label">App Store Rating</label><input type="text" value={c.appStoreRating} onChange={e => s.updateCompetitor(c.id, 'appStoreRating', e.target.value)} placeholder="4.8" /></div>
                 <div className="field"><label className="field-label">App Store Icon</label><input type="text" value={c.appStoreIcon || ''} onChange={e => s.updateCompetitor(c.id, 'appStoreIcon', e.target.value)} placeholder="🍎 (optional)" /></div>
                 <div className="field"><label className="field-label">Google Play Rating</label><input type="text" value={c.googleStoreRating} onChange={e => s.updateCompetitor(c.id, 'googleStoreRating', e.target.value)} placeholder="4.6" /></div>
@@ -179,8 +221,29 @@ export function OpportunitiesPanel() {
               </div>
               <div className="form-grid form-grid-3">
                 <div className="field"><label className="field-label">Emoji</label><input type="text" value={o.icon} onChange={e => s.updateOpportunity(o.id, 'icon', e.target.value)} placeholder="💳" /></div>
-                <div className="field" style={{ gridColumn: 'span 2' }}><label className="field-label">Title</label><input type="text" value={o.title} onChange={e => s.updateOpportunity(o.id, 'title', e.target.value)} placeholder="Paywall A/B Testing" /></div>
-                <div className="field" style={{ gridColumn: 'span 3' }}><label className="field-label">Description</label><textarea rows={2} value={o.description} onChange={e => s.updateOpportunity(o.id, 'description', e.target.value)} /></div>
+                <div className="field" style={{ gridColumn: 'span 2' }}>
+                  <label className="field-label">Title</label>
+                  <input type="text" value={o.title} onChange={e => s.updateOpportunity(o.id, 'title', e.target.value)} placeholder="Paywall A/B Testing" />
+                  <AiGenerateButton
+                    fieldLabel="Opportunity Title"
+                    fieldPath={`opportunities.${i}.title`}
+                    currentValue={o.title}
+                    onGenerated={(text) => s.updateOpportunity(o.id, 'title', text)}
+                  />
+                </div>
+                <div className="field" style={{ gridColumn: 'span 3' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 8 }}>
+                    <label className="field-label" style={{ marginBottom: 0 }}>Description</label>
+                    <AiGenerateButton
+                      fieldLabel="Opportunity Description"
+                      fieldPath={`opportunities.${i}.description`}
+                      currentValue={o.description}
+                      instruction={`Opportunity title: ${o.title || 'empty'}.`}
+                      onGenerated={(text) => s.updateOpportunity(o.id, 'description', text)}
+                    />
+                  </div>
+                  <textarea rows={2} value={o.description} onChange={e => s.updateOpportunity(o.id, 'description', e.target.value)} />
+                </div>
               </div>
             </div>
           ))}
@@ -237,9 +300,30 @@ export function ContactPanel() {
                 <button className="remove-btn" onClick={() => s.removeProcessStep(step.id)}>×</button>
               </div>
               <div className="form-grid form-grid-2">
-                <div className="field"><label className="field-label">Step Title</label><input type="text" value={step.title} onChange={e => s.updateProcessStep(step.id, 'title', e.target.value)} placeholder="Sign Mutual NDA" /></div>
+                <div className="field">
+                  <label className="field-label">Step Title</label>
+                  <input type="text" value={step.title} onChange={e => s.updateProcessStep(step.id, 'title', e.target.value)} placeholder="Sign Mutual NDA" />
+                  <AiGenerateButton
+                    fieldLabel="Process Step Title"
+                    fieldPath={`contact.processSteps.${i}.title`}
+                    currentValue={step.title}
+                    onGenerated={(text) => s.updateProcessStep(step.id, 'title', text)}
+                  />
+                </div>
                 <div className="field"><label className="field-label">Note / Badge text</label><input type="text" value={step.note} onChange={e => s.updateProcessStep(step.id, 'note', e.target.value)} placeholder="~2 minutes" /></div>
-                <div className="field" style={{ gridColumn: 'span 2' }}><label className="field-label">Description</label><textarea rows={2} value={step.description} onChange={e => s.updateProcessStep(step.id, 'description', e.target.value)} /></div>
+                <div className="field" style={{ gridColumn: 'span 2' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 8 }}>
+                    <label className="field-label" style={{ marginBottom: 0 }}>Description</label>
+                    <AiGenerateButton
+                      fieldLabel="Process Step Description"
+                      fieldPath={`contact.processSteps.${i}.description`}
+                      currentValue={step.description}
+                      instruction={`Step title: ${step.title || 'empty'}. Step note: ${step.note || 'empty'}.`}
+                      onGenerated={(text) => s.updateProcessStep(step.id, 'description', text)}
+                    />
+                  </div>
+                  <textarea rows={2} value={step.description} onChange={e => s.updateProcessStep(step.id, 'description', e.target.value)} />
+                </div>
               </div>
             </div>
           ))}
