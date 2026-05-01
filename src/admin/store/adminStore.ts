@@ -87,6 +87,9 @@ interface FormState {
   dataSourceKpis: DataSourceMode
   dataSourceCharts: DataSourceMode
   dataSourceFinancials: DataSourceMode
+  dataSourceStoreIntelligence: 'auto' | 'manual' | 'off'
+  dataSourceReviews: 'auto' | 'manual' | 'off'
+  showAppfiguresSection: boolean
   // financials
   finMrr: string; finArr: string; finLtvCac: string
   finMargin: string; finYoy: string; finMultiple: string
@@ -245,6 +248,7 @@ const emptyForm: FormState = {
   appfiguresGoogleProductId: '', appfiguresGooglePackageName: '',
   seoTitle: '', seoDescription: '', seoImage: '', seoNoIndex: false,
   dataSourceKpis: 'auto', dataSourceCharts: 'auto', dataSourceFinancials: 'auto',
+  dataSourceStoreIntelligence: 'auto', dataSourceReviews: 'auto', showAppfiguresSection: true,
   finMrr: '', finArr: '', finLtvCac: '', finMargin: '', finYoy: '', finMultiple: '',
   productVision: '',
   marketTam: '', marketSam: '', marketSom: '', marketTamLabel: '', marketSamLabel: '', marketYear: '',
@@ -417,6 +421,9 @@ export const useAdminStore = create<AdminStore>()(
             kpis: s.dataSourceKpis,
             charts: s.dataSourceCharts,
             financials: s.dataSourceFinancials,
+            storeIntelligence: s.dataSourceStoreIntelligence,
+            reviews: s.dataSourceReviews,
+            appfiguresSection: s.showAppfiguresSection,
           },
         }
       },
@@ -486,6 +493,9 @@ export const useAdminStore = create<AdminStore>()(
           dataSourceKpis: app.dataSources?.kpis || 'auto',
           dataSourceCharts: app.dataSources?.charts || 'auto',
           dataSourceFinancials: app.dataSources?.financials || 'auto',
+          dataSourceStoreIntelligence: app.dataSources?.storeIntelligence || 'auto',
+          dataSourceReviews: app.dataSources?.reviews || 'auto',
+          showAppfiguresSection: app.dataSources?.appfiguresSection ?? true,
           finMrr: app.financials.mrr, finArr: app.financials.arr,
           finLtvCac: app.financials.ltvCac, finMargin: app.financials.netMargin,
           finYoy: app.financials.yoyGrowth, finMultiple: app.financials.askingMultiple,

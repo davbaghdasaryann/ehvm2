@@ -126,6 +126,9 @@ export interface DataSources {
   kpis?: DataSourceMode
   charts?: DataSourceMode
   financials?: DataSourceMode
+  storeIntelligence?: 'auto' | 'manual' | 'off'
+  reviews?: 'auto' | 'manual' | 'off'
+  appfiguresSection?: boolean
 }
 
 export interface SeoFields {

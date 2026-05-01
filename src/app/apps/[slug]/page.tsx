@@ -373,10 +373,22 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
   const competitors = (app.market?.competitors || []).filter((item) => item.name || item.description || item.appStoreRating || item.googleStoreRating);
   const keywords = (app.market?.keywords || []).filter((item) => item.keyword || item.store || item.rank);
   const hasMarketSection = marketStats.length > 0 || keywords.length > 0;
+  const dsStoreIntelligence = app.dataSources?.storeIntelligence ?? 'auto';
+  const dsReviews = app.dataSources?.reviews ?? 'auto';
+  const showAppfiguresSection = app.dataSources?.appfiguresSection ?? true;
+
+  const appfiguresStoreSignals = dsStoreIntelligence === 'manual' ? [] : appfiguresDerived.storeSignals;
+  const appfiguresFeaturedPlacements = dsStoreIntelligence === 'manual' ? [] : appfiguresDerived.featuredPlacements;
+  const appfiguresActiveSdks = dsStoreIntelligence === 'manual' ? [] : appfiguresDerived.activeSdks;
+  const manualStoreSignals = dsStoreIntelligence === 'off' ? [] : (app.storeSignals ?? []);
+
+  const appfiguresReviews = dsReviews === 'manual' ? [] : appfiguresDerived.reviews;
+  const manualReviews = dsReviews === 'off' ? [] : (app.manualReviews ?? []);
+
   const hasStoreIntelligence =
-    appfiguresDerived.storeSignals.length > 0 ||
-    appfiguresDerived.featuredPlacements.length > 0 ||
-    appfiguresDerived.activeSdks.length > 0;
+    appfiguresStoreSignals.length > 0 ||
+    appfiguresFeaturedPlacements.length > 0 ||
+    appfiguresActiveSdks.length > 0;
   const processSteps = (app.contact.processSteps || []).filter((step) => step.title || step.note || step.description);
   const processTitles = new Set(
     processSteps.map((step) => step.title.trim().toLowerCase()).filter(Boolean),
@@ -881,16 +893,15 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
         )}
 
         {/* Store Intelligence + Appfigures Intelligence side by side */}
-        {(hasStoreIntelligence || (app.storeSignals?.length ?? 0) > 0 || !!app.appfigures?.products.length) && (
+        {(dsStoreIntelligence !== 'off' && (hasStoreIntelligence || manualStoreSignals.length > 0) || (showAppfiguresSection && !!app.appfigures?.products.length)) && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-[20px] w-full items-start">
             {/* Left: Store Intelligence */}
-            {(hasStoreIntelligence || (app.storeSignals?.length ?? 0) > 0) && (
+            {dsStoreIntelligence !== 'off' && (hasStoreIntelligence || manualStoreSignals.length > 0) && (
               <div className="flex flex-col gap-[12px]">
                 <p className="font-bold text-[20px] leading-[1.2]">Store Intelligence</p>
-                {/* Manual signals */}
-                {(app.storeSignals?.length ?? 0) > 0 && (
+                {manualStoreSignals.length > 0 && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-[10px] w-full">
-                    {app.storeSignals!.map((item, i) => (
+                    {manualStoreSignals.map((item, i) => (
                       <div key={i} className="rounded-[16px] p-[12px]" style={{ background: "#F5F5F7" }}>
                         <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
                         <p className="font-bold text-[18px] mt-[4px]">{item.value}</p>
@@ -899,10 +910,9 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     ))}
                   </div>
                 )}
-                {/* Appfigures signals */}
-                {appfiguresDerived.storeSignals.length > 0 && (
+                {appfiguresStoreSignals.length > 0 && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-[10px] w-full">
-                    {appfiguresDerived.storeSignals.map((item) => (
+                    {appfiguresStoreSignals.map((item) => (
                       <div key={item.key} className="rounded-[16px] p-[12px]" style={{ background: "#F5F5F7" }}>
                         <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
                         <p className="font-bold text-[18px] mt-[4px]">{item.value}</p>
@@ -911,10 +921,10 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     ))}
                   </div>
                 )}
-                {appfiguresDerived.featuredPlacements.length > 0 && (
+                {appfiguresFeaturedPlacements.length > 0 && (
                   <div className="rounded-[16px] p-[12px] flex flex-col" style={{ background: "#F5F5F7" }}>
                     <p className="font-bold text-[14px]">Featured Placements</p>
-                    {appfiguresDerived.featuredPlacements.map((item, index) => (
+                    {appfiguresFeaturedPlacements.map((item, index) => (
                       <div key={item.id} className={`py-[10px] ${index > 0 ? "border-t border-divider" : ""} flex items-center gap-[10px]`}>
                         <div className="size-[32px] rounded-[10px] bg-card flex items-center justify-center text-[14px] shrink-0">
                           #{item.position}
@@ -927,11 +937,11 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     ))}
                   </div>
                 )}
-                {appfiguresDerived.activeSdks.length > 0 && (
+                {appfiguresActiveSdks.length > 0 && (
                   <div className="rounded-[16px] p-[12px] flex flex-col gap-[10px]" style={{ background: "#F5F5F7" }}>
                     <p className="font-bold text-[14px]">SDK Footprint</p>
                     <div className="flex flex-wrap gap-[8px]">
-                      {appfiguresDerived.activeSdks.map((sdk) => (
+                      {appfiguresActiveSdks.map((sdk) => (
                         <span key={sdk} className="bg-card px-[10px] py-[5px] rounded-pill text-[11px]">
                           {sdk}
                         </span>
@@ -942,19 +952,18 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
               </div>
             )}
             {/* Right: Appfigures Intelligence */}
-            {app.appfigures?.products.length ? (
+            {showAppfiguresSection && app.appfigures?.products.length ? (
               <AppfiguresSectionClient slug={app.slug} />
             ) : null}
           </div>
         )}
 
         {/* Recent Store Reviews — full width */}
-        {(appfiguresDerived.reviews.length > 0 || (app.manualReviews?.length ?? 0) > 0) && (
+        {(manualReviews.length > 0 || appfiguresReviews.length > 0) && (
           <div className="flex flex-col gap-[12px] w-full">
             <p className="font-bold text-[20px] leading-[1.2]">Recent Store Reviews</p>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[10px] w-full">
-              {/* Manual reviews */}
-              {(app.manualReviews ?? []).map((review, i) => (
+              {manualReviews.map((review, i) => (
                 <div key={`manual-${i}`} className="rounded-[16px] p-[12px] flex flex-col gap-[8px]" style={{ background: "#F5F5F7" }}>
                   <div className="flex items-start justify-between gap-[10px]">
                     <div>
@@ -974,8 +983,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                   </p>
                 </div>
               ))}
-              {/* Appfigures reviews */}
-              {appfiguresDerived.reviews.map((review) => (
+              {appfiguresReviews.map((review) => (
                 <div key={review.id} className="rounded-[16px] p-[12px] flex flex-col gap-[8px]" style={{ background: "#F5F5F7" }}>
                   <div className="flex items-start justify-between gap-[10px]">
                     <div>

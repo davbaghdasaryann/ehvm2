@@ -4,10 +4,77 @@ import { useAdminStore } from '@/admin/store/adminStore'
 const STAR_OPTIONS = [1, 2, 3, 4, 5]
 const STORE_OPTIONS = ['apple', 'google_play']
 
+const SI_OPTIONS = [
+  { value: 'auto', label: 'Auto', desc: 'Manual + Appfigures signals' },
+  { value: 'manual', label: 'Manual only', desc: 'Only manually entered signals' },
+  { value: 'off', label: 'Hidden', desc: 'Section not shown' },
+] as const
+
+const REV_OPTIONS = [
+  { value: 'auto', label: 'Auto', desc: 'Manual + Appfigures reviews' },
+  { value: 'manual', label: 'Manual only', desc: 'Only manually entered reviews' },
+  { value: 'off', label: 'Hidden', desc: 'Section not shown' },
+] as const
+
 export default function StoreIntelligencePanel() {
   const s = useAdminStore()
   return (
     <div>
+      {/* Data source controls */}
+      <div className="card" style={{ marginBottom: 16 }}>
+        <div className="card-header"><div className="card-title">Visibility Controls</div></div>
+        <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {/* Store Intelligence source */}
+          <div>
+            <div className="field-label" style={{ marginBottom: 6 }}>Store Intelligence Section</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {SI_OPTIONS.map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => s.setField('dataSourceStoreIntelligence', opt.value)}
+                  className={`btn btn-sm ${s.dataSourceStoreIntelligence === opt.value ? 'btn-primary' : 'btn-ghost'}`}
+                >{opt.label}</button>
+              ))}
+            </div>
+            <p className="panel-subtitle" style={{ marginTop: 4 }}>
+              {SI_OPTIONS.find(o => o.value === s.dataSourceStoreIntelligence)?.desc}
+            </p>
+          </div>
+          {/* Reviews source */}
+          <div>
+            <div className="field-label" style={{ marginBottom: 6 }}>Recent Store Reviews Section</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {REV_OPTIONS.map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => s.setField('dataSourceReviews', opt.value)}
+                  className={`btn btn-sm ${s.dataSourceReviews === opt.value ? 'btn-primary' : 'btn-ghost'}`}
+                >{opt.label}</button>
+              ))}
+            </div>
+            <p className="panel-subtitle" style={{ marginTop: 4 }}>
+              {REV_OPTIONS.find(o => o.value === s.dataSourceReviews)?.desc}
+            </p>
+          </div>
+          {/* Appfigures Intelligence section toggle */}
+          <div>
+            <div className="field-label" style={{ marginBottom: 6 }}>Appfigures Intelligence Section</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {([true, false] as const).map(val => (
+                <button
+                  key={String(val)}
+                  onClick={() => s.setField('showAppfiguresSection', val)}
+                  className={`btn btn-sm ${s.showAppfiguresSection === val ? 'btn-primary' : 'btn-ghost'}`}
+                >{val ? 'Visible' : 'Hidden'}</button>
+              ))}
+            </div>
+            <p className="panel-subtitle" style={{ marginTop: 4 }}>
+              {s.showAppfiguresSection ? 'Live Appfigures debug section is shown.' : 'Appfigures Intelligence section is hidden.'}
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Store Signals */}
       <div className="panel-header">
         <div>
