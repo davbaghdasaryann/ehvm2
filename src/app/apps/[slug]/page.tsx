@@ -529,9 +529,9 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           <div className="flex flex-col gap-[20px] w-full" style={app.ndaRequired ? { filter: "blur(5px)", opacity: 0.7, pointerEvents: "none", userSelect: "none" } : {}}>
 
         {/* ── KPI / FINANCIALS + METRICS: 2-col on PC ── */}
-        {(kpis.length > 0 || funnel.length > 0 || financialSummary.length > 0 || appfiguresFinancialSummary.length > 0 || plRows.length > 0 || highlightItems.length > 0) && (
+        {(kpis.length > 0 || funnel.length > 0 || financialSummary.length > 0 || appfiguresFinancialSummary.length > 0 || plRows.length > 0) && (
           <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[20px] items-start">
-            {(kpis.length > 0 || funnel.length > 0 || financialSummary.length > 0 || appfiguresFinancialSummary.length > 0 || plRows.length > 0) && (
+            {(kpis.length > 0 || funnel.length > 0 || financialSummary.length > 0 || appfiguresFinancialSummary.length > 0) && (
               <div className="flex flex-col gap-[20px] w-full">
             {kpis.length > 0 && (
               <div className="flex flex-col gap-[12px] w-full">
@@ -612,7 +612,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
               </div>
             )}
 
-        {(financialSummary.length > 0 || appfiguresFinancialSummary.length > 0 || plRows.length > 0) && (
+        {(financialSummary.length > 0 || appfiguresFinancialSummary.length > 0) && (
           <div className="flex flex-col gap-[12px] w-full">
             <p className={SECTION_TITLE_CLASS}>Financial Snapshot</p>
             {financialSummary.length > 0 && (
@@ -640,43 +640,6 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-            {plRows.length > 0 && (
-              <div className="rounded-[32px] overflow-hidden w-full px-[18px] sm:px-[24px] py-[18px] sm:py-[22px]" style={{ background: "#F5F5F7" }}>
-                <Lockable locked={isLocked("financials.plRows")}>
-                <div className="overflow-x-auto">
-                {/* Header */}
-                <div className="grid px-[8px] sm:px-[14px] pb-[14px] items-center min-w-[640px]" style={{ gridTemplateColumns: "minmax(170px,1.35fr) minmax(84px,.65fr) minmax(56px,.45fr) minmax(150px,1fr)", gap: "0 18px", borderBottom: "1.5px solid #000" }}>
-                  <span className="text-[12px] uppercase font-medium text-foreground">Metric</span>
-                  <span className="text-[12px] uppercase font-medium text-foreground">Amount</span>
-                  <span className="text-[12px] uppercase font-medium text-foreground">Trend</span>
-                  <span className="text-[12px] uppercase font-medium text-foreground">Notes</span>
-                </div>
-                {/* Rows */}
-                {plRows.map((row, index) => (
-                  <div key={`${row.label}-${index}`} className="grid px-[8px] sm:px-[14px] py-[26px] items-center min-w-[640px]" style={{ gridTemplateColumns: "minmax(170px,1.35fr) minmax(84px,.65fr) minmax(56px,.45fr) minmax(150px,1fr)", gap: "0 18px", borderBottom: index < plRows.length - 1 ? "1.5px solid #000" : "none" }}>
-                    {/* Metric: icon + label */}
-                    <div className="flex items-center gap-[22px] min-w-0">
-                      {row.icon && (
-                        <span className="shrink-0 w-[22px] text-[20px] leading-none flex items-center justify-center" style={{ color: index === 0 || row.highlight ? "#00C853" : index === 1 ? "#FF1493" : index === 2 ? "#C400F5" : "#3716E8" }}>
-                          {row.icon.trim().startsWith("<svg") ? <span dangerouslySetInnerHTML={{ __html: row.icon }} /> : row.icon}
-                        </span>
-                      )}
-                      <span className="text-[14px] truncate font-bold">{row.label || "—"}</span>
-                    </div>
-                    {/* Amount */}
-                    <span className="text-[14px] whitespace-nowrap">{row.amount || "—"}</span>
-                    {/* Trend */}
-                    <span className="text-[13px] whitespace-nowrap" style={{ color: /^↑/.test(row.trend || "") ? "#00A63E" : "#999", fontWeight: /^↑/.test(row.trend || "") ? 500 : 400 }}>
-                      {row.trend || "—"}
-                    </span>
-                    {/* Notes */}
-                    <span className="text-[13px] text-foreground">{row.notes || ""}</span>
-                  </div>
-                ))}
-                </div>
-                </Lockable>
               </div>
             )}
           </div>
@@ -708,19 +671,37 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             )}
               </div>
             )}
-            {highlightItems.length > 0 && (
+            {plRows.length > 0 && (
               <div className="flex flex-col gap-[12px] w-full">
                 <p className={SECTION_TITLE_CLASS}>Metrics</p>
-                <div className="grid grid-cols-2 gap-[10px] w-full">
-                  {highlightItems.map((item) => (
-                    <div key={item.key} className="rounded-[16px] p-[14px] min-h-[86px] flex flex-col justify-between" style={{ background: "#F5F5F7" }}>
-                      <div className="flex items-center justify-between gap-[8px]">
-                        <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
-                        {item.emoji ? <span className="text-[16px] leading-none">{item.emoji}</span> : null}
+                <div className="rounded-[32px] overflow-hidden w-full px-[18px] sm:px-[24px] py-[18px] sm:py-[22px]" style={{ background: "#F5F5F7" }}>
+                  <Lockable locked={isLocked("financials.plRows")}>
+                  <div className="overflow-x-auto">
+                  <div className="grid px-[8px] sm:px-[14px] pb-[14px] items-center min-w-[640px]" style={{ gridTemplateColumns: "minmax(170px,1.35fr) minmax(84px,.65fr) minmax(56px,.45fr) minmax(150px,1fr)", gap: "0 18px", borderBottom: "1.5px solid #000" }}>
+                    <span className="text-[12px] uppercase font-medium text-foreground">Metric</span>
+                    <span className="text-[12px] uppercase font-medium text-foreground">Amount</span>
+                    <span className="text-[12px] uppercase font-medium text-foreground">Trend</span>
+                    <span className="text-[12px] uppercase font-medium text-foreground">Notes</span>
+                  </div>
+                  {plRows.map((row, index) => (
+                    <div key={`${row.label}-${index}`} className="grid px-[8px] sm:px-[14px] py-[26px] items-center min-w-[640px]" style={{ gridTemplateColumns: "minmax(170px,1.35fr) minmax(84px,.65fr) minmax(56px,.45fr) minmax(150px,1fr)", gap: "0 18px", borderBottom: index < plRows.length - 1 ? "1.5px solid #000" : "none" }}>
+                      <div className="flex items-center gap-[22px] min-w-0">
+                        {row.icon && (
+                          <span className="shrink-0 w-[22px] text-[20px] leading-none flex items-center justify-center" style={{ color: index === 0 || row.highlight ? "#00C853" : index === 1 ? "#FF1493" : index === 2 ? "#C400F5" : "#3716E8" }}>
+                            {row.icon.trim().startsWith("<svg") ? <span dangerouslySetInnerHTML={{ __html: row.icon }} /> : row.icon}
+                          </span>
+                        )}
+                        <span className="text-[14px] truncate font-bold">{row.label || "—"}</span>
                       </div>
-                      <p className="font-bold text-[24px] leading-[1.1] mt-[10px] break-words">{item.value}</p>
+                      <span className="text-[14px] whitespace-nowrap">{row.amount || "—"}</span>
+                      <span className="text-[13px] whitespace-nowrap" style={{ color: /^↑/.test(row.trend || "") ? "#00A63E" : "#999", fontWeight: /^↑/.test(row.trend || "") ? 500 : 400 }}>
+                        {row.trend || "—"}
+                      </span>
+                      <span className="text-[13px] text-foreground">{row.notes || ""}</span>
                     </div>
                   ))}
+                  </div>
+                  </Lockable>
                 </div>
               </div>
             )}
