@@ -110,6 +110,36 @@ export default function ChartsPanel() {
                         <button className="remove-btn" onClick={() => s.removeDataset(c.id, di)}>×</button>
                       </div>
 
+                      {isLineChart && (
+                        <div style={{ marginLeft: 0, marginBottom: 12, marginTop: 12 }}>
+                          <label className="field-label" style={{ fontSize: 11, marginBottom: 8 }}>Line Color</label>
+                          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                            {suggestedColors.map((color) => (
+                              <button
+                                key={color}
+                                onClick={() => s.updateDataset(c.id, di, 'color', color)}
+                                style={{
+                                  width: 32,
+                                  height: 32,
+                                  borderRadius: 6,
+                                  backgroundColor: color,
+                                  border: ds.color === color ? '2px solid #000' : '2px solid var(--border)',
+                                  cursor: 'pointer',
+                                  padding: 0
+                                }}
+                              />
+                            ))}
+                            <input
+                              type="color"
+                              value={ds.color}
+                              onChange={e => s.updateDataset(c.id, di, 'color', e.target.value)}
+                              title="Custom color"
+                              style={{ width: 32, height: 32, borderRadius: 6, border: '2px solid var(--border)', background: 'none', cursor: 'pointer', padding: 0 }}
+                            />
+                          </div>
+                        </div>
+                      )}
+
                       {!isLineChart && (
                         <div style={{ marginLeft: 0, marginBottom: 12, marginTop: 12 }}>
                           <label className="field-label" style={{ fontSize: 11, marginBottom: 8 }}>Gradient Base Color</label>

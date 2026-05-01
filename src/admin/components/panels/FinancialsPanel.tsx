@@ -95,6 +95,22 @@ export default function FinancialsPanel() {
                   <input type="text" value={r.notes} onChange={e => s.updateFinRow(r.id, 'notes', e.target.value)} placeholder="App Store + Play Store gross" />
                   <AiGenerateButton fieldLabel="P&L Notes" fieldPath={`financials.plRows.${i}.notes`} currentValue={r.notes} instruction={`Metric label: ${r.label || 'empty'}. Amount: ${r.amount || 'empty'}.`} onGenerated={(text) => s.updateFinRow(r.id, 'notes', text)} />
                 </div>
+                <div className="field" style={{ gridColumn: 'span 3' }}>
+                  <label className="field-label">Icon SVG <span style={{ fontWeight: 400, color: '#888' }}>(paste full &lt;svg&gt;…&lt;/svg&gt; code)</span></label>
+                  <textarea
+                    value={r.icon || ''}
+                    onChange={e => s.updateFinRow(r.id, 'icon', e.target.value)}
+                    placeholder='<svg width="21" height="21" viewBox="0 0 21 21" fill="none" …>…</svg>'
+                    rows={3}
+                    style={{ fontFamily: 'monospace', fontSize: 11, resize: 'vertical' }}
+                  />
+                  {r.icon && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+                      <span style={{ fontSize: 11, color: '#888' }}>Preview:</span>
+                      <span dangerouslySetInnerHTML={{ __html: r.icon }} />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ))}

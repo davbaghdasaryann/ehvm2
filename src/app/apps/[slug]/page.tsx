@@ -304,13 +304,13 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
 
             {/* About */}
             <p className="text-[17px] leading-[1.6]">
-              <strong>About.</strong>{" "}{app.about}
+              {app.about}
             </p>
 
             {/* Developer Country */}
             {app.developerCountry && app.developerCountry !== "Unknown" && (
               <p className="text-[17px] leading-[1.4]">
-                <strong>Developer.</strong>{" "}{app.developerCountry} {app.developerFlag}
+                {app.developerCountry} {app.developerFlag}
               </p>
             )}
 
@@ -386,25 +386,75 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
               <div className="flex flex-col gap-[12px] w-full">
                 <p className="font-bold text-[20px] leading-[1.2]">KPI Cards</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-[10px] w-full">
-                  {kpis.map((item, index) => (
-                    <div key={`${item.label}-${index}`} className="bg-tag rounded-[16px] p-[12px]">
-                      <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
-                      <p className="font-bold text-[22px] leading-[1.1] mt-[4px]">{item.value || "—"}</p>
+                  {kpis.map((item, index) => {
+                    const isRating = /star|rating/i.test(item.icon || "") || /rating/i.test(item.label);
+                    const cleanValue = (item.value || "—").replace(/\s*[⭐★]\s*/g, "").trim();
+                    return (
+                    <div key={`${item.label}-${index}`} className="rounded-[24px] flex flex-col" style={{ background: "#F5F5F7", padding: "18px 20px 20px", gap: 0, boxShadow: "0px 1.01px 2.02px -1.01px #0000001A, 0px 1.01px 3.03px 0px #0000001A" }}>
+                      {/* Icon + label row */}
+                      <div className="flex items-start gap-[8px]" style={{ marginBottom: 12 }}>
+                        {isRating ? (
+                          <svg width="24" height="24" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0" style={{ marginTop: 1 }}>
+                            <path d="M19.3781 3.85888C19.4518 3.71001 19.5656 3.58469 19.7067 3.49708C19.8479 3.40946 20.0107 3.36304 20.1768 3.36304C20.3429 3.36304 20.5057 3.40946 20.6468 3.49708C20.7879 3.58469 20.9018 3.71001 20.9755 3.85888L24.8596 11.7263C25.1155 12.2442 25.4932 12.6922 25.9603 13.0319C26.4274 13.3716 26.97 13.5929 27.5415 13.6768L36.2278 14.948C36.3924 14.9718 36.547 15.0412 36.6742 15.1484C36.8014 15.2555 36.896 15.3961 36.9475 15.5543C36.9989 15.7125 37.0051 15.8818 36.9652 16.0433C36.9254 16.2048 36.8412 16.3519 36.7221 16.468L30.4403 22.5851C30.026 22.9888 29.716 23.4871 29.5371 24.0372C29.3581 24.5873 29.3155 25.1726 29.4129 25.7428L30.8959 34.3854C30.925 34.5499 30.9072 34.7193 30.8447 34.8742C30.7821 35.029 30.6772 35.1632 30.5421 35.2614C30.4069 35.3596 30.2469 35.4178 30.0802 35.4294C29.9136 35.441 29.747 35.4055 29.5996 35.327L21.8347 31.2445C21.323 30.9758 20.7538 30.8354 20.1759 30.8354C19.5981 30.8354 19.0288 30.9758 18.5172 31.2445L10.754 35.327C10.6066 35.405 10.4402 35.4401 10.2739 35.4283C10.1075 35.4165 9.94778 35.3582 9.81289 35.2601C9.678 35.162 9.57335 35.028 9.51084 34.8734C9.44833 34.7187 9.43047 34.5497 9.45929 34.3854L10.9406 25.7445C11.0385 25.174 10.9961 24.5883 10.8171 24.0379C10.6381 23.4875 10.3279 22.9889 9.91328 22.5851L3.63143 16.4697C3.51137 16.3537 3.42628 16.2063 3.38588 16.0444C3.34547 15.8824 3.35137 15.7124 3.40289 15.5536C3.45441 15.3948 3.54949 15.2537 3.6773 15.1463C3.8051 15.039 3.96049 14.9697 4.12577 14.9463L12.8104 13.6768C13.3825 13.5936 13.9258 13.3726 14.3936 13.0328C14.8614 12.693 15.2396 12.2447 15.4957 11.7263L19.3781 3.85888Z" stroke="#9810FA" strokeWidth="1.68144" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        ) : (
+                          <svg width="24" height="24" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0" style={{ marginTop: 1 }}>
+                            <path d="M36.9911 11.77L22.6988 26.0622L14.2917 17.6551L3.3623 28.5844" stroke="#00A63E" strokeWidth="1.68144" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M26.9023 11.77H36.991V21.8586" stroke="#00A63E" strokeWidth="1.68144" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )}
+                        <p className="text-[11px] uppercase tracking-[0.08em] font-bold leading-[1.35]" style={{ color: "#111" }}>{item.label}</p>
+                      </div>
+                      {/* Value + trend + sub */}
+                      <div className="flex flex-col gap-[8px]">
+                      {isRating ? (
+                        <div className="flex items-center gap-[8px]">
+                          <p className="font-bold leading-[1.05]" style={{ fontSize: 42 }}>{cleanValue}</p>
+                          <svg width="30" height="30" viewBox="0 0 41 41" fill="#9810FA" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19.3781 3.85888C19.4518 3.71001 19.5656 3.58469 19.7067 3.49708C19.8479 3.40946 20.0107 3.36304 20.1768 3.36304C20.3429 3.36304 20.5057 3.40946 20.6468 3.49708C20.7879 3.58469 20.9018 3.71001 20.9755 3.85888L24.8596 11.7263C25.1155 12.2442 25.4932 12.6922 25.9603 13.0319C26.4274 13.3716 26.97 13.5929 27.5415 13.6768L36.2278 14.948C36.3924 14.9718 36.547 15.0412 36.6742 15.1484C36.8014 15.2555 36.896 15.3961 36.9475 15.5543C36.9989 15.7125 37.0051 15.8818 36.9652 16.0433C36.9254 16.2048 36.8412 16.3519 36.7221 16.468L30.4403 22.5851C30.026 22.9888 29.716 23.4871 29.5371 24.0372C29.3581 24.5873 29.3155 25.1726 29.4129 25.7428L30.8959 34.3854C30.925 34.5499 30.9072 34.7193 30.8447 34.8742C30.7821 35.029 30.6772 35.1632 30.5421 35.2614C30.4069 35.3596 30.2469 35.4178 30.0802 35.4294C29.9136 35.441 29.747 35.4055 29.5996 35.327L21.8347 31.2445C21.323 30.9758 20.7538 30.8354 20.1759 30.8354C19.5981 30.8354 19.0288 30.9758 18.5172 31.2445L10.754 35.327C10.6066 35.405 10.4402 35.4401 10.2739 35.4283C10.1075 35.4165 9.94778 35.3582 9.81289 35.2601C9.678 35.162 9.57335 35.028 9.51084 34.8734C9.44833 34.7187 9.43047 34.5497 9.45929 34.3854L10.9406 25.7445C11.0385 25.174 10.9961 24.5883 10.8171 24.0379C10.6381 23.4875 10.3279 22.9889 9.91328 22.5851L3.63143 16.4697C3.51137 16.3537 3.42628 16.2063 3.38588 16.0444C3.34547 15.8824 3.35137 15.7124 3.40289 15.5536C3.45441 15.3948 3.54949 15.2537 3.6773 15.1463C3.8051 15.039 3.96049 14.9697 4.12577 14.9463L12.8104 13.6768C13.3825 13.5936 13.9258 13.3726 14.3936 13.0328C14.8614 12.693 15.2396 12.2447 15.4957 11.7263L19.3781 3.85888Z"/>
+                          </svg>
+                        </div>
+                      ) : (
+                        <p className="font-bold leading-[1.05]" style={{ fontSize: 42 }}>{item.value || "—"}</p>
+                      )}
+                      {/* Trend */}
                       {item.trend ? (
-                        <p className="flex items-center gap-[4px] text-[12px] mt-[6px] text-body">
-                          {/^↑/.test(item.trend) && (
-                            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-                              <path d="M2 9L9 2M9 2H4.5M9 2V6.5" stroke="#34a853" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                        isRating ? (
+                          <div className="flex items-center gap-[6px]">
+                            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                              <path d="M13.0116 10.8368L14.2853 18.0048C14.2996 18.0892 14.2878 18.1759 14.2514 18.2534C14.215 18.3309 14.1559 18.3954 14.0818 18.4384C14.0078 18.4814 13.9224 18.5007 13.8371 18.4938C13.7517 18.4869 13.6705 18.4542 13.6043 18.3999L10.5946 16.1409C10.4493 16.0323 10.2728 15.9737 10.0914 15.9737C9.91004 15.9737 9.73353 16.0323 9.58823 16.1409L6.57342 18.3991C6.50727 18.4532 6.42617 18.4859 6.34095 18.4928C6.25573 18.4997 6.17044 18.4805 6.09645 18.4376C6.02245 18.3948 5.96329 18.3304 5.92684 18.2531C5.89038 18.1757 5.87838 18.0891 5.89243 18.0048L7.16528 10.8368" stroke="#9810FA" strokeWidth="1.68144" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M10.0892 11.77C12.8751 11.77 15.1335 9.51161 15.1335 6.72571C15.1335 3.93981 12.8751 1.6814 10.0892 1.6814C7.30334 1.6814 5.04492 3.93981 5.04492 6.72571C5.04492 9.51161 7.30334 11.77 10.0892 11.77Z" stroke="#9810FA" strokeWidth="1.68144" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
-                          )}
-                          {item.trend.replace(/^↑\s*/, '')}
-                        </p>
+                            <p className="text-[13px] font-medium" style={{ color: "#111" }}>{item.trend}</p>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-[5px]">
+                            <svg width="16" height="16" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                              <path d="M36.9911 11.77L22.6988 26.0622L14.2917 17.6551L3.3623 28.5844" stroke="#00A63E" strokeWidth="1.68144" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M26.9023 11.77H36.991V21.8586" stroke="#00A63E" strokeWidth="1.68144" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                            <p className="text-[14px] font-medium" style={{ color: "#34a853" }}>{item.trend.replace(/^[↑↗]\s*/, "")}</p>
+                          </div>
+                        )
                       ) : null}
+                      {/* Sub */}
                       {item.sub ? (
-                        <p className="text-[12px] text-caption mt-[2px]">{item.sub}</p>
+                        isRating ? (
+                          <div className="flex items-center gap-[6px]">
+                            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                              <path d="M9.24724 15.9737C12.9618 15.9737 15.973 12.9625 15.973 9.24797C15.973 5.53344 12.9618 2.52222 9.24724 2.52222C5.53271 2.52222 2.52148 5.53344 2.52148 9.24797C2.52148 12.9625 5.53271 15.9737 9.24724 15.9737Z" stroke="#1447E6" strokeWidth="1.68144" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M17.6542 17.6551L14.0391 14.04" stroke="#1447E6" strokeWidth="1.68144" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                            <p className="text-[13px]" style={{ color: "#111" }}>{item.sub}</p>
+                          </div>
+                        ) : (
+                          <p className="text-[14px]" style={{ color: "#111" }}>{item.sub}</p>
+                        )
                       ) : null}
+                      </div>{/* end bottom group */}
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -415,7 +465,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             {financialSummary.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-[10px] w-full">
                 {financialSummary.map((item) => (
-                  <div key={item.key} className="bg-tag rounded-[16px] p-[12px]">
+                  <div key={item.key} className="rounded-[16px] p-[12px]" style={{ background: "#F5F5F7" }}>
                     <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
                     <p className="font-bold text-[20px] leading-[1.1] mt-[4px] break-words">{item.value}</p>
                   </div>
@@ -427,7 +477,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                 <p className="text-[11px] uppercase tracking-[0.08em] text-caption">Appfigures</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-[10px] w-full">
                   {appfiguresFinancialSummary.map((item) => (
-                    <div key={item.key} className="bg-tag rounded-[16px] p-[12px]">
+                    <div key={item.key} className="rounded-[16px] p-[12px]" style={{ background: "#F5F5F7" }}>
                       <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
                       <p className="font-bold text-[20px] leading-[1.1] mt-[4px] break-words">{item.value}</p>
                     </div>
@@ -435,34 +485,37 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                 </div>
               </div>
             )}
-            {plRows.length > 0 && (() => {
-              const hasTrend = plRows.some((r) => r.trend);
-              const hasNotes = plRows.some((r) => r.notes);
-              return (
-                <div className="bg-tag rounded-[16px] p-[12px] overflow-x-auto w-full">
-                  <table className="w-full border-collapse">
-                    <thead>
-                      <tr className="text-left text-[10px] uppercase tracking-[0.08em] text-caption">
-                        <th className="pb-[8px] pr-[10px]">Metric</th>
-                        <th className="pb-[8px] pr-[10px]">Amount</th>
-                        {hasTrend && <th className="pb-[8px] pr-[10px]">Trend</th>}
-                        {hasNotes && <th className="pb-[8px]">Notes</th>}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {plRows.map((row, index) => (
-                        <tr key={`${row.label}-${index}`} className="border-t border-divider">
-                          <td className="py-[8px] pr-[10px] text-[13px]">{row.highlight ? <strong>{row.label}</strong> : row.label}</td>
-                          <td className="py-[8px] pr-[10px] text-[13px] font-bold">{row.amount || "—"}</td>
-                          {hasTrend && <td className="py-[8px] pr-[10px] text-[12px] text-body">{row.trend || "—"}</td>}
-                          {hasNotes && <td className="py-[8px] text-[12px] text-caption">{row.notes || "—"}</td>}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+            {plRows.length > 0 && (
+              <div className="rounded-[20px] overflow-hidden w-full" style={{ background: "#F5F5F7", boxShadow: "0px 1.01px 2.02px -1.01px #0000001A, 0px 1.01px 3.03px 0px #0000001A" }}>
+                {/* Header */}
+                <div className="grid px-[20px] py-[12px]" style={{ gridTemplateColumns: "1fr auto auto auto", gap: "0 16px" }}>
+                  <span className="text-[11px] uppercase tracking-[0.08em] font-semibold" style={{ color: "#999" }}>Metric</span>
+                  <span className="text-[11px] uppercase tracking-[0.08em] font-semibold" style={{ color: "#999" }}>Amount</span>
+                  <span className="text-[11px] uppercase tracking-[0.08em] font-semibold" style={{ color: "#999" }}>Trend</span>
+                  <span className="text-[11px] uppercase tracking-[0.08em] font-semibold" style={{ color: "#999" }}>Notes</span>
                 </div>
-              );
-            })()}
+                {/* Rows */}
+                {plRows.map((row, index) => (
+                  <div key={`${row.label}-${index}`} className="grid px-[20px] py-[20px] items-center" style={{ gridTemplateColumns: "1fr auto auto auto", gap: "0 16px", borderTop: "1px solid #000" }}>
+                    {/* Metric: icon + label */}
+                    <div className="flex items-center gap-[10px] min-w-0">
+                      {row.icon && (
+                        <span className="shrink-0" dangerouslySetInnerHTML={{ __html: row.icon }} />
+                      )}
+                      <span className="text-[14px] truncate" style={{ fontWeight: row.highlight ? 700 : 400 }}>{row.label || "—"}</span>
+                    </div>
+                    {/* Amount */}
+                    <span className="text-[14px] font-bold whitespace-nowrap" style={{ fontWeight: row.highlight ? 700 : 600 }}>{row.amount || "—"}</span>
+                    {/* Trend */}
+                    <span className="text-[13px] whitespace-nowrap" style={{ color: /^↑/.test(row.trend || "") ? "#00A63E" : "#999", fontWeight: /^↑/.test(row.trend || "") ? 500 : 400 }}>
+                      {row.trend || "—"}
+                    </span>
+                    {/* Notes */}
+                    <span className="text-[13px]" style={{ color: "#999" }}>{row.notes || ""}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -530,7 +583,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             {marketStats.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] w-full">
                 {marketStats.map((item) => (
-                  <div key={item.key} className="bg-tag rounded-[16px] p-[12px]">
+                  <div key={item.key} className="rounded-[16px] p-[12px]" style={{ background: "#F5F5F7" }}>
                     <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
                     <p className="font-bold text-[18px] mt-[4px]">{item.value}</p>
                     {item.sub ? <p className="text-[11px] text-caption mt-[2px]">{item.sub}</p> : null}
@@ -587,57 +640,103 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
           </div>
         )}
 
-        {hasStoreIntelligence && (
-          <div className="flex flex-col gap-[12px] w-full">
-            <p className="font-bold text-[20px] leading-[1.2]">Store Intelligence</p>
-            {appfiguresDerived.storeSignals.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[10px] w-full">
-                {appfiguresDerived.storeSignals.map((item) => (
-                  <div key={item.key} className="bg-tag rounded-[16px] p-[12px]">
-                    <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
-                    <p className="font-bold text-[18px] mt-[4px]">{item.value}</p>
-                    {item.sub ? <p className="text-[11px] text-caption mt-[2px]">{item.sub}</p> : null}
+        {/* Store Intelligence + Appfigures Intelligence side by side */}
+        {(hasStoreIntelligence || (app.storeSignals?.length ?? 0) > 0 || !!app.appfigures?.products.length) && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[20px] w-full items-start">
+            {/* Left: Store Intelligence */}
+            {(hasStoreIntelligence || (app.storeSignals?.length ?? 0) > 0) && (
+              <div className="flex flex-col gap-[12px]">
+                <p className="font-bold text-[20px] leading-[1.2]">Store Intelligence</p>
+                {/* Manual signals */}
+                {(app.storeSignals?.length ?? 0) > 0 && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-[10px] w-full">
+                    {app.storeSignals!.map((item, i) => (
+                      <div key={i} className="rounded-[16px] p-[12px]" style={{ background: "#F5F5F7" }}>
+                        <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
+                        <p className="font-bold text-[18px] mt-[4px]">{item.value}</p>
+                        {item.sub ? <p className="text-[11px] text-caption mt-[2px]">{item.sub}</p> : null}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
-            {appfiguresDerived.featuredPlacements.length > 0 && (
-              <div className="bg-tag rounded-[16px] p-[12px] flex flex-col">
-                <p className="font-bold text-[14px]">Featured Placements</p>
-                {appfiguresDerived.featuredPlacements.map((item, index) => (
-                  <div key={item.id} className={`py-[10px] ${index > 0 ? "border-t border-divider" : ""} flex items-center gap-[10px]`}>
-                    <div className="size-[32px] rounded-[10px] bg-card flex items-center justify-center text-[14px] shrink-0">
-                      #{item.position}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[13px] font-bold">{item.title}</p>
-                      <p className="text-[11px] text-caption">{item.category} · {item.viewedFrom} · {item.country}</p>
+                )}
+                {/* Appfigures signals */}
+                {appfiguresDerived.storeSignals.length > 0 && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-[10px] w-full">
+                    {appfiguresDerived.storeSignals.map((item) => (
+                      <div key={item.key} className="rounded-[16px] p-[12px]" style={{ background: "#F5F5F7" }}>
+                        <p className="text-[11px] uppercase tracking-[0.08em] text-caption">{item.label}</p>
+                        <p className="font-bold text-[18px] mt-[4px]">{item.value}</p>
+                        {item.sub ? <p className="text-[11px] text-caption mt-[2px]">{item.sub}</p> : null}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {appfiguresDerived.featuredPlacements.length > 0 && (
+                  <div className="rounded-[16px] p-[12px] flex flex-col" style={{ background: "#F5F5F7" }}>
+                    <p className="font-bold text-[14px]">Featured Placements</p>
+                    {appfiguresDerived.featuredPlacements.map((item, index) => (
+                      <div key={item.id} className={`py-[10px] ${index > 0 ? "border-t border-divider" : ""} flex items-center gap-[10px]`}>
+                        <div className="size-[32px] rounded-[10px] bg-card flex items-center justify-center text-[14px] shrink-0">
+                          #{item.position}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[13px] font-bold">{item.title}</p>
+                          <p className="text-[11px] text-caption">{item.category} · {item.viewedFrom} · {item.country}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {appfiguresDerived.activeSdks.length > 0 && (
+                  <div className="rounded-[16px] p-[12px] flex flex-col gap-[10px]" style={{ background: "#F5F5F7" }}>
+                    <p className="font-bold text-[14px]">SDK Footprint</p>
+                    <div className="flex flex-wrap gap-[8px]">
+                      {appfiguresDerived.activeSdks.map((sdk) => (
+                        <span key={sdk} className="bg-card px-[10px] py-[5px] rounded-pill text-[11px]">
+                          {sdk}
+                        </span>
+                      ))}
                     </div>
                   </div>
-                ))}
+                )}
               </div>
             )}
-            {appfiguresDerived.activeSdks.length > 0 && (
-              <div className="bg-tag rounded-[16px] p-[12px] flex flex-col gap-[10px]">
-                <p className="font-bold text-[14px]">SDK Footprint</p>
-                <div className="flex flex-wrap gap-[8px]">
-                  {appfiguresDerived.activeSdks.map((sdk) => (
-                    <span key={sdk} className="bg-card px-[10px] py-[5px] rounded-pill text-[11px]">
-                      {sdk}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Right: Appfigures Intelligence */}
+            {app.appfigures?.products.length ? (
+              <AppfiguresSectionClient slug={app.slug} />
+            ) : null}
           </div>
         )}
 
-        {appfiguresDerived.reviews.length > 0 && (
+        {/* Recent Store Reviews — full width */}
+        {(appfiguresDerived.reviews.length > 0 || (app.manualReviews?.length ?? 0) > 0) && (
           <div className="flex flex-col gap-[12px] w-full">
             <p className="font-bold text-[20px] leading-[1.2]">Recent Store Reviews</p>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[10px] w-full">
+              {/* Manual reviews */}
+              {(app.manualReviews ?? []).map((review, i) => (
+                <div key={`manual-${i}`} className="rounded-[16px] p-[12px] flex flex-col gap-[8px]" style={{ background: "#F5F5F7" }}>
+                  <div className="flex items-start justify-between gap-[10px]">
+                    <div>
+                      <p className="font-bold text-[14px] leading-[1.2]">{review.title || "Review"}</p>
+                      <p className="text-[11px] text-caption mt-[2px]">
+                        {review.author}{review.productName ? ` · ${review.productName}` : ""}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-[13px] font-bold">{formatReviewStars(review.stars)}</p>
+                      <p className="text-[10px] text-caption">{review.store === 'apple' ? 'apple' : 'google'}</p>
+                    </div>
+                  </div>
+                  <p className="text-[13px] text-body leading-[1.45]">{review.review}</p>
+                  <p className="text-[10px] text-caption">
+                    {review.date ? new Date(review.date).toLocaleDateString() : ""}{review.version ? ` · v${review.version}` : ""}
+                  </p>
+                </div>
+              ))}
+              {/* Appfigures reviews */}
               {appfiguresDerived.reviews.map((review) => (
-                <div key={review.id} className="bg-tag rounded-[16px] p-[12px] flex flex-col gap-[8px]">
+                <div key={review.id} className="rounded-[16px] p-[12px] flex flex-col gap-[8px]" style={{ background: "#F5F5F7" }}>
                   <div className="flex items-start justify-between gap-[10px]">
                     <div>
                       <p className="font-bold text-[14px] leading-[1.2]">{review.title || "Review"}</p>
@@ -659,10 +758,6 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             </div>
           </div>
         )}
-
-        {app.appfigures?.products.length ? (
-          <AppfiguresSectionClient slug={app.slug} />
-        ) : null}
 
         {/* ── USER ACQUISITION + OPPORTUNITIES: 2-col on PC ── */}
         {(app.userAcquisition.paid.length > 0 || app.userAcquisition.organic.length > 0 || app.opportunities.length > 0) && (

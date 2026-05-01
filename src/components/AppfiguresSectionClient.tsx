@@ -70,7 +70,7 @@ function EndpointCard({ endpoint }: { endpoint: AppfiguresEndpointResult }) {
   const reviews = endpoint.key === "reviews" ? getReviewPreview(endpoint.data) : [];
 
   return (
-    <div className="bg-tag rounded-[16px] p-[12px] flex flex-col gap-[10px]">
+    <div className="rounded-[16px] p-[12px] flex flex-col gap-[10px]" style={{ background: "#F5F5F7" }}>
       <div className="flex items-start justify-between gap-[10px]">
         <div>
           <p className="font-bold text-[14px] leading-[1.2]">{endpoint.label}</p>
@@ -131,7 +131,7 @@ function ProductSection({ snapshot }: { snapshot: AppfiguresProductSnapshot }) {
   const privateData = snapshot.endpoints.filter((item) => !MARKET_ENDPOINTS.has(item.key));
 
   return (
-    <div className="bg-tag rounded-[20px] p-[14px] flex flex-col gap-[14px]">
+    <div className="rounded-[20px] p-[14px] flex flex-col gap-[14px]" style={{ background: "#F5F5F7" }}>
       <div className="flex flex-col gap-[6px]">
         <div className="flex flex-wrap items-center gap-[8px]">
           <p className="font-bold text-[18px] leading-[1.2]">{snapshot.product.label}</p>
@@ -240,26 +240,26 @@ export default function AppfiguresSectionClient({
       </div>
 
       {state.loading ? (
-        <div className="bg-tag rounded-[16px] p-[14px] text-[13px] text-body">
+        <div className="rounded-[16px] p-[14px] text-[13px] text-body" style={{ background: "#F5F5F7" }}>
           Loading Appfigures data...
         </div>
       ) : null}
 
       {!state.loading && state.error ? (
-        <div className="bg-tag rounded-[16px] p-[14px] text-[13px] text-body">
+        <div className="rounded-[16px] p-[14px] text-[13px] text-body" style={{ background: "#F5F5F7" }}>
           {state.error}
         </div>
       ) : null}
 
       {!state.loading && !state.error && !state.payload?.configured ? (
-        <div className="bg-tag rounded-[16px] p-[14px] text-[13px] text-body">
+        <div className="rounded-[16px] p-[14px] text-[13px] text-body" style={{ background: "#F5F5F7" }}>
           {state.payload?.reason || "Appfigures is not configured for this app."}
         </div>
       ) : null}
 
       {state.payload?.snapshot ? (
         <>
-          <div className="bg-tag rounded-[16px] p-[14px] flex flex-col gap-[8px]">
+          <div className="rounded-[16px] p-[14px] flex flex-col gap-[8px]" style={{ background: "#F5F5F7" }}>
             <p className="text-[12px] text-body">
               Cached snapshot from{" "}
               <time dateTime={state.payload.snapshot.generatedAt}>

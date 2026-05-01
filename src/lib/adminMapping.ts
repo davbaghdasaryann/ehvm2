@@ -379,6 +379,7 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
         trend: clean(row.trend),
         notes: clean(row.notes),
         highlight: Boolean(row.highlight),
+        icon: row.icon || undefined,
       })),
     },
     charts: (record.charts ?? []).map((chart) => ({
@@ -436,6 +437,21 @@ export function mapAdminRecordToApp(record: AppRecord): MappedAdminApp {
     notionPageBlocks: pageBlocks.length > 0 ? pageBlocks : undefined,
     appfigures,
     dataSources: record.dataSources,
+    storeSignals: (record.storeSignals ?? []).filter(s => s.label && s.value).map(s => ({
+      label: clean(s.label),
+      value: clean(s.value),
+      sub: clean(s.sub) || undefined,
+    })),
+    manualReviews: (record.manualReviews ?? []).filter(r => r.review).map(r => ({
+      title: clean(r.title),
+      author: clean(r.author),
+      productName: clean(r.productName) || undefined,
+      stars: Number(r.stars) || 5,
+      store: clean(r.store) || 'apple',
+      review: clean(r.review),
+      date: clean(r.date),
+      version: clean(r.version) || undefined,
+    })),
     seo,
   };
 

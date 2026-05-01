@@ -3,7 +3,8 @@ import { create, persist } from '@/admin/store/storeCore'
 import type {
   AdminNewsRecord, AppRecord, PanelName, PersonStory, StoryBlock, SiteLinks, PageSubtitles,
   KpiItem, FinRow, ChartItem, FunnelStep,
-  RoadmapItem, Competitor, Keyword, Opportunity, ProcessStep, Screenshot, DataSourceMode
+  RoadmapItem, Competitor, Keyword, Opportunity, ProcessStep, Screenshot, DataSourceMode,
+  StoreSignalItem, ManualReviewItem
 } from '@/admin/types'
 import type { NewsBlock } from '@/data/articles'
 import type { AppfiguresConfig, AppfiguresProductConfig } from '@/lib/appfigures-types'
@@ -109,6 +110,8 @@ interface FormState {
   opportunities: Opportunity[]
   processSteps: ProcessStep[]
   screenshots: Screenshot[]
+  storeSignals: StoreSignalItem[]
+  manualReviews: ManualReviewItem[]
 }
 
 interface AdminStore extends FormState {
@@ -210,6 +213,14 @@ interface AdminStore extends FormState {
   removeScreenshot: (id: number) => void
   updateScreenshot: (id: number, key: keyof Screenshot, val: string) => void
 
+  addStoreSignal: (data?: Partial<StoreSignalItem>) => void
+  removeStoreSignal: (id: number) => void
+  updateStoreSignal: (id: number, key: keyof StoreSignalItem, val: string) => void
+
+  addManualReview: (data?: Partial<ManualReviewItem>) => void
+  removeManualReview: (id: number) => void
+  updateManualReview: (id: number, key: keyof ManualReviewItem, val: string | number) => void
+
   closeValidation: () => void
   openValidation: (failures: typeof REQUIRED_FIELDS) => void
 
@@ -236,7 +247,7 @@ const emptyForm: FormState = {
   imgIcon: '', imgCover: '',
   kpiItems: [], finRows: [], charts: [], funnelSteps: [],
   roadmapItems: [], competitors: [], keywords: [], opportunities: [],
-  processSteps: [], screenshots: [],
+  processSteps: [], screenshots: [], storeSignals: [], manualReviews: [],
 }
 
 export const useAdminStore = create<AdminStore>()(
@@ -376,6 +387,8 @@ export const useAdminStore = create<AdminStore>()(
             keywords: s.keywords.map(({ id: _id, ...rest }) => rest)
           },
           opportunities: s.opportunities.map(({ id: _id, ...rest }) => rest),
+          storeSignals: s.storeSignals.map(({ id: _id, ...rest }) => rest),
+          manualReviews: s.manualReviews.map(({ id: _id, ...rest }) => rest),
           contact: {
             name: s.contactName, title: s.contactTitle, email: s.contactEmail,
             phone: s.contactPhone, calendarUrl: s.contactCal, ndaUrl: s.contactNda,
@@ -482,6 +495,8 @@ export const useAdminStore = create<AdminStore>()(
           processSteps: app.contact.processSteps.map(s => ({ id: uid(), ...s })),
           imgIcon: app.media.icon, imgCover: app.media.cover,
           screenshots: app.media.screenshots.map(s => ({ id: uid(), ...s })),
+          storeSignals: (app.storeSignals ?? []).map(s => ({ id: uid(), label: s.label, value: s.value, sub: s.sub ?? '' })),
+          manualReviews: (app.manualReviews ?? []).map(r => ({ id: uid(), title: r.title, author: r.author, productName: r.productName ?? '', stars: r.stars, store: r.store, review: r.review, date: r.date, version: r.version ?? '' })),
         })
         get().showToast('App loaded: ' + (app.meta.name || id), '📂')
       },
@@ -747,7 +762,7 @@ export const useAdminStore = create<AdminStore>()(
       updateKpi: (id, key, val) => set(s => ({ kpiItems: s.kpiItems.map(k => k.id === id ? { ...k, [key]: val } : k), isDirty: true })),
 
       // FinRows
-      addFinRow: (d = {}) => set(s => ({ finRows: [...s.finRows, { id: uid(), label: '', amount: '', trend: '', notes: '', highlight: false, ...d }], isDirty: true })),
+      addFinRow: (d = {}) => set(s => ({ finRows: [...s.finRows, { id: uid(), label: '', amount: '', trend: '', notes: '', highlight: false, icon: '', ...d }], isDirty: true })),
       removeFinRow: (id) => set(s => ({ finRows: s.finRows.filter(r => r.id !== id), isDirty: true })),
       updateFinRow: (id, key, val) => set(s => ({ finRows: s.finRows.map(r => r.id === id ? { ...r, [key]: val } : r), isDirty: true })),
 
@@ -793,6 +808,16 @@ export const useAdminStore = create<AdminStore>()(
       addScreenshot: (d = {}) => set(s => ({ screenshots: [...s.screenshots, { id: uid(), url: '', caption: '', ...d }], isDirty: true })),
       removeScreenshot: (id) => set(s => ({ screenshots: s.screenshots.filter(sc => sc.id !== id), isDirty: true })),
       updateScreenshot: (id, key, val) => set(s => ({ screenshots: s.screenshots.map(sc => sc.id === id ? { ...sc, [key]: val } : sc), isDirty: true })),
+
+      // Store Signals
+      addStoreSignal: (d = {}) => set(s => ({ storeSignals: [...s.storeSignals, { id: uid(), label: '', value: '', sub: '', ...d }], isDirty: true })),
+      removeStoreSignal: (id) => set(s => ({ storeSignals: s.storeSignals.filter(sg => sg.id !== id), isDirty: true })),
+      updateStoreSignal: (id, key, val) => set(s => ({ storeSignals: s.storeSignals.map(sg => sg.id === id ? { ...sg, [key]: val } : sg), isDirty: true })),
+
+      // Manual Reviews
+      addManualReview: (d = {}) => set(s => ({ manualReviews: [...s.manualReviews, { id: uid(), title: '', author: '', productName: '', stars: 5, store: 'apple', review: '', date: new Date().toISOString().split('T')[0], version: '', ...d }], isDirty: true })),
+      removeManualReview: (id) => set(s => ({ manualReviews: s.manualReviews.filter(r => r.id !== id), isDirty: true })),
+      updateManualReview: (id, key, val) => set(s => ({ manualReviews: s.manualReviews.map(r => r.id === id ? { ...r, [key]: val } : r), isDirty: true })),
 
       prefillSample: () => {
         const existingSample = get().apps.find((app) =>

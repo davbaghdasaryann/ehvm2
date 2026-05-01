@@ -108,6 +108,7 @@ export type App = {
       trend: string;
       notes: string;
       highlight: boolean;
+      icon?: string;
     }[];
   };
   charts?: {
@@ -172,5 +173,7 @@ export type App = {
   notionPageBlocks?: NotionPageBlock[];
   appfigures?: AppfiguresConfig;
   dataSources?: { kpis?: 'auto' | 'manual' | 'live'; charts?: 'auto' | 'manual' | 'live'; financials?: 'auto' | 'manual' | 'live' };
+  storeSignals?: { label: string; value: string; sub?: string }[];
+  manualReviews?: { title: string; author: string; productName?: string; stars: number; store: string; review: string; date: string; version?: string }[];
   seo?: SeoFields;
 };

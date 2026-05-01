@@ -13,6 +13,7 @@ import KpisPanel from '@/admin/components/panels/KpisPanel'
 import FinancialsPanel from '@/admin/components/panels/FinancialsPanel'
 import ChartsPanel from '@/admin/components/panels/ChartsPanel'
 import PreviewPanel from '@/admin/components/panels/PreviewPanel'
+import StoreIntelligencePanel from '@/admin/components/panels/StoreIntelligencePanel'
 import {
   FunnelPanel, ProductPanel, MarketPanel,
   OpportunitiesPanel, ContactPanel, ImagesPanel
@@ -34,6 +35,7 @@ const NAV_ITEMS: { panel: PanelName; icon: string; label: string; editOnly?: boo
   { panel: 'opportunities', icon: '🚀', label: 'Opportunities', editOnly: true },
   { panel: 'contact', icon: '👤', label: 'Contact & Process', editOnly: true },
   { panel: 'images', icon: '🖼', label: 'Media & Images', editOnly: true },
+  { panel: 'storeintelligence', icon: '🏪', label: 'Store Intelligence', editOnly: true },
   { panel: 'preview', icon: '👁', label: 'Live Preview', editOnly: true },
 ]
 
@@ -85,6 +87,7 @@ export default function AdminClient() {
     opportunities: <OpportunitiesPanel />,
     contact: <ContactPanel />,
     images: <ImagesPanel />,
+    storeintelligence: <StoreIntelligencePanel />,
     preview: <PreviewPanel />,
   }
 

@@ -19,6 +19,7 @@ export interface FinRow {
   trend: string
   notes: string
   highlight: boolean
+  icon?: string
 }
 
 export interface ChartDataset {
@@ -92,6 +93,25 @@ export interface Screenshot {
   caption: string
 }
 
+export interface StoreSignalItem {
+  id: number
+  label: string
+  value: string
+  sub: string
+}
+
+export interface ManualReviewItem {
+  id: number
+  title: string
+  author: string
+  productName: string
+  stars: number
+  store: string
+  review: string
+  date: string
+  version: string
+}
+
 export type DataSourceMode = 'auto' | 'manual' | 'live'
 
 export interface DataSources {
@@ -158,6 +178,8 @@ export interface AppRecord {
     keywords: Omit<Keyword, 'id'>[]
   }
   opportunities: Omit<Opportunity, 'id'>[]
+  storeSignals?: Omit<StoreSignalItem, 'id'>[]
+  manualReviews?: Omit<ManualReviewItem, 'id'>[]
   contact: {
     name: string
     title: string
@@ -268,4 +290,5 @@ export type PanelName =
   | 'opportunities'
   | 'contact'
   | 'images'
+  | 'storeintelligence'
   | 'preview'

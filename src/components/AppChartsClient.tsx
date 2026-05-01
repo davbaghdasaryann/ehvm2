@@ -227,14 +227,14 @@ export default function AppChartsClient({ charts }: { charts: AppChart[] }) {
           const legend = pieLegends[chartIndex];
 
           return (
-            <div key={`${chart.title}-${chartIndex}`} className="bg-tag rounded-[16px] p-[16px]">
+            <div key={`${chart.title}-${chartIndex}`} className="rounded-[16px] p-[16px]" style={{ background: "#F5F5F7" }}>
               <p className="font-bold text-[22px] leading-[1.2]">{chart.title || `Chart ${chartIndex + 1}`}</p>
               {chart.subtitle ? (
                 <p className="text-[12px] text-caption mt-[2px]">{chart.subtitle}</p>
               ) : null}
               {isPie ? (
-                <div className="flex flex-row items-center gap-[16px] mt-[14px]">
-                  <div className="relative h-[130px] w-[130px] shrink-0">
+                <div className="flex flex-row items-center gap-[24px] mt-[14px]">
+                  <div className="relative h-[200px] w-[200px] shrink-0">
                     <canvas
                       ref={(node) => { canvasRefs.current[chartIndex] = node; }}
                     />
@@ -255,7 +255,7 @@ export default function AppChartsClient({ charts }: { charts: AppChart[] }) {
                   )}
                 </div>
               ) : (
-                <div className="relative h-[180px] mt-[10px]">
+                <div className="relative h-[220px] mt-[10px]">
                   <canvas
                     ref={(node) => { canvasRefs.current[chartIndex] = node; }}
                   />
