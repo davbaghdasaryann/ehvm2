@@ -10,24 +10,40 @@ type FloatingItem = {
 
 /**
  * Place icons in separate zones around the center for an even spread.
- * Each icon gets its own sector, then a random position within that sector.
- * Icons can go up to 50% off-screen at edges (clipped by overflow-hidden).
+ * The generator checks center-to-center distance so icons do not overlap,
+ * especially on mobile where the old random zones could collide.
  */
-function generatePositions(count: number): { top: string; left: string }[] {
+function generatePositions(
+  count: number,
+  viewport: { width: number; height: number },
+): { top: string; left: string }[] {
   if (count === 0) return [];
 
-  // 8 zones arranged around the center safe area (logo/text).
-  // Icons ~80-100px, add 8-10% margin from edges to prevent clipping.
-  const zones = [
-    { xMin: 8, xMax: 33, yMin: 0, yMax: 28 },       // top-left (with margin)
-    { xMin: 33, xMax: 67, yMin: 0, yMax: 22 },      // top-center (extra buffer)
-    { xMin: 67, xMax: 92, yMin: 0, yMax: 28 },      // top-right (with margin)
-    { xMin: 8, xMax: 15, yMin: 30, yMax: 70 },      // mid-left (with margin)
-    { xMin: 85, xMax: 92, yMin: 30, yMax: 70 },     // mid-right (with margin)
-    { xMin: 8, xMax: 33, yMin: 68, yMax: 90 },      // bottom-left (with margin)
-    { xMin: 33, xMax: 67, yMin: 76, yMax: 90 },     // bottom-center (extra buffer)
-    { xMin: 67, xMax: 92, yMin: 68, yMax: 90 },     // bottom-right (with margin)
-  ];
+  const isMobile = viewport.width < 640;
+  const iconSize = isMobile ? 80 : 100;
+  const minDistance = iconSize + (isMobile ? 22 : 28);
+  const jitter = isMobile ? 4 : 6;
+
+  const zones = isMobile
+    ? [
+        { x: 22, y: 10 },
+        { x: 78, y: 11 },
+        { x: 17, y: 35 },
+        { x: 83, y: 37 },
+        { x: 23, y: 66 },
+        { x: 77, y: 66 },
+        { x: 50, y: 84 },
+      ]
+    : [
+        { x: 20, y: 12 },
+        { x: 50, y: 10 },
+        { x: 80, y: 12 },
+        { x: 11, y: 48 },
+        { x: 89, y: 48 },
+        { x: 22, y: 79 },
+        { x: 50, y: 84 },
+        { x: 78, y: 79 },
+      ];
 
   // Fisher-Yates shuffle
   const shuffled = [...zones];
@@ -36,12 +52,35 @@ function generatePositions(count: number): { top: string; left: string }[] {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
 
-  // One icon per zone — pick as many zones as we have icons
   const selected = shuffled.slice(0, Math.min(count, shuffled.length));
+  const placed: Array<{ x: number; y: number }> = [];
 
-  return selected.map((zone) => ({
-    top: `${zone.yMin + Math.random() * (zone.yMax - zone.yMin)}%`,
-    left: `${zone.xMin + Math.random() * (zone.xMax - zone.xMin)}%`,
+  selected.forEach((zone) => {
+    let best = { x: zone.x, y: zone.y };
+
+    for (let attempt = 0; attempt < 24; attempt++) {
+      const candidate = {
+        x: Math.max(8, Math.min(92, zone.x + (Math.random() * 2 - 1) * jitter)),
+        y: Math.max(6, Math.min(90, zone.y + (Math.random() * 2 - 1) * jitter)),
+      };
+      const overlaps = placed.some((position) => {
+        const dx = ((candidate.x - position.x) / 100) * viewport.width;
+        const dy = ((candidate.y - position.y) / 100) * viewport.height;
+        return Math.hypot(dx, dy) < minDistance;
+      });
+
+      if (!overlaps) {
+        best = candidate;
+        break;
+      }
+    }
+
+    placed.push(best);
+  });
+
+  return placed.map((position) => ({
+    top: `${position.y}%`,
+    left: `${position.x}%`,
   }));
 }
 
@@ -54,7 +93,17 @@ export default function FloatingIcons({ items }: { items: FloatingItem[] }) {
   const [positions, setPositions] = useState<Record<string, string>[]>([]);
 
   useEffect(() => {
-    setPositions(generatePositions(items.length));
+    const updatePositions = () => {
+      const rect = containerRef.current?.getBoundingClientRect();
+      setPositions(generatePositions(items.length, {
+        width: rect?.width || window.innerWidth,
+        height: rect?.height || window.innerHeight,
+      }));
+    };
+
+    updatePositions();
+    window.addEventListener("resize", updatePositions);
+    return () => window.removeEventListener("resize", updatePositions);
   }, [items]);
 
   useEffect(() => {
@@ -65,8 +114,8 @@ export default function FloatingIcons({ items }: { items: FloatingItem[] }) {
       phaseY: Math.random() * Math.PI * 2,
       speedX: 0.3 + Math.random() * 0.3,
       speedY: 0.2 + Math.random() * 0.25,
-      ampX: 3 + Math.random() * 4,
-      ampY: 3 + Math.random() * 4,
+      ampX: window.innerWidth < 640 ? 1.5 + Math.random() * 2 : 3 + Math.random() * 4,
+      ampY: window.innerWidth < 640 ? 1.5 + Math.random() * 2 : 3 + Math.random() * 4,
     }));
 
     const startTime = Date.now();
@@ -101,7 +150,7 @@ export default function FloatingIcons({ items }: { items: FloatingItem[] }) {
         const driftX = Math.sin(elapsed * drift.speedX + drift.phaseX) * drift.ampX;
         const driftY = Math.cos(elapsed * drift.speedY + drift.phaseY) * drift.ampY;
 
-        const parallaxStrength = 12 + item.depth * 18;
+        const parallaxStrength = window.innerWidth < 640 ? 4 + item.depth * 6 : 12 + item.depth * 18;
         const mouseX = mouseRef.current.x * parallaxStrength;
         const mouseY = mouseRef.current.y * parallaxStrength;
 
