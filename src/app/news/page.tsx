@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import FloatingIcons from "@/components/FloatingIcons";
 import EhvmLogo from "@/components/EhvmLogo";
 import { getArticles, getPageSubtitles } from "@/lib/data";
@@ -7,6 +8,14 @@ import { getArticles, getPageSubtitles } from "@/lib/data";
 const depths = [0.5, 0.3, 0.8, 0.6, 0.4];
 
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: "Newsroom",
+  description: "Read EHVM Apps Capital news, events, stories, and app acquisition market updates.",
+  alternates: {
+    canonical: "/news",
+  },
+};
 
 export default async function Newsroom() {
   const [articles, pageSubtitles] = await Promise.all([getArticles(), getPageSubtitles()]);

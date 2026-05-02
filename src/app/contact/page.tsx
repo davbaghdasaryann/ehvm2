@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import FloatingIcons from "@/components/FloatingIcons";
 import EhvmLogo from "@/components/EhvmLogo";
 import { getPublishedStories, getSiteLinks, getPageSubtitles } from "@/lib/data";
@@ -15,6 +16,14 @@ const FALLBACK_PEOPLE = [
 ];
 
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description: "Contact EHVM Apps Capital to buy, sell, or discuss mobile app acquisition opportunities.",
+  alternates: {
+    canonical: "/contact",
+  },
+};
 
 export default async function Contact() {
   const [stories, siteLinks, pageSubtitles] = await Promise.all([getPublishedStories(), getSiteLinks(), getPageSubtitles()]);

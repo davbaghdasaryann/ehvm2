@@ -1,14 +1,68 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import HistoryBackLink from "@/components/HistoryBackLink";
 import { getArticleBySlug, getArticleSlugs } from "@/lib/data";
 import type { NewsBlock } from "@/data/articles";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://ehvmcapital.com";
 
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
 export async function generateStaticParams() {
   const slugs = await getArticleSlugs();
   return slugs.map((slug) => ({ slug }));
+}
+
+function absoluteUrl(value?: string): string | undefined {
+  if (!value) return undefined;
+  if (value.startsWith("http://") || value.startsWith("https://")) return value;
+  if (value.startsWith("/")) return `${SITE_URL}${value}`;
+  return undefined;
+}
+
+function truncateMeta(value: string, maxLength = 155): string {
+  const cleaned = value.replace(/\s+/g, " ").trim();
+  return cleaned.length > maxLength ? `${cleaned.slice(0, maxLength - 3).trim()}...` : cleaned;
+}
+
+function articleDescription(article: NonNullable<Awaited<ReturnType<typeof getArticleBySlug>>>): string {
+  const blockText = article.blocks?.find((block) => block.type === "text" && block.content)?.content;
+  return truncateMeta(article.subtitle || article.quote || blockText || `${article.title} from EHVM Apps Capital.`);
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const article = await getArticleBySlug(slug);
+  if (!article) return {};
+
+  const title = article.title;
+  const description = articleDescription(article);
+  const canonical = `${SITE_URL}/news/${article.slug}`;
+  const image = absoluteUrl(article.thumbnail);
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: "EHVM Apps Capital",
+      type: "article",
+      publishedTime: article.date ? new Date(article.date).toISOString() : undefined,
+      images: image ? [{ url: image, alt: article.title }] : undefined,
+    },
+    twitter: {
+      card: image ? "summary_large_image" : "summary",
+      title,
+      description,
+      images: image ? [image] : undefined,
+    },
+  };
 }
 
 function renderTextWithLinks(text: string) {
@@ -74,6 +128,34 @@ export default async function ArticleDetail({ params }: { params: Promise<{ slug
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
+  const articleUrl = `${SITE_URL}/news/${article.slug}`;
+  const articleImage = absoluteUrl(article.thumbnail);
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: articleDescription(article),
+    url: articleUrl,
+    image: articleImage,
+    datePublished: article.date ? new Date(article.date).toISOString() : undefined,
+    dateModified: article.date ? new Date(article.date).toISOString() : undefined,
+    author: {
+      "@type": "Organization",
+      name: "EHVM Apps Capital",
+      url: SITE_URL,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "EHVM Apps Capital",
+      url: SITE_URL,
+    },
+    creator: {
+      "@type": "Organization",
+      name: "Luphar",
+      url: "https://luphar.org",
+    },
+    mainEntityOfPage: articleUrl,
+  };
 
   // Support both legacy articles and new block-based articles
   const blocks: NewsBlock[] = article.blocks || [];
@@ -98,6 +180,7 @@ export default async function ArticleDetail({ params }: { params: Promise<{ slug
 
   return (
     <main className="flex justify-center w-full px-[10px] pb-[40px]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
       <div className="ehvm-slide-up bg-card flex flex-col items-start p-[15px] rounded-card w-full max-w-[560px]">
         <div className="flex items-center justify-between w-full mb-[16px]">
           <div className="bg-tag flex h-[27px] items-center justify-center px-[10px] rounded-pill shrink-0">

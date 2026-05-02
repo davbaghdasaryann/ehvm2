@@ -399,9 +399,44 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
     if (!question) return false;
     return !processTitles.has(question);
   });
+  const appUrl = `${SITE_URL}/apps/${app.slug}`;
+  const appImage = absoluteUrl(app.icon || app.screenshotsImage || app.screenshots?.[0]?.url);
+  const appJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: app.name,
+    description: appSeoDescription(app),
+    url: appUrl,
+    image: appImage,
+    applicationCategory: app.category || "MobileApplication",
+    operatingSystem: app.platform || undefined,
+    aggregateRating: app.rating > 0 ? {
+      "@type": "AggregateRating",
+      ratingValue: app.rating,
+      bestRating: 5,
+    } : undefined,
+    offers: {
+      "@type": "Offer",
+      url: appUrl,
+      availability: "https://schema.org/InStock",
+      category: "Business acquisition opportunity",
+      description: app.financials?.askingMultiple || app.monetizationType || app.subtitle || undefined,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "EHVM Apps Capital",
+      url: SITE_URL,
+    },
+    creator: {
+      "@type": "Organization",
+      name: "Luphar",
+      url: "https://luphar.org",
+    },
+  };
 
   return (
     <main className="flex justify-center w-full px-[10px] pb-[40px]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(appJsonLd) }} />
       <div className="ehvm-slide-up bg-card relative flex flex-col gap-[20px] items-start p-[15px] rounded-card w-full max-w-[500px] lg:max-w-[960px]">
 
         {/* Close button – top-right of card */}
@@ -541,7 +576,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     const isRating = /star|rating/i.test(item.icon || "") || /rating/i.test(item.label);
                     const cleanValue = (item.value || "—").replace(/\s*[⭐★]\s*/g, "").trim();
                     return (
-                    <div key={`${item.label}-${index}`} className="rounded-[24px] flex flex-col relative overflow-hidden" style={{ background: "#F5F5F7", padding: "18px 20px 20px", gap: 0, boxShadow: "0px 1.01px 2.02px -1.01px #0000001A, 0px 1.01px 3.03px 0px #0000001A" }}>
+                    <div key={`${item.label}-${index}`} className="rounded-[20px] sm:rounded-[24px] flex flex-col relative overflow-hidden p-[14px] sm:px-[20px] sm:pt-[18px] sm:pb-[20px]" style={{ background: "#F5F5F7", gap: 0, boxShadow: "0px 1.01px 2.02px -1.01px #0000001A, 0px 1.01px 3.03px 0px #0000001A" }}>
                       <Lockable locked={isLocked(`kpis.${index}`)}>
                       {/* Icon + label row */}
                       <div className="flex items-start gap-[8px]" style={{ marginBottom: 12 }}>
@@ -561,13 +596,13 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                       <div className="flex flex-col gap-[8px]">
                       {isRating ? (
                         <div className="flex items-center gap-[8px]">
-                          <p className="font-bold leading-[1.05]" style={{ fontSize: 42 }}>{cleanValue}</p>
+                          <p className="font-bold text-[34px] sm:text-[42px] leading-[1.05]">{cleanValue}</p>
                           <svg width="30" height="30" viewBox="0 0 41 41" fill="#9810FA" xmlns="http://www.w3.org/2000/svg">
                             <path d="M19.3781 3.85888C19.4518 3.71001 19.5656 3.58469 19.7067 3.49708C19.8479 3.40946 20.0107 3.36304 20.1768 3.36304C20.3429 3.36304 20.5057 3.40946 20.6468 3.49708C20.7879 3.58469 20.9018 3.71001 20.9755 3.85888L24.8596 11.7263C25.1155 12.2442 25.4932 12.6922 25.9603 13.0319C26.4274 13.3716 26.97 13.5929 27.5415 13.6768L36.2278 14.948C36.3924 14.9718 36.547 15.0412 36.6742 15.1484C36.8014 15.2555 36.896 15.3961 36.9475 15.5543C36.9989 15.7125 37.0051 15.8818 36.9652 16.0433C36.9254 16.2048 36.8412 16.3519 36.7221 16.468L30.4403 22.5851C30.026 22.9888 29.716 23.4871 29.5371 24.0372C29.3581 24.5873 29.3155 25.1726 29.4129 25.7428L30.8959 34.3854C30.925 34.5499 30.9072 34.7193 30.8447 34.8742C30.7821 35.029 30.6772 35.1632 30.5421 35.2614C30.4069 35.3596 30.2469 35.4178 30.0802 35.4294C29.9136 35.441 29.747 35.4055 29.5996 35.327L21.8347 31.2445C21.323 30.9758 20.7538 30.8354 20.1759 30.8354C19.5981 30.8354 19.0288 30.9758 18.5172 31.2445L10.754 35.327C10.6066 35.405 10.4402 35.4401 10.2739 35.4283C10.1075 35.4165 9.94778 35.3582 9.81289 35.2601C9.678 35.162 9.57335 35.028 9.51084 34.8734C9.44833 34.7187 9.43047 34.5497 9.45929 34.3854L10.9406 25.7445C11.0385 25.174 10.9961 24.5883 10.8171 24.0379C10.6381 23.4875 10.3279 22.9889 9.91328 22.5851L3.63143 16.4697C3.51137 16.3537 3.42628 16.2063 3.38588 16.0444C3.34547 15.8824 3.35137 15.7124 3.40289 15.5536C3.45441 15.3948 3.54949 15.2537 3.6773 15.1463C3.8051 15.039 3.96049 14.9697 4.12577 14.9463L12.8104 13.6768C13.3825 13.5936 13.9258 13.3726 14.3936 13.0328C14.8614 12.693 15.2396 12.2447 15.4957 11.7263L19.3781 3.85888Z"/>
                           </svg>
                         </div>
                       ) : (
-                        <p className="font-bold leading-[1.05]" style={{ fontSize: 42 }}>{item.value || "—"}</p>
+                        <p className="font-bold text-[34px] sm:text-[42px] leading-[1.05] break-words">{item.value || "—"}</p>
                       )}
                       {/* Trend */}
                       {item.trend ? (
@@ -674,9 +709,39 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             {plRows.length > 0 && (
               <div className="flex flex-col gap-[12px] w-full">
                 <p className={SECTION_TITLE_CLASS}>Metrics</p>
-                <div className="rounded-[32px] overflow-hidden w-full px-[18px] sm:px-[24px] py-[18px] sm:py-[22px]" style={{ background: "#F5F5F7" }}>
+                <div className="rounded-[24px] sm:rounded-[32px] overflow-hidden w-full px-[16px] sm:px-[24px] py-[16px] sm:py-[22px]" style={{ background: "#F5F5F7" }}>
                   <Lockable locked={isLocked("financials.plRows")}>
-                  <div className="overflow-x-auto">
+                  <div className="flex flex-col sm:hidden">
+                    {plRows.map((row, index) => (
+                      <div key={`${row.label}-${index}-mobile`} className={`py-[16px] ${index > 0 ? "border-t border-foreground" : ""}`}>
+                        <div className="flex items-center gap-[12px]">
+                          {row.icon && (
+                            <span className="shrink-0 w-[22px] text-[18px] leading-none flex items-center justify-center" style={{ color: index === 0 || row.highlight ? "#00C853" : index === 1 ? "#FF1493" : index === 2 ? "#C400F5" : "#3716E8" }}>
+                              {row.icon.trim().startsWith("<svg") ? <span dangerouslySetInnerHTML={{ __html: row.icon }} /> : row.icon}
+                            </span>
+                          )}
+                          <p className="text-[14px] font-bold leading-[1.2]">{row.label || "—"}</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-[10px] mt-[14px] pl-[34px]">
+                          <div>
+                            <p className="text-[10px] uppercase tracking-[0.06em] text-caption">Amount</p>
+                            <p className="text-[13px] mt-[3px]">{row.amount || "—"}</p>
+                          </div>
+                          <div>
+                            <p className="text-[10px] uppercase tracking-[0.06em] text-caption">Trend</p>
+                            <p className="text-[13px] mt-[3px]" style={{ color: /^↑/.test(row.trend || "") ? "#00A63E" : "#999" }}>{row.trend || "—"}</p>
+                          </div>
+                          {row.notes ? (
+                            <div className="col-span-2">
+                              <p className="text-[10px] uppercase tracking-[0.06em] text-caption">Notes</p>
+                              <p className="text-[13px] mt-[3px] leading-[1.35]">{row.notes}</p>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="hidden sm:block overflow-x-auto">
                   <div className="grid px-[8px] sm:px-[14px] pb-[14px] items-center min-w-[640px]" style={{ gridTemplateColumns: "minmax(170px,1.35fr) minmax(84px,.65fr) minmax(56px,.45fr) minmax(150px,1fr)", gap: "0 18px", borderBottom: "1.5px solid #000" }}>
                     <span className="text-[12px] uppercase font-medium text-foreground">Metric</span>
                     <span className="text-[12px] uppercase font-medium text-foreground">Amount</span>
@@ -711,7 +776,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
         {charts.length > 0 && <AppChartsClient charts={charts} lockedFields={app.lockedFields || []} />}
 
         {hasProductSection && (
-          <div className="flex flex-col gap-[36px] w-full rounded-[32px] px-[28px] sm:px-[56px] py-[36px] sm:py-[38px]" style={{ background: "#F5F5F7" }}>
+          <div className="flex flex-col gap-[26px] sm:gap-[36px] w-full rounded-[24px] sm:rounded-[32px] px-[20px] sm:px-[56px] py-[28px] sm:py-[38px]" style={{ background: "#F5F5F7" }}>
             <div className="flex flex-col gap-[16px] max-w-[920px]">
               <p className={SECTION_TITLE_CLASS}>Product Roadmap</p>
               {app.product?.vision ? (
@@ -721,7 +786,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
               ) : null}
             </div>
             {roadmap.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-[34px] w-full">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-[26px] md:gap-[34px] w-full">
                 {ROADMAP_COLUMNS.map((column) => {
                   const items = roadmap.filter((item) => item.status === column.status);
                   if (items.length === 0) return null;
@@ -737,7 +802,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                         </span>
                         <span className="h-px flex-1 min-w-[44px]" style={{ background: column.color }} />
                       </div>
-                      <div className="flex flex-col gap-[28px]">
+                      <div className="flex flex-col gap-[22px] sm:gap-[28px]">
                         {items.map((item, index) => (
                           <div key={`${item.title}-${index}`} className="flex items-start gap-[12px]">
                             <div className="w-[30px] shrink-0 text-[20px] leading-none text-center" style={{ color: column.color }}>
@@ -777,11 +842,11 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     return (
                       <div
                         key={`${item.name}-${index}`}
-                        className="min-h-[120px] px-[18px] sm:px-[22px] rounded-[10px] relative overflow-hidden"
+                        className="min-h-[120px] px-[16px] sm:px-[22px] py-[16px] sm:py-0 rounded-[10px] relative overflow-hidden"
                         style={{ background: "#F5F5F7" }}
                       >
                         <Lockable locked={isLocked(`competitors.${index}`)}>
-                        <div className="flex items-center justify-between gap-[18px] min-h-[120px]">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[16px] sm:gap-[18px] min-h-[88px] sm:min-h-[120px]">
                         <div className="flex items-center gap-[16px] min-w-0">
                           <div className="size-[30px] rounded-[7px] bg-black flex items-center justify-center text-[17px] shrink-0 overflow-hidden" style={{ boxShadow: "0 16px 26px rgba(0,0,0,0.18)" }}>
                             {item.logoUrl ? (
@@ -804,14 +869,14 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                               ) : (item.name || "Unnamed")}
                             </p>
                             {parsed.summary ? (
-                              <p className="text-[14px] leading-[1.35] mt-[8px] truncate">{parsed.summary}</p>
+                              <p className="text-[14px] leading-[1.35] mt-[8px] sm:truncate">{parsed.summary}</p>
                             ) : null}
                           </div>
                         </div>
                         {metric ? (
-                          <div className="text-right shrink-0">
+                          <div className="text-left sm:text-right shrink-0 pl-[46px] sm:pl-0">
                             <p className="text-[24px] leading-[1] font-medium" style={{ color: "#00C853" }}>{metric}</p>
-                            <p className="text-[12px] leading-[1.2] mt-[10px] uppercase whitespace-nowrap">{metricLabel}</p>
+                            <p className="text-[11px] sm:text-[12px] leading-[1.2] mt-[8px] sm:mt-[10px] uppercase sm:whitespace-nowrap">{metricLabel}</p>
                           </div>
                         ) : null}
                         </div>
@@ -824,13 +889,13 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
             )}
 
             {processSteps.length > 0 && (
-              <div className="flex flex-col gap-[20px] w-full rounded-[34px] px-[28px] sm:px-[32px] py-[28px]" style={{ border: "5px solid #F3F3F6" }}>
+              <div className="flex flex-col gap-[20px] w-full rounded-[24px] sm:rounded-[34px] px-[18px] sm:px-[32px] py-[22px] sm:py-[28px]" style={{ border: "5px solid #F3F3F6" }}>
                 <p className={SECTION_TITLE_CLASS}>Acquisition Process</p>
                 <div className="flex flex-col">
                   {processSteps.map((step, index) => {
                     const color = processColor(index);
                     return (
-                      <div key={`${step.title}-${index}`} className="relative flex gap-[16px] pb-[24px] last:pb-0">
+                      <div key={`${step.title}-${index}`} className="relative flex gap-[12px] sm:gap-[16px] pb-[24px] last:pb-0">
                         <div className="flex flex-col items-center shrink-0">
                           <div className="size-[32px] rounded-full flex items-center justify-center text-white text-[14px] font-bold" style={{ background: color }}>
                             {index + 1}
@@ -841,11 +906,11 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                             </div>
                           ) : null}
                         </div>
-                        <div className="size-[40px] rounded-[8px] flex items-center justify-center shrink-0" style={{ background: "#F5F5F7", marginTop: 0 }}>
+                        <div className="size-[36px] sm:size-[40px] rounded-[8px] flex items-center justify-center shrink-0" style={{ background: "#F5F5F7", marginTop: 0 }}>
                           <ProcessIcon index={index} color={color} />
                         </div>
                         <div className="min-w-0 flex-1 pt-[2px]">
-                          <div className="flex items-center gap-[10px] flex-wrap">
+                          <div className="flex items-center gap-[8px] sm:gap-[10px] flex-wrap">
                             <p className="text-[16px] leading-[1.2] font-bold">{step.title || "Step"}</p>
                             {step.note ? (
                               <span className="rounded-[4px] px-[9px] py-[5px] text-[11px] leading-none" style={{ background: "#F5F5F7", color }}>
@@ -1101,7 +1166,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                 const impactColor = opportunityColor(opp.impactColor, i);
 
                 return (
-                <div key={i} className="min-h-[116px] rounded-[8px] px-[28px] py-[20px] relative overflow-hidden" style={{ background: "#F5F5F7" }}>
+                <div key={i} className="min-h-[116px] rounded-[8px] px-[16px] sm:px-[28px] py-[18px] sm:py-[20px] relative overflow-hidden" style={{ background: "#F5F5F7" }}>
                   <Lockable locked={isLocked(`opportunities.${i}`)}>
                   <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-[18px]">
                   <div className="flex items-start gap-[12px] min-w-0">
@@ -1114,7 +1179,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     </div>
                   </div>
                   {(opp.impactLabel || opp.impactValue || opp.impactSubtext) && (
-                    <div className="md:w-[210px] shrink-0 text-left md:text-right">
+                    <div className="md:w-[210px] shrink-0 text-left md:text-right pl-[40px] md:pl-0">
                       {opp.impactLabel ? <p className="text-[12px] uppercase leading-[1.2]">{opp.impactLabel}</p> : null}
                       {opp.impactValue ? <p className="mt-[7px] text-[20px] leading-[1.1]" style={{ color: impactColor }}>{opp.impactValue}</p> : null}
                       {opp.impactSubtext ? <p className="mt-[6px] text-[12px] leading-[1.25]">{opp.impactSubtext}</p> : null}

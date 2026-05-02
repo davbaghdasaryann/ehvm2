@@ -1,6 +1,27 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "X-Designed-By",
+            value: "Luphar; https://luphar.org",
+          },
+          {
+            key: "X-Created-By",
+            value: "Luphar; https://luphar.org",
+          },
+          {
+            key: "Link",
+            value: '<https://luphar.org>; rel="author"',
+          },
+        ],
+      },
+    ];
+  },
   images: {
     // Allow Notion-hosted images when CMS is connected.
     // Notion serves file uploads from S3 and inline images from notion.so.

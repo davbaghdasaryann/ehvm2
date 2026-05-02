@@ -1,9 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import FloatingIcons from "@/components/FloatingIcons";
 import EhvmLogo from "@/components/EhvmLogo";
 import DarkModeToggle from "@/components/DarkModeToggle";
 import { getFeaturedApps, getPageSubtitles } from "@/lib/data";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://ehvmcapital.com";
 
 // Depth values for parallax intensity on each floating icon.
 // Positions are randomized by FloatingIcons; depth controls how much each icon responds to mouse movement.
@@ -11,8 +14,47 @@ const depths = [0.3, 0.7, 0.5, 0.8, 0.4, 0.6, 0.9];
 
 export const revalidate = 60;
 
+export const metadata: Metadata = {
+  title: "Buy and Sell Mobile Apps",
+  description: "Explore curated mobile app acquisition opportunities and connect with EHVM Apps Capital to buy or sell profitable apps.",
+  alternates: {
+    canonical: "/",
+  },
+};
+
 export default async function Home() {
   const [featuredApps, pageSubtitles] = await Promise.all([getFeaturedApps(), getPageSubtitles()]);
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: "EHVM Apps Capital",
+        url: SITE_URL,
+        description: "EHVM Apps Capital connects mobile app founders, buyers, and operators through curated acquisition opportunities.",
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        url: SITE_URL,
+        name: "EHVM Apps Capital",
+        creator: {
+          "@type": "Organization",
+          name: "Luphar",
+          url: "https://luphar.org",
+        },
+        designer: {
+          "@type": "Organization",
+          name: "Luphar",
+          url: "https://luphar.org",
+        },
+        publisher: {
+          "@id": `${SITE_URL}/#organization`,
+        },
+      },
+    ],
+  };
 
   // First 6 depths → featured apps, last depth → dark mode toggle
   const appItems = featuredApps.slice(0, depths.length - 1).map((app, i) => ({
@@ -47,6 +89,7 @@ export default async function Home() {
 
   return (
     <main className="relative w-full flex-1 flex flex-col items-center h-[calc(100dvh-97px)]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <FloatingIcons items={items} />
 
       <div className="flex-1" />

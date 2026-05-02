@@ -237,21 +237,21 @@ export default function AppChartsClient({ charts, lockedFields = [] }: { charts:
           const legend = pieLegends[chartIndex];
 
           return (
-            <div key={`${chart.title}-${chartIndex}`} className="rounded-[16px] p-[16px] relative overflow-hidden" style={{ background: "#F5F5F7" }}>
+            <div key={`${chart.title}-${chartIndex}`} className="rounded-[16px] p-[14px] sm:p-[16px] relative overflow-hidden" style={{ background: "#F5F5F7" }}>
               <div className={lockedFields.includes(`charts.${chartIndex}`) ? "blur-[5px] opacity-65 select-none pointer-events-none" : ""}>
-                <p className="font-bold text-[22px] leading-[1.2]">{chart.title || `Chart ${chartIndex + 1}`}</p>
+                <p className="font-bold text-[18px] sm:text-[22px] leading-[1.2]">{chart.title || `Chart ${chartIndex + 1}`}</p>
                 {chart.subtitle ? (
                   <p className="text-[12px] text-caption mt-[2px]">{chart.subtitle}</p>
                 ) : null}
                 {isPie ? (
-                  <div className="flex flex-row items-center gap-[24px] mt-[14px]">
-                    <div className="relative h-[200px] w-[200px] shrink-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-[16px] sm:gap-[24px] mt-[14px]">
+                    <div className="relative h-[200px] w-full max-w-[240px] sm:w-[200px] mx-auto sm:mx-0 shrink-0">
                       <canvas
                         ref={(node) => { canvasRefs.current[chartIndex] = node; }}
                       />
                     </div>
                     {legend && (
-                      <div className="flex flex-col gap-[10px] flex-1">
+                      <div className="flex flex-col gap-[10px] flex-1 w-full">
                         {legend.map((item, i) => (
                           <div key={i} className="flex items-center gap-[8px]">
                             <span
@@ -266,7 +266,7 @@ export default function AppChartsClient({ charts, lockedFields = [] }: { charts:
                     )}
                   </div>
                 ) : (
-                  <div className="relative h-[220px] mt-[10px]">
+                  <div className="relative h-[190px] sm:h-[220px] mt-[10px]">
                     <canvas
                       ref={(node) => { canvasRefs.current[chartIndex] = node; }}
                     />
