@@ -17,7 +17,7 @@ export default function FilterTabs({ tabs, active, onSelect, center }: FilterTab
         <button
           key={tab}
           onClick={() => onSelect(tab)}
-          style={active === tab ? {} : { background: "#E8E8EF" }}
+          style={active === tab ? {} : { background: "var(--color-tag)" }}
           className={`flex h-[41px] items-center justify-center px-[15px] py-[10px] rounded-pill shrink-0 text-[17px] leading-normal whitespace-nowrap ${
             active === tab
               ? "bg-primary text-primary-text"

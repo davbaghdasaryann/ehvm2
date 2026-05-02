@@ -57,7 +57,7 @@ export default function ImageUploadButton({
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept="image/png,image/jpeg,image/webp,image/gif,image/avif,.png,.jpg,.jpeg,.webp,.gif,.avif"
         style={{ display: "none" }}
         onChange={onSelectFile}
       />

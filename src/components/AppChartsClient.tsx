@@ -87,6 +87,9 @@ export default function AppChartsClient({ charts, lockedFields = [] }: { charts:
       const chartModule = await import("chart.js/auto");
       if (!alive) return;
       const Chart = chartModule.default;
+      const rootStyles = getComputedStyle(document.documentElement);
+      const chartCaptionColor = rootStyles.getPropertyValue("--color-caption").trim() || "rgba(0,0,0,0.45)";
+      const chartGridColor = rootStyles.getPropertyValue("--color-divider").trim() || "rgba(0,0,0,0.08)";
       const nextLegends: Array<PieLegendItem[] | null> = charts.map(() => null);
 
       charts.forEach((chart, chartIndex) => {
@@ -204,8 +207,8 @@ export default function AppChartsClient({ charts, lockedFields = [] }: { charts:
               isPie
                 ? {}
                 : {
-                    x: { grid: { display: false }, border: { display: false } },
-                    y: { grid: { color: "rgba(0,0,0,0.05)" }, border: { display: false } },
+                    x: { grid: { display: false }, border: { display: false }, ticks: { color: chartCaptionColor } },
+                    y: { grid: { color: chartGridColor }, border: { display: false }, ticks: { color: chartCaptionColor } },
                   },
             cutout: resolvedType === "doughnut" ? "60%" : undefined,
           },
@@ -237,7 +240,7 @@ export default function AppChartsClient({ charts, lockedFields = [] }: { charts:
           const legend = pieLegends[chartIndex];
 
           return (
-            <div key={`${chart.title}-${chartIndex}`} className="rounded-[16px] p-[14px] sm:p-[16px] relative overflow-hidden" style={{ background: "#F5F5F7" }}>
+            <div key={`${chart.title}-${chartIndex}`} className="rounded-[16px] p-[14px] sm:p-[16px] relative overflow-hidden" style={{ background: "var(--color-detail-surface)" }}>
               <div className={lockedFields.includes(`charts.${chartIndex}`) ? "blur-[5px] opacity-65 select-none pointer-events-none" : ""}>
                 <p className="font-bold text-[18px] sm:text-[22px] leading-[1.2]">{chart.title || `Chart ${chartIndex + 1}`}</p>
                 {chart.subtitle ? (

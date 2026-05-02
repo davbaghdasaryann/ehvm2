@@ -10,11 +10,14 @@ const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 const MIME_TO_EXT: Record<string, string> = {
   "image/jpeg": "jpg",
+  "image/pjpeg": "jpg",
   "image/png": "png",
+  "image/x-png": "png",
   "image/webp": "webp",
   "image/gif": "gif",
   "image/avif": "avif",
 };
+const ALLOWED_IMAGE_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp", "gif", "avif"]);
 
 function sanitizeFolder(input: string): string {
   const cleaned = input.toLowerCase().replace(/[^a-z0-9_-]/g, "");
@@ -26,7 +29,7 @@ function detectExtension(fileName: string, mimeType: string): string {
   if (fromMime) return fromMime;
 
   const parsed = path.extname(fileName || "").replace(/^\./, "").toLowerCase();
-  if (parsed && /^[a-z0-9]+$/.test(parsed)) return parsed;
+  if (parsed && ALLOWED_IMAGE_EXTENSIONS.has(parsed)) return parsed;
   return "bin";
 }
 
@@ -44,9 +47,6 @@ export async function POST(request: Request) {
     if (!(file instanceof File)) {
       return NextResponse.json({ error: "Missing file" }, { status: 400 });
     }
-    if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "Only image files are allowed" }, { status: 400 });
-    }
     if (file.size === 0) {
       return NextResponse.json({ error: "Empty file" }, { status: 400 });
     }
@@ -55,6 +55,14 @@ export async function POST(request: Request) {
     }
 
     const ext = detectExtension(file.name, file.type);
+    const hasImageMime = file.type.startsWith("image/");
+    if (!hasImageMime && ext === "bin") {
+      return NextResponse.json({ error: "Only PNG, JPG, WEBP, GIF, and AVIF images are allowed" }, { status: 400 });
+    }
+    if (!ALLOWED_IMAGE_EXTENSIONS.has(ext)) {
+      return NextResponse.json({ error: "Unsupported image type" }, { status: 400 });
+    }
+
     const fileName = `${Date.now()}-${randomUUID().slice(0, 8)}.${ext}`;
     const targetDir = path.join(process.cwd(), "public", "uploads", folder);
     const targetPath = path.join(targetDir, fileName);
