@@ -7,3 +7,8 @@ node_modules
 
 .next
 .claude
+.codex
+
+src/data/admin-db.json
+public/uploads/*
+!public/uploads/.gitkeep
