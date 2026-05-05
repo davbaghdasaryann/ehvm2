@@ -10,5 +10,7 @@ node_modules
 .codex
 
 src/data/admin-db.json
+uploads/*
+!uploads/.gitkeep
 public/uploads/*
 !public/uploads/.gitkeep

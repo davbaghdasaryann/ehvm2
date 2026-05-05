@@ -3,6 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
 import { isAdminRequestAuthorized } from "@/lib/adminAuth";
+import { getUploadPath, getUploadUrl } from "@/lib/uploadPaths";
 
 export const runtime = "nodejs";
 
@@ -64,14 +65,17 @@ export async function POST(request: Request) {
     }
 
     const fileName = `${Date.now()}-${randomUUID().slice(0, 8)}.${ext}`;
-    const targetDir = path.join(process.cwd(), "public", "uploads", folder);
-    const targetPath = path.join(targetDir, fileName);
+    const targetDir = getUploadPath([folder]);
+    const targetPath = getUploadPath([folder, fileName]);
+    if (!targetDir || !targetPath) {
+      return NextResponse.json({ error: "Invalid upload path" }, { status: 400 });
+    }
 
     await mkdir(targetDir, { recursive: true });
     const bytes = Buffer.from(await file.arrayBuffer());
     await writeFile(targetPath, bytes);
 
-    const url = `/uploads/${folder}/${fileName}`;
+    const url = getUploadUrl([folder, fileName]);
     return NextResponse.json({
       ok: true,
       url,
@@ -81,6 +85,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Failed to upload image.", error);
-    return NextResponse.json({ error: "Failed to upload image" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Failed to upload image";
+    return NextResponse.json({ error: `Failed to upload image: ${message}` }, { status: 500 });
   }
 }
