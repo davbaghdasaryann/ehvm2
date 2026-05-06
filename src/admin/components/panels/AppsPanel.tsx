@@ -2,7 +2,7 @@
 import { useAdminStore } from '@/admin/store/adminStore'
 
 export default function AppsPanel() {
-  const { apps, loadApp, deleteApp, setPanel, newApp } = useAdminStore()
+  const { apps, loadApp, deleteApp, duplicateApp, setPanel, newApp } = useAdminStore()
 
   const handleDelete = (id: string) => {
     if (confirm('Delete this app?')) deleteApp(id)
@@ -61,6 +61,7 @@ export default function AppsPanel() {
                   <td>
                     <div style={{ display: 'flex', gap: 6 }}>
                       <button className="btn btn-ghost btn-sm" onClick={() => { loadApp(app.id); setPanel('meta') }}>Edit</button>
+                      <button className="btn btn-ghost btn-sm" onClick={() => duplicateApp(app.id)}>Duplicate</button>
                       <button className="btn btn-danger btn-sm" onClick={() => handleDelete(app.id)}>Delete</button>
                     </div>
                   </td>

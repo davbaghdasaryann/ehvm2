@@ -144,6 +144,7 @@ interface AdminStore extends FormState {
   loadApp: (id: string) => void
   saveApp: (status: 'draft' | 'published') => void
   deleteApp: (id: string) => void
+  duplicateApp: (id: string) => void
   exportJSON: () => void
   addNews: () => void
   updateNews: (id: string, key: keyof AdminNewsRecord, value: string | boolean | NewsBlock[]) => void
@@ -452,6 +453,21 @@ export const useAdminStore = create<AdminStore>()(
         set({ apps, ...(s.currentAppId === id ? { currentAppId: null } : {}) })
         void pushServerData(apps, s.news)
         s.showToast('App deleted', '🗑')
+      },
+
+      duplicateApp: (id) => {
+        const s = get()
+        const source = s.apps.find(a => a.id === id)
+        if (!source) return
+        const copy: AppRecord = JSON.parse(JSON.stringify(source))
+        copy.id = 'app_' + Date.now()
+        copy.status = 'draft'
+        copy.updatedAt = new Date().toISOString()
+        copy.meta = { ...copy.meta, name: copy.meta.name + ' (Copy)' }
+        const apps = [...s.apps, copy]
+        set({ apps })
+        void pushServerData(apps, s.news)
+        s.showToast('App duplicated as draft', '📋')
       },
 
       deselectApp: () => set({ currentAppId: null, activePanel: 'apps' }),
