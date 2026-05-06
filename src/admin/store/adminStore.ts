@@ -59,8 +59,6 @@ export const REQUIRED_FIELDS = [
   { key: 'meta.category', label: 'Category', panel: 'meta' as PanelName, check: (a: AppRecord) => !!a.meta?.category },
   { key: 'meta.badge', label: 'App Badge', panel: 'meta' as PanelName, check: (a: AppRecord) => !!a.meta?.badge?.trim() },
   { key: 'financials.mrr', label: 'MRR value', panel: 'financials' as PanelName, check: (a: AppRecord) => !!a.financials?.mrr?.trim() },
-  { key: 'financials.plRows', label: 'At least 1 P&L row', panel: 'financials' as PanelName, check: (a: AppRecord) => a.financials?.plRows?.length > 0 },
-  { key: 'charts', label: 'At least 1 chart', panel: 'charts' as PanelName, check: (a: AppRecord) => a.charts?.length > 0 },
   { key: 'contact.name', label: 'Contact name', panel: 'contact' as PanelName, check: (a: AppRecord) => !!a.contact?.name?.trim() },
   { key: 'contact.email', label: 'Contact email', panel: 'contact' as PanelName, check: (a: AppRecord) => !!a.contact?.email?.trim() },
 ]
