@@ -1,12 +1,55 @@
 'use client'
+import { useState } from 'react'
 import { useAdminStore } from '@/admin/store/adminStore'
+
+type StatusFilter = 'all' | 'published' | 'draft'
+type SortKey = 'name' | 'status' | 'updatedAt'
 
 export default function AppsPanel() {
   const { apps, loadApp, deleteApp, duplicateApp, setPanel, newApp } = useAdminStore()
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [sort, setSort] = useState<{ key: SortKey; dir: 'asc' | 'desc' }>({ key: 'updatedAt', dir: 'desc' })
 
   const handleDelete = (id: string) => {
     if (confirm('Delete this app?')) deleteApp(id)
   }
+
+  const handleSort = (key: SortKey) => {
+    setSort(prev => prev.key === key ? { key, dir: prev.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'asc' })
+  }
+
+  const sortIndicator = (key: SortKey) => sort.key === key ? (sort.dir === 'asc' ? ' ↑' : ' ↓') : ''
+
+  const filtered = apps
+    .filter(a => statusFilter === 'all' || a.status === statusFilter)
+    .sort((a, b) => {
+      let av = '', bv = ''
+      if (sort.key === 'name') { av = a.meta?.name?.toLowerCase() || ''; bv = b.meta?.name?.toLowerCase() || '' }
+      else if (sort.key === 'status') { av = a.status; bv = b.status }
+      else if (sort.key === 'updatedAt') { av = a.updatedAt; bv = b.updatedAt }
+      return sort.dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av)
+    })
+
+  const counts = { all: apps.length, published: apps.filter(a => a.status === 'published').length, draft: apps.filter(a => a.status === 'draft').length }
+
+  const filterBar = (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
+      {(['all', 'published', 'draft'] as StatusFilter[]).map(f => (
+        <button
+          key={f}
+          onClick={() => setStatusFilter(f)}
+          style={{
+            padding: '3px 10px', borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid',
+            borderColor: statusFilter === f ? 'var(--accent)' : 'var(--border)',
+            background: statusFilter === f ? 'var(--accent)' : 'transparent',
+            color: statusFilter === f ? '#fff' : 'var(--text2)',
+          }}
+        >
+          {f.charAt(0).toUpperCase() + f.slice(1)} <span style={{ opacity: 0.7, fontWeight: 400 }}>({counts[f]})</span>
+        </button>
+      ))}
+    </div>
+  )
 
   if (!apps.length) {
     return (
@@ -32,14 +75,22 @@ export default function AppsPanel() {
       </div>
       <div className="card">
         <div className="card-body" style={{ padding: 0 }}>
+          {filterBar}
           <table className="apps-table">
             <thead>
               <tr>
-                <th>App Name</th><th>MRR</th><th>Category</th><th>Status</th><th>Updated</th><th>Actions</th>
+                <th onClick={() => handleSort('name')} style={{ cursor: 'pointer', userSelect: 'none' }}>App Name{sortIndicator('name')}</th>
+                <th>MRR</th>
+                <th>Category</th>
+                <th onClick={() => handleSort('status')} style={{ cursor: 'pointer', userSelect: 'none' }}>Status{sortIndicator('status')}</th>
+                <th onClick={() => handleSort('updatedAt')} style={{ cursor: 'pointer', userSelect: 'none' }}>Updated{sortIndicator('updatedAt')}</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {apps.map(app => (
+              {filtered.length === 0 ? (
+                <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--text3)', padding: '32px', fontSize: 12 }}>No {statusFilter} apps.</td></tr>
+              ) : filtered.map(app => (
                 <tr key={app.id}>
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
