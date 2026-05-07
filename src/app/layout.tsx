@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import NavPills from "@/components/NavPills";
 import ThemeProvider from "@/components/ThemeProvider";
-import SiteAttribution from "@/components/SiteAttribution";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://ehvmcapital.com"),
@@ -57,7 +56,6 @@ export default function RootLayout({
           <div className="min-h-[100dvh] w-full flex flex-col overflow-x-hidden">
             <NavPills />
             {children}
-            <SiteAttribution />
           </div>
         </ThemeProvider>
       </body>

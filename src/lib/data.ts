@@ -19,7 +19,6 @@ type NewsPayload = {
   articles: Article[];
 };
 let lastNonEmptyAppsPayload: AppsPayload | null = null;
-let lastNonEmptyNewsPayload: NewsPayload | null = null;
 
 const getCachedAppsPayload = unstable_cache(
   async (): Promise<AppsPayload> => {
@@ -60,14 +59,9 @@ const getCachedAppsPayload = unstable_cache(
 const getCachedNewsPayload = unstable_cache(
   async (): Promise<NewsPayload> => {
     const db = await readAdminDb();
-    const source = db.news.filter((item) => item.published);
-    const records = source.length > 0 ? source : db.news;
+    const records = db.news.filter((item) => item.published);
 
     if (records.length === 0) {
-      if (Boolean(process.env.MONGODB_URI?.trim()) && lastNonEmptyNewsPayload) {
-        console.warn("Using last non-empty news payload to avoid transient empty MongoDB response.");
-        return lastNonEmptyNewsPayload;
-      }
       return { articles: [] };
     }
 
@@ -81,11 +75,7 @@ const getCachedNewsPayload = unstable_cache(
         return bTime - aTime;
       });
 
-    const payload = { articles };
-    if (payload.articles.length > 0) {
-      lastNonEmptyNewsPayload = payload;
-    }
-    return payload;
+    return { articles };
   },
   ["ehvm-admin-news-payload"],
   { tags: ["news-data"], revalidate: 60 },
