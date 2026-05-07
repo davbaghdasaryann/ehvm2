@@ -549,9 +549,7 @@ export default async function AppDetail({ params }: { params: Promise<{ slug: st
                     priority
                   />
                 ) : (
-                  <div className="w-full h-full bg-tag flex items-center justify-center text-[17px] text-muted">
-                    No screenshots uploaded
-                  </div>
+                  <div className="w-full h-full bg-card" />
                 )}
               </div>
             )}
